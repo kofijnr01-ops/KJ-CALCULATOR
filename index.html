@@ -1,3 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080d20">
+
+<title>KJ Calculator</title>
+
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="calculator">
+
+  <div class="header">
+    <h1>KJ Calculator</h1>
+    <p>Simple • Fast • Accurate</p>
+  </div>
+
+  <div class="display">
+    <div id="history"></div>
+
+    <input
+      type="text"
+      id="display"
+      value="0"
+      readonly
+    >
+  </div>
+
+  <div class="buttons">
+
+    <button class="action" onclick="clearDisplay()">AC</button>
+    <button class="action" onclick="deleteLast()">DEL</button>
+    <button class="action" onclick="appendValue('%')">%</button>
+    <button class="operator" onclick="appendValue('/')">÷</button>
+
+    <button onclick="appendValue('7')">7</button>
+    <button onclick="appendValue('8')">8</button>
+    <button onclick="appendValue('9')">9</button>
+    <button class="operator" onclick="appendValue('*')">×</button>
+
+    <button onclick="appendValue('4')">4</button>
+    <button onclick="appendValue('5')">5</button>
+    <button onclick="appendValue('6')">6</button>
+    <button class="operator" onclick="appendValue('-')">−</button>
+
+    <button onclick="appendValue('1')">1</button>
+    <button onclick="appendValue('2')">2</button>
+    <button onclick="appendValue('3')">3</button>
+    <button class="operator" onclick="appendValue('+')">+</button>
+
+    <button onclick="appendValue('0')" class="zero">0</button>
+    <button onclick="appendValue('.')">.</button>
+    <button class="equals" onclick="calculate()">=</button>
+
+  </div>
+
+</div>
+
 <script>
 const display = document.getElementById("display");
 const history = document.getElementById("history");
@@ -12,7 +75,7 @@ function appendValue(value) {
 
 function clearDisplay() {
     display.value = "0";
-    history.textContent = "";
+    history.innerHTML = "";
 }
 
 function deleteLast() {
@@ -25,14 +88,16 @@ function deleteLast() {
 
 function calculate() {
     try {
-        const expression = display.value;
+        let expression = display.value;
+
+        expression = expression.replace(/%/g, "/100");
 
         const result = Function(
             '"use strict"; return (' + expression + ')'
         )();
 
         history.innerHTML +=
-            "<div>" + expression + " = " + result + "</div>";
+            "<div>" + display.value + " = " + result + "</div>";
 
         display.value = result;
     } catch (error) {
@@ -40,73 +105,6 @@ function calculate() {
     }
 }
 </script>
-    <div class="buttons">
 
-      <button class="action" onclick="clearDisplay()">AC</button>
-      <button class="action" onclick="deleteLast()">DEL</button>
-      <button class="action" onclick="appendValue('%')">%</button>
-      <button class="operator" onclick="appendValue('/')">÷</button>
-
-      <button onclick="appendValue('7')">7</button>
-      <button onclick="appendValue('8')">8</button>
-      <button onclick="appendValue('9')">9</button>
-      <button class="operator" onclick="appendValue('*')">×</button>
-
-      <button onclick="appendValue('4')">4</button>
-      <button onclick="appendValue('5')">5</button>
-<button onclick="appendValue('6')">6</button>
-<button class="operator" onclick="appendValue('-')">−</button>
-
-<button onclick="appendValue('1')">1</button>
-<button onclick="appendValue('2')">2</button>
-<button onclick="appendValue('3')">3</button>
-<button class="operator" onclick="appendValue('+')">+</button>
-
-<button onclick="appendValue('0')" class="zero">0</button>
-<button onclick="appendValue('.')">.</button>
-<button class="equals" onclick="calculate()">=</button>
-
-</div>
-
-</div>
-
-<script>
-const display = document.getElementById("display");
-const history = document.getElementById("history");
-
-function appendValue(value) {
-  if (display.value === "0" && value !== ".") {
-    display.value = value;
-  } else {
-    display.value += value;
-  }
-}
-
-function clearDisplay() {
-  display.value = "0";
-  history.textContent = "";
-}
-
-function deleteLast() {
-  if (display.value.length > 1) {
-    display.value = display.value.slice(0, -1);
-  } else {
-    display.value = "0";
-  }
-}
-
-    function calculate() {
-        try {
-            const expression = display.value;
-            const result = Function(
-                '"use strict"; return (' + expression + ')'
-            )();
-
-            history.innerHTML += `<div>${expression} = ${result}</div>`;
-            display.value = result;
-        } catch {
-            display.value = "Error";
-        }
-    }
-}
-</script>
+</body>
+</html>
