@@ -1,6 +1,7 @@
 {
   "name": "KJ Calculator",
   "short_name": "KJ Calculator",
+  "description": "A simple, fast and accurate calculator by KJ.",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#080d20",
