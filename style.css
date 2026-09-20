@@ -97,4 +97,37 @@ button:active {
 
 /* Number buttons */
 .number,
-.number-btn
+.number-btn {
+  background: #151f39;
+}
+
+.operator {
+  background: #202d4d;
+}
+
+.action {
+  background: #293653;
+}
+
+.equals {
+  background: #3156a3;
+}
+
+.zero {
+  grid-column: span 2;
+}
+
+@media (max-width: 420px) {
+  .calculator {
+    padding: 15px;
+  }
+
+  button {
+    min-height: 62px;
+    font-size: 20px;
+  }
+
+  .display input {
+    font-size: 32px;
+  }
+}
