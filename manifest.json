@@ -1,0 +1,9 @@
+{
+  "name": "KJ Calculator",
+  "short_name": "KJ Calculator",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#080d20",
+  "theme_color": "#080d20",
+  "orientation": "portrait"
+}
