@@ -3,91 +3,203 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KJ Calculator</title>
+<meta name="theme-color" content="#050a18">
+<title>KJ Calculator v1.1</title>
 
 <style>
-* {
-  box-sizing: border-box;
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  -webkit-tap-highlight-color:transparent;
 }
 
-body {
-  margin: 0;
-  min-height: 100vh;
-  background: #050a18;
-  color: white;
-  font-family: Arial, sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+html,body{
+  width:100%;
+  height:100%;
+  overflow:hidden;
 }
 
-.calculator {
-  width: 100%;
-  max-width: 390px;
-  padding: 20px;
+body{
+  background:#050a18;
+  color:white;
+  font-family:Arial,sans-serif;
 }
 
-.display {
-  background: #0b1228;
-  border: 1px solid #1d2948;
-  border-radius: 20px;
-  min-height: 120px;
-  padding: 20px;
-  margin-bottom: 15px;
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
-  font-size: 42px;
-  overflow: hidden;
+.app{
+  width:100%;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  padding:16px;
 }
 
-#display {
-  width: 100%;
-  text-align: right;
-  white-space: nowrap;
+/* TOP */
+.top{
+  height:48px;
+  display:flex;
+  align-items:center;
+  flex-shrink:0;
 }
 
-.buttons {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
+.historyBtn{
+  width:44px;
+  height:44px;
+  border:0;
+  border-radius:14px;
+  background:#111a35;
+  color:white;
+  font-size:23px;
 }
 
-button {
-  height: 70px;
-  border: 0;
-  border-radius: 18px;
-  background: #111a35;
-  color: white;
-  font-size: 24px;
-  font-weight: bold;
+/* DISPLAY */
+.display{
+  width:100%;
+  height:150px;
+  margin-top:10px;
+  padding:20px;
+  background:#0b1228;
+  border:1px solid #1d2948;
+  border-radius:26px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:flex-end;
+  overflow:hidden;
 }
 
-button:active {
-  transform: scale(0.95);
+#display{
+  width:100%;
+  text-align:right;
+  font-size:48px;
+  white-space:nowrap;
+  overflow:hidden;
 }
 
-.operator {
-  background: #172448;
+/* BUTTONS */
+.buttons{
+  flex:1;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  grid-template-rows:repeat(5,1fr);
+  gap:10px;
+  margin-top:15px;
 }
 
-.clear {
-  background: #54243c;
+button{
+  border:0;
+  border-radius:20px;
+  background:#111a35;
+  color:white;
+  font-size:25px;
+  font-weight:bold;
 }
 
-.equals {
-  background: #315cff;
+button:active{
+  transform:scale(.95);
 }
 
-.zero {
-  grid-column: span 2;
+.operator{
+  background:#172448;
+}
+
+.clear{
+  background:#54243c;
+}
+
+.equals{
+  background:#315cff;
+}
+
+.zero{
+  grid-column:span 2;
+}
+
+/* HISTORY */
+.historyPanel{
+  position:fixed;
+  top:0;
+  left:-100%;
+  width:85%;
+  max-width:360px;
+  height:100vh;
+  background:#080d20;
+  z-index:20;
+  padding:22px;
+  transition:.25s;
+  border-right:1px solid #1d2948;
+}
+
+.historyPanel.open{
+  left:0;
+}
+
+.historyTop{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+.historyTop h2{
+  font-size:24px;
+}
+
+.closeBtn{
+  width:42px;
+  height:42px;
+  border:0;
+  background:#111a35;
+  color:white;
+  border-radius:13px;
+  font-size:25px;
+}
+
+.clearHistory{
+  width:100%;
+  height:48px;
+  border:0;
+  border-radius:14px;
+  background:#54243c;
+  color:white;
+  font-weight:bold;
+  font-size:16px;
+  margin-bottom:15px;
+}
+
+.historyList{
+  height:calc(100% - 125px);
+  overflow-y:auto;
+}
+
+.historyItem{
+  padding:15px 5px;
+  border-bottom:1px solid #1d2948;
+  font-size:17px;
+  color:#dce2ef;
+}
+
+/* OVERLAY */
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.55);
+  z-index:10;
+  display:none;
+}
+
+.overlay.show{
+  display:block;
 }
 </style>
 </head>
 
 <body>
 
-<div class="calculator">
+<div class="app">
+
+  <div class="top">
+    <button class="historyBtn" onclick="openHistory()">☰</button>
+  </div>
 
   <div class="display">
     <div id="display">0</div>
@@ -120,6 +232,26 @@ button:active {
     <button class="equals" onclick="calculate()">=</button>
 
   </div>
+
+</div>
+
+<div class="overlay" id="overlay" onclick="closeHistory()"></div>
+
+<div class="historyPanel" id="historyPanel">
+
+  <div class="historyTop">
+    <h2>History</h2>
+    <button class="closeBtn" onclick="closeHistory()">×</button>
+  </div>
+
+  <button class="clearHistory" onclick="clearHistory()">
+    Clear History
+  </button>
+
+  <div class="historyList" id="historyList">
+    No calculations yet.
+  </div>
+
 </div>
 
 <script>
@@ -127,50 +259,128 @@ button:active {
 let display = document.getElementById("display");
 let expression = "";
 
-function add(value) {
+let history =
+JSON.parse(localStorage.getItem("kjHistory") || "[]");
 
-  if (value === "%") {
+function add(value){
+
+  if(value === "%"){
     expression += "/100";
-  } else {
+  }else{
     expression += value;
   }
 
   display.innerText = expression;
 }
 
-function clearDisplay() {
+function clearDisplay(){
   expression = "";
   display.innerText = "0";
 }
 
-function deleteNumber() {
-  expression = expression.slice(0, -1);
+function deleteNumber(){
 
-  if (expression === "") {
+  expression = expression.slice(0,-1);
+
+  if(expression === ""){
     display.innerText = "0";
-  } else {
+  }else{
     display.innerText = expression;
   }
 }
 
-function calculate() {
+function calculate(){
 
-  if (expression === "") {
-    return;
-  }
+  if(expression === "") return;
 
-  try {
+  try{
+
+    let original = expression;
+
     let answer = Function(
       '"use strict"; return (' + expression + ')'
     )();
 
+    answer = Number.isInteger(answer)
+      ? answer
+      : parseFloat(answer.toFixed(10));
+
     display.innerText = answer;
     expression = String(answer);
 
-  } catch (error) {
+    history.unshift(
+      original + " = " + answer
+    );
+
+    localStorage.setItem(
+      "kjHistory",
+      JSON.stringify(history)
+    );
+
+  }catch(error){
+
     display.innerText = "Error";
     expression = "";
+
   }
+}
+
+function openHistory(){
+
+  document
+    .getElementById("historyPanel")
+    .classList.add("open");
+
+  document
+    .getElementById("overlay")
+    .classList.add("show");
+
+  showHistory();
+}
+
+function closeHistory(){
+
+  document
+    .getElementById("historyPanel")
+    .classList.remove("open");
+
+  document
+    .getElementById("overlay")
+    .classList.remove("show");
+}
+
+function showHistory(){
+
+  let list =
+    document.getElementById("historyList");
+
+  if(history.length === 0){
+
+    list.innerHTML =
+      "No calculations yet.";
+
+    return;
+  }
+
+  list.innerHTML =
+    history.map(function(item){
+
+      return `
+        <div class="historyItem">
+          ${item}
+        </div>
+      `;
+
+    }).join("");
+}
+
+function clearHistory(){
+
+  history = [];
+
+  localStorage.removeItem("kjHistory");
+
+  showHistory();
 }
 
 </script>
