@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#050816">
-<title>KJ Calculator v1.2</title>
+<title>KJ Calculator v1.3</title>
 
 <style>
 *{
@@ -29,41 +29,109 @@ body{
 .app{
   width:100%;
   height:100vh;
-  padding:18px;
+  padding:16px;
   display:flex;
   flex-direction:column;
 }
 
-/* TOP */
-.top{
-  height:52px;
+/* HEADER */
+.header{
+  height:58px;
   display:flex;
   align-items:center;
+  justify-content:space-between;
+  flex-shrink:0;
 }
 
 .historyBtn{
   width:48px;
   height:48px;
-  border:1px solid #24345f;
+  border:1px solid #253762;
   border-radius:16px;
-  background:#0d1630;
+  background:#0c1530;
   color:#fff;
-  font-size:25px;
+  font-size:24px;
 }
 
-/* KJ BRAND */
-.brand{
-  margin-left:auto;
-  font-size:18px;
-  font-weight:bold;
-  letter-spacing:2px;
+.logo{
+  font-size:21px;
+  font-weight:800;
+  letter-spacing:3px;
+}
+
+.version{
+  font-size:11px;
+  color:#7180a5;
+  letter-spacing:1px;
 }
 
 /* DISPLAY */
 .display{
-  height:165px;
-  margin-top:12px;
+  width:100%;
+  height:175px;
+  margin-top:8px;
   padding:22px;
   border-radius:30px;
-  background:linear-gradient(145deg,#0d1733,#080e22);
-  border:1
+  background:linear-gradient(145deg,#101a38,#080e22);
+  border:1px solid #263866;
+  box-shadow:
+    0 15px 40px rgba(0,0,0,.28),
+    inset 0 1px 1px rgba(255,255,255,.05);
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  align-items:flex-end;
+  overflow:hidden;
+}
+
+.smallDisplay{
+  width:100%;
+  min-height:24px;
+  text-align:right;
+  color:#68789e;
+  font-size:16px;
+  overflow:hidden;
+  white-space:nowrap;
+}
+
+#display{
+  width:100%;
+  text-align:right;
+  font-size:50px;
+  font-weight:300;
+  white-space:nowrap;
+  overflow:hidden;
+}
+
+/* BUTTONS */
+.buttons{
+  flex:1;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  grid-template-rows:repeat(5,1fr);
+  gap:10px;
+  margin-top:14px;
+}
+
+button{
+  border:1px solid transparent;
+  border-radius:21px;
+  color:white;
+  font-size:24px;
+  font-weight:bold;
+  transition:transform .08s,filter .08s;
+}
+
+button:active{
+  transform:scale(.93);
+  filter:brightness(1.25);
+}
+
+.number{
+  background:linear-gradient(145deg,#111c3b,#0d1730);
+  border-color:#1b2a50;
+}
+
+.operator{
+  background:linear-gradient(145deg,#1b2d5b,#152449);
+  border-color:#2
