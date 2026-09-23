@@ -1,414 +1,57 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#050a18">
 <title>KJ Calculator v1.1</title>
 
 <style>
-*{box-sizing:border-box}
-
-html,body{
-margin:0;
-width:100%;
-height:100%;
-overflow:hidden;
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
 }
 
-body{
-background:#050a18;
-color:white;
-font-family:Arial,sans-serif;
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #050a18;
+    color: white;
+    font-family: Arial, sans-serif;
 }
 
-.calculator{
-width:100%;
-height:100%;
-padding:12px;
-display:flex;
-flex-direction:column;
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.header{
-height:90px;
-text-align:center;
-position:relative;
+.calculator {
+    width: 100%;
+    height: 100dvh;
+    max-width: 500px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
 }
 
-h1{
-margin:0;
-font-size:34px;
+/* TOP BAR */
+.topbar {
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
-.header p{
-margin:4px 0;
-font-size:18px;
-}
-
-.version{
-color:#8992aa;
-}
-
-.history{
-position:absolute;
-left:0;
-top:0;
-background:#263858;
-color:white;
-border:0;
-border-radius:12px;
-padding:10px;
-font-size:20px;
-}
-
-.display{
-height:145px;
-background:#020713;
-border:2px solid #1d2948;
-border-radius:30px;
-padding:15px;
-display:flex;
-flex-direction:column;
-justify-content:flex-end;
-}
-
-#display{
-width:100%;
-height:55px;
-background:none;
-border:0;
-outline:0;
-color:white;
-text-align:right;
-font-size:45px;
-font-weight:bold;
-}
-
-.actions{
-display:flex;
-gap:10px;
-}
-
-.actions button{
-background:#263858;
-color:white;
-border:0;
-border-radius:14px;
-padding:8px 18px;
-font-weight:bold;
-}
-
-.buttons{
-flex:1;
-display:grid;
-grid-template-columns:repeat(4,1fr);
-grid-template-rows:repeat(5,1fr);
-gap:8px;
-margin-top:10px;
-min-height:0;
-}
-
-button{
-border:0;
-border-radius:22px;
-background:#151f3d;
-color:white;
-font-size:26px;
-font-weight:bold;
-}
-
-button:active{
-transform:scale(.95);
-}
-
-.operator,.action{
-background:#263858;
-}
-
-.equals{
-background:#3f70d0;
-}
-
-.zero{
-grid-column:span 2;
-}
-
-#historyBox{
-display:none;
-position:fixed;
-inset:0;
-background:#050a18;
-padding:20px;
-z-index:10;
-}
-
-#historyBox.show{
-display:block;
-}
-
-.historyPanel{
-height:100%;
-background:#0b1228;
-border:2px solid #1d2948;
-border-radius:25px;
-padding:15px;
-}
-
-.historyPanel h2{
-margin:0 0 15px;
-}
-
-#historyList{
-overflow:auto;
-height:80%;
-}
-
-.item{
-background:#151f3d;
-padding:12px;
-border-radius:12px;
-margin-bottom:8px;
-}
-
-.clear{
-width:100%;
-height:45px;
-background:#263858;
-color:white;
-border:0;
-border-radius:12px;
-margin-bottom:12px;
-}
-</style>
-</head>
-
-<body>
-
-<div class="calculator">
-
-<div class="header">
-
-<button class="history" onclick="showHistory()">📜</button>
-
-<h1>KJ Calculator</h1>
-<p>Simple • Fast • Accurate</p>
-<div class="version">Version 1.1</div>
-
-</div>
-
-<div class="display">
-
-<input id="display" value="0" readonly>
-
-<div class="actions">
-<button onclick="sign()">+/−</button>
-<button onclick="copy()">COPY</button>
-</div>
-
-</div>
-
-<div class="buttons">
-
-<button class="action" onclick="clearAll()">AC</button>
-<button class="action" onclick="del()">DEL</button>
-<button class="action" onclick="add('%')">%</button>
-<button class="operator" onclick="add('/')">÷</button>
-
-<button onclick="add('7')">7</button>
-<button onclick="add('8')">8</button>
-<button onclick="add('9')">9</button>
-<button class="operator" onclick="add('*')">×</button>
-
-<button onclick="add('4')">4</button>
-<button onclick="add('5')">5</button>
-<button onclick="add('6')">6</button>
-<button class="operator" onclick="add('-')">−</button>
-
-<button onclick="add('1')">1</button>
-<button onclick="add('2')">2</button>
-<button onclick="add('3')">3</button>
-<button class="operator" onclick="add('+')">+</button>
-
-<button class="zero" onclick="add('0')">0</button>
-<button onclick="add('.')">.</button>
-<button class="equals" onclick="calculate()">=</button>
-
-</div>
-
-</div>
-
-<div id="historyBox">
-
-<div class="historyPanel">
-
-<h2>📜 History</h2>
-
-<button class="clear" onclick="clearHistory()">
-CLEAR HISTORY
-</button>
-
-<button class="clear" onclick="hideHistory()">
-CLOSE
-</button>
-
-<div id="historyList"></div>
-
-</div>
-
-</div>
-
-<script>
-
-var display=document.getElementById("display");
-
-var history=JSON.parse(
-localStorage.getItem("kjHistory")||"[]"
-);
-
-function add(x){
-
-if(display.value==="Error"){
-display.value="0";
-}
-
-if(display.value==="0" &&
-x!=="." &&
-x!=="+" &&
-x!=="-" &&
-x!=="*" &&
-x!=="/" &&
-x!=="%"){
-display.value=x;
-}else{
-display.value+=x;
-}
-
-}
-
-function clearAll(){
-display.value="0";
-}
-
-function del(){
-
-if(display.value.length>1){
-display.value=display.value.slice(0,-1);
-}else{
-display.value="0";
-}
-
-}
-
-function sign(){
-
-if(display.value!=="0"){
-if(display.value.charAt(0)==="-"){
-display.value=display.value.substring(1);
-}else{
-display.value="-"+display.value;
-}
-}
-
-}
-
-function calculate(){
-
-var expression=display.value;
-
-try{
-
-var x=expression.replace(/%/g,"/100");
-
-var result=Function(
-"return ("+x+")"
-)();
-
-if(!isFinite(result)){
-throw "error";
-}
-
-if(result%1!==0){
-result=parseFloat(result.toFixed(10));
-}
-
-history.unshift({
-expression:expression,
-result:result
-});
-
-localStorage.setItem(
-"kjHistory",
-JSON.stringify(history)
-);
-
-display.value=result;
-
-}catch(e){
-
-display.value="Error";
-
-}
-
-}
-
-function copy(){
-
-navigator.clipboard.writeText(display.value);
-
-}
-
-function showHistory(){
-
-var box=document.getElementById("historyBox");
-
-var list=document.getElementById("historyList");
-
-list.innerHTML="";
-
-if(history.length===0){
-
-list.innerHTML="<p>No calculations yet.</p>";
-
-}else{
-
-history.forEach(function(item){
-
-var div=document.createElement("div");
-
-div.className="item";
-
-div.innerHTML=
-item.expression+" = <b>"+item.result+"</b>";
-
-list.appendChild(div);
-
-});
-
-}
-
-box.classList.add("show");
-
-}
-
-function hideHistory(){
-
-document
-.getElementById("historyBox")
-.classList.remove("show");
-
-}
-
-function clearHistory(){
-
-history=[];
-
-localStorage.removeItem("kjHistory");
-
-showHistory();
-
-}
-
-</script>
-
-</body>
-</html>
+.history-btn {
+    border: none;
+    background: #26385f;
+    color: white;
+    border-radius: 14px;
+    padding: 10px 16px;
+    font-size: 16px;
+    font-weight: bold
