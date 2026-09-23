@@ -36,7 +36,7 @@ body {
 
 .header {
   text-align: center;
-  margin-bottom: 22px;
+  margin-bottom: 20px;
 }
 
 .header h1 {
@@ -51,7 +51,7 @@ body {
 
 .version {
   margin-top: 8px !important;
-  font-size: 13px !important;
+  font-size: 14px !important;
   opacity: .55;
 }
 
@@ -60,22 +60,14 @@ body {
   border: 2px solid #1d2948;
   border-radius: 35px;
   padding: 16px;
-  margin-bottom: 20px;
-}
-
-#historyPreview {
-  height: 22px;
-  text-align: right;
-  font-size: 13px;
-  opacity: .5;
-  overflow: hidden;
+  margin-bottom: 15px;
 }
 
 #display {
   width: 100%;
   height: 65px;
-  border: 0;
-  outline: 0;
+  border: none;
+  outline: none;
   background: transparent;
   color: white;
   text-align: right;
@@ -85,4 +77,489 @@ body {
 
 .extra {
   display: flex;
-  gap: 8
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.small-btn {
+  height: 42px;
+  padding: 0 18px;
+  border: none;
+  border-radius: 16px;
+  background: #263656;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.history-btn {
+  width: 100%;
+  height: 52px;
+  margin-bottom: 15px;
+  border: none;
+  border-radius: 18px;
+  background: #263656;
+  color: white;
+  font-size: 17px;
+  font-weight: bold;
+}
+
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+button {
+  height: 78px;
+  border: none;
+  border-radius: 28px;
+  background: #141f3d;
+  color: white;
+  font-size: 27px;
+  font-weight: bold;
+}
+
+button:active {
+  transform: scale(.94);
+  opacity: .75;
+}
+
+.action,
+.operator {
+  background: #202f52;
+}
+
+.equals {
+  background: #3763b5;
+}
+
+.zero {
+  grid-column: span 2;
+}
+
+/* HISTORY */
+
+#historyScreen {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: #050a18;
+  z-index: 9999;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.history-box {
+  width: 100%;
+  max-width: 390px;
+  margin: auto;
+  background: #0b1228;
+  border: 2px solid #1d2948;
+  border-radius: 28px;
+  padding: 20px;
+}
+
+.history-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.history-top h2 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.close {
+  width: 45px;
+  height: 45px;
+  border-radius: 15px;
+  background: #202f52;
+  font-size: 25px;
+}
+
+.clear-history {
+  width: 100%;
+  height: 50px;
+  margin-bottom: 15px;
+  border-radius: 16px;
+  background: #202f52;
+  font-size: 16px;
+}
+
+.history-item {
+  background: #141f3d;
+  border: 1px solid #263656;
+  border-radius: 16px;
+  padding: 14px;
+  margin-bottom: 10px;
+}
+
+.expression {
+  font-size: 16px;
+  opacity: .65;
+  margin-bottom: 6px;
+}
+
+.result {
+  font-size: 23px;
+  font-weight: bold;
+}
+
+.empty {
+  text-align: center;
+  opacity: .5;
+  padding: 40px 10px;
+}
+
+@media (max-width: 380px) {
+  .calculator {
+    padding: 16px;
+  }
+
+  button {
+    height: 68px;
+  }
+
+  #display {
+    font-size: 38px;
+  }
+
+  .header h1 {
+    font-size: 36px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="calculator">
+
+  <div class="header">
+    <h1>KJ Calculator</h1>
+    <p>Simple • Fast • Accurate</p>
+    <p class="version">Version 1.1</p>
+  </div>
+
+  <div class="display">
+
+    <input
+      id="display"
+      type="text"
+      value="0"
+      readonly
+    >
+
+    <div class="extra">
+      <button class="small-btn" onclick="toggleSign()">+/−</button>
+      <button class="small-btn" onclick="copyResult()">COPY</button>
+    </div>
+
+  </div>
+
+  <button class="history-btn" onclick="showHistory()">
+    📜 HISTORY
+  </button>
+
+  <div class="buttons">
+
+    <button class="action" onclick="clearDisplay()">AC</button>
+    <button class="action" onclick="deleteLast()">DEL</button>
+    <button class="action" onclick="percent()">%</button>
+    <button class="operator" onclick="addValue('/')">÷</button>
+
+    <button onclick="addValue('7')">7</button>
+    <button onclick="addValue('8')">8</button>
+    <button onclick="addValue('9')">9</button>
+    <button class="operator" onclick="addValue('*')">×</button>
+
+    <button onclick="addValue('4')">4</button>
+    <button onclick="addValue('5')">5</button>
+    <button onclick="addValue('6')">6</button>
+    <button class="operator" onclick="addValue('-')">−</button>
+
+    <button onclick="addValue('1')">1</button>
+    <button onclick="addValue('2')">2</button>
+    <button onclick="addValue('3')">3</button>
+    <button class="operator" onclick="addValue('+')">+</button>
+
+    <button class="zero" onclick="addValue('0')">0</button>
+    <button onclick="addValue('.')">.</button>
+    <button class="equals" onclick="calculate()">=</button>
+
+  </div>
+
+</div>
+
+
+<!-- HISTORY SCREEN -->
+
+<div id="historyScreen">
+
+  <div class="history-box">
+
+    <div class="history-top">
+      <h2>Calculation History</h2>
+
+      <button class="close" onclick="hideHistory()">×</button>
+    </div>
+
+    <button class="clear-history" onclick="clearHistory()">
+      🗑️ Clear History
+    </button>
+
+    <div id="historyList"></div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+var display = document.getElementById("display");
+
+function addValue(value) {
+
+  if (display.value === "Error") {
+    display.value = "0";
+  }
+
+  if (
+    display.value === "0" &&
+    value !== "." &&
+    value !== "+" &&
+    value !== "-" &&
+    value !== "*" &&
+    value !== "/"
+  ) {
+    display.value = value;
+  } else {
+    display.value += value;
+  }
+}
+
+
+function clearDisplay() {
+  display.value = "0";
+}
+
+
+function deleteLast() {
+
+  if (display.value === "Error") {
+    display.value = "0";
+    return;
+  }
+
+  if (display.value.length > 1) {
+    display.value = display.value.slice(0, -1);
+  } else {
+    display.value = "0";
+  }
+}
+
+
+function toggleSign() {
+
+  if (
+    display.value !== "0" &&
+    display.value !== "Error"
+  ) {
+
+    if (display.value.startsWith("-")) {
+      display.value = display.value.substring(1);
+    } else {
+      display.value = "-" + display.value;
+    }
+
+  }
+}
+
+
+function percent() {
+
+  var number = parseFloat(display.value);
+
+  if (!isNaN(number)) {
+    display.value = String(number / 100);
+  }
+
+}
+
+
+function calculate() {
+
+  try {
+
+    var expression = display.value;
+
+    if (
+      expression === "" ||
+      expression === "Error"
+    ) {
+      return;
+    }
+
+    var safeExpression = expression
+      .replace(/×/g, "*")
+      .replace(/÷/g, "/")
+      .replace(/−/g, "-");
+
+    if (!/^[0-9+\-*/().\s]+$/.test(safeExpression)) {
+      throw new Error();
+    }
+
+    var result = Function(
+      "return (" + safeExpression + ")"
+    )();
+
+    if (!isFinite(result)) {
+      throw new Error();
+    }
+
+    saveCalculation(expression, result);
+
+    display.value = String(result);
+
+  } catch (error) {
+
+    display.value = "Error";
+
+  }
+
+}
+
+
+/* SAVE CALCULATION */
+
+function saveCalculation(expression, result) {
+
+  var history = JSON.parse(
+    localStorage.getItem("KJ_HISTORY") || "[]"
+  );
+
+  history.unshift({
+    expression: expression,
+    result: result
+  });
+
+  if (history.length > 50) {
+    history = history.slice(0, 50);
+  }
+
+  localStorage.setItem(
+    "KJ_HISTORY",
+    JSON.stringify(history)
+  );
+
+}
+
+
+/* SHOW HISTORY */
+
+function showHistory() {
+
+  document.getElementById(
+    "historyScreen"
+  ).style.display = "block";
+
+  loadHistory();
+
+}
+
+
+/* HIDE HISTORY */
+
+function hideHistory() {
+
+  document.getElementById(
+    "historyScreen"
+  ).style.display = "none";
+
+}
+
+
+/* LOAD HISTORY */
+
+function loadHistory() {
+
+  var list =
+    document.getElementById("historyList");
+
+  var history = JSON.parse(
+    localStorage.getItem("KJ_HISTORY") || "[]"
+  );
+
+  list.innerHTML = "";
+
+  if (history.length === 0) {
+
+    list.innerHTML =
+      '<div class="empty">No calculations yet.</div>';
+
+    return;
+  }
+
+  history.forEach(function(item) {
+
+    var div =
+      document.createElement("div");
+
+    div.className = "history-item";
+
+    div.innerHTML =
+      '<div class="expression">' +
+      item.expression +
+      '</div>' +
+
+      '<div class="result">= ' +
+      item.result +
+      '</div>';
+
+    list.appendChild(div);
+
+  });
+
+}
+
+
+/* CLEAR HISTORY */
+
+function clearHistory() {
+
+  localStorage.removeItem("KJ_HISTORY");
+
+  loadHistory();
+
+}
+
+
+/* COPY RESULT */
+
+function copyResult() {
+
+  if (display.value === "Error") {
+    return;
+  }
+
+  if (
+    navigator.clipboard &&
+    navigator.clipboard.writeText
+  ) {
+
+    navigator.clipboard.writeText(
+      display.value
+    );
+
+  }
+
+}
+
+</script>
+
+</body>
+</html>
