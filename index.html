@@ -17,7 +17,7 @@ html,body{
   width:100%;
   height:100%;
   overflow:hidden;
-  font-family:Arial,Helvetica,sans-serif;
+  font-family:Arial,sans-serif;
   background:#060b1d;
   color:white;
 }
@@ -25,42 +25,35 @@ html,body{
 body{
   display:flex;
   justify-content:center;
-  align-items:center;
 }
 
 .app{
   width:100%;
-  height:100dvh;
   max-width:520px;
-  padding:18px 18px 14px;
-  display:flex;
-  flex-direction:column;
+  height:100dvh;
+  padding:18px 30px 14px;
   position:relative;
 }
 
-/* TOP BAR */
+/* TOP */
 .top{
-  height:82px;
-  min-height:82px;
+  height:86px;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding:0 2px;
 }
 
-.menu-btn{
+.menu{
   width:70px;
   height:70px;
   border-radius:25px;
-  border:1px solid #20345f;
   background:#101a38;
+  border:1px solid #233968;
   color:white;
-  font-size:38px;
+  font-size:40px;
   display:flex;
   align-items:center;
   justify-content:center;
-  cursor:pointer;
-  box-shadow:0 8px 25px rgba(0,0,0,.2);
 }
 
 .logo{
@@ -70,39 +63,34 @@ body{
 }
 
 .version{
-  color:#7481a8;
-  font-size:17px;
+  color:#7180a9;
+  font-size:18px;
 }
 
 /* DISPLAY */
 .display{
-  flex:1;
-  min-height:0;
-  margin-top:8px;
-  margin-bottom:22px;
+  height:332px;
+  margin-top:18px;
+  margin-bottom:28px;
   padding:25px 28px;
   border-radius:38px;
-  border:1px solid #20345f;
   background:#0d1530;
+  border:1px solid #243968;
   display:flex;
   flex-direction:column;
   justify-content:flex-end;
   align-items:flex-end;
   overflow:hidden;
-  box-shadow:
-    inset 0 0 30px rgba(0,0,0,.12),
-    0 10px 30px rgba(0,0,0,.12);
 }
 
 .expression{
   width:100%;
   text-align:right;
-  min-height:30px;
   color:#7180a9;
   font-size:22px;
-  white-space:nowrap;
+  min-height:30px;
   overflow:hidden;
-  text-overflow:ellipsis;
+  white-space:nowrap;
 }
 
 .result{
@@ -110,14 +98,12 @@ body{
   text-align:right;
   font-size:72px;
   font-weight:300;
-  white-space:nowrap;
   overflow:hidden;
-  text-overflow:ellipsis;
+  white-space:nowrap;
 }
 
 /* BUTTONS */
 .buttons{
-  flex:none;
   display:grid;
   grid-template-columns:repeat(4,1fr);
   gap:18px;
@@ -126,75 +112,61 @@ body{
 button{
   border:0;
   color:white;
-  font-family:inherit;
-  font-weight:700;
-  font-size:30px;
-  border-radius:30px;
   background:#101a38;
-  min-height:82px;
-  cursor:pointer;
-  transition:transform .08s,filter .08s;
-  user-select:none;
+  height:82px;
+  border-radius:30px;
+  font-size:30px;
+  font-weight:700;
 }
 
 button:active{
   transform:scale(.94);
-  filter:brightness(1.3);
+  filter:brightness(1.2);
 }
 
 .operator{
   background:#172650;
 }
 
-.equals{
-  background:#315df5;
-  box-shadow:0 8px 25px rgba(49,93,245,.25);
-}
-
 .clear{
   background:#652443;
+}
+
+.equals{
+  background:#315df5;
 }
 
 .zero{
   grid-column:span 2;
 }
 
-/* HISTORY PANEL */
-.history-overlay{
+/* HISTORY */
+.overlay{
   position:fixed;
   inset:0;
   background:rgba(0,0,0,.55);
   display:none;
-  z-index:20;
+  z-index:100;
 }
 
-.history-overlay.show{
+.overlay.show{
   display:block;
 }
 
 .history{
-  position:absolute;
-  top:0;
-  left:0;
   width:min(88%,390px);
   height:100%;
   background:#091127;
-  border-right:1px solid #24365f;
+  border-right:1px solid #243968;
   padding:22px;
-  transform:translateX(-100%);
-  transition:transform .25s ease;
   overflow-y:auto;
 }
 
-.history-overlay.show .history{
-  transform:translateX(0);
-}
-
-.history-head{
+.history-top{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  margin-bottom:25px;
+  margin-bottom:22px;
 }
 
 .history-title{
@@ -202,43 +174,35 @@ button:active{
   font-weight:800;
 }
 
-.close-history{
+.close{
   width:52px;
-  min-height:52px;
   height:52px;
   border-radius:18px;
-  font-size:25px;
   background:#172342;
+  font-size:28px;
 }
 
 .clear-history{
   width:100%;
-  min-height:54px;
-  height:54px;
+  height:55px;
   margin-bottom:18px;
   border-radius:18px;
-  font-size:18px;
   background:#652443;
-}
-
-.history-list{
-  display:flex;
-  flex-direction:column;
-  gap:12px;
+  font-size:18px;
 }
 
 .history-item{
   padding:17px;
+  margin-bottom:12px;
   border-radius:20px;
   background:#101a38;
-  border:1px solid #1c2d52;
-  cursor:pointer;
+  border:1px solid #1e3158;
 }
 
 .history-expression{
   color:#7180a9;
   font-size:16px;
-  margin-bottom:5px;
+  margin-bottom:7px;
 }
 
 .history-result{
@@ -246,46 +210,40 @@ button:active{
   font-weight:700;
 }
 
-/* SMALL SCREENS */
-@media(max-height:700px){
+/* SMALL PHONE */
+@media(max-height:800px){
   .app{
     padding-top:10px;
+    padding-left:30px;
+    padding-right:30px;
   }
 
   .top{
-    height:65px;
-    min-height:65px;
+    height:72px;
   }
 
-  .menu-btn{
-    width:56px;
-    height:56px;
-    border-radius:20px;
-    font-size:31px;
+  .menu{
+    width:62px;
+    height:62px;
+    font-size:34px;
   }
 
   .logo{
-    font-size:32px;
+    font-size:36px;
   }
 
   .display{
-    margin-top:5px;
-    margin-bottom:12px;
-    border-radius:30px;
-  }
-
-  .result{
-    font-size:58px;
+    height:300px;
+    margin-top:12px;
+    margin-bottom:18px;
   }
 
   .buttons{
-    gap:10px;
+    gap:12px;
   }
 
   button{
-    min-height:68px;
-    border-radius:23px;
-    font-size:26px;
+    height:76px;
   }
 }
 </style>
@@ -296,361 +254,331 @@ button:active{
 <div class="app">
 
   <div class="top">
-    <button class="menu-btn" id="menuBtn">☰</button>
+
+    <button class="menu" onclick="openHistory()">☰</button>
 
     <div class="logo">KJ</div>
 
     <div class="version">v1.5</div>
+
   </div>
 
+
   <div class="display">
+
     <div class="expression" id="expression"></div>
+
     <div class="result" id="result">0</div>
+
   </div>
+
 
   <div class="buttons">
 
     <button class="clear" onclick="clearAll()">AC</button>
     <button onclick="backspace()">⌫</button>
     <button class="operator" onclick="percent()">%</button>
-    <button class="operator" onclick="operator('/')">÷</button>
+    <button class="operator" onclick="setOperator('/')">÷</button>
 
     <button onclick="number('7')">7</button>
     <button onclick="number('8')">8</button>
     <button onclick="number('9')">9</button>
-    <button class="operator" onclick="operator('*')">×</button>
+    <button class="operator" onclick="setOperator('*')">×</button>
 
     <button onclick="number('4')">4</button>
     <button onclick="number('5')">5</button>
     <button onclick="number('6')">6</button>
-    <button class="operator" onclick="operator('-')">−</button>
+    <button class="operator" onclick="setOperator('-')">−</button>
 
     <button onclick="number('1')">1</button>
     <button onclick="number('2')">2</button>
     <button onclick="number('3')">3</button>
-    <button class="operator" onclick="operator('+')">+</button>
+    <button class="operator" onclick="setOperator('+')">+</button>
 
     <button class="zero" onclick="number('0')">0</button>
     <button onclick="decimal()">.</button>
     <button class="equals" onclick="calculate()">=</button>
 
   </div>
+
 </div>
 
+
 <!-- HISTORY -->
-<div class="history-overlay" id="historyOverlay">
+
+<div class="overlay" id="overlay">
 
   <div class="history">
 
-    <div class="history-head">
+    <div class="history-top">
+
       <div class="history-title">History</div>
-      <button class="close-history" id="closeHistory">×</button>
+
+      <button class="close" onclick="closeHistory()">×</button>
+
     </div>
 
     <button class="clear-history" onclick="clearHistory()">
       Clear History
     </button>
 
-    <div class="history-list" id="historyList"></div>
+    <div id="historyList"></div>
 
   </div>
+
 </div>
+
 
 <script>
 
 let current = "0";
-let previous = "";
-let currentOperator = null;
-let waitingForNewNumber = false;
+let firstNumber = null;
+let operator = null;
+let waiting = false;
 
-const resultEl = document.getElementById("result");
-const expressionEl = document.getElementById("expression");
-
-const historyOverlay = document.getElementById("historyOverlay");
-const historyList = document.getElementById("historyList");
-const menuBtn = document.getElementById("menuBtn");
-const closeHistoryBtn = document.getElementById("closeHistory");
-
-let history = JSON.parse(localStorage.getItem("kjHistory") || "[]");
+let history =
+JSON.parse(localStorage.getItem("kj_history") || "[]");
 
 
-function updateDisplay(){
+const result = document.getElementById("result");
+const expression = document.getElementById("expression");
 
-  resultEl.textContent = current;
 
-  if(previous && currentOperator){
-    expressionEl.textContent =
-      previous + " " + displayOperator(currentOperator);
-  }else{
-    expressionEl.textContent = "";
-  }
+function update(){
+
+  result.textContent = current;
 
 }
 
 
-function displayOperator(op){
+function number(n){
+
+  if(current === "Error"){
+    current = "0";
+  }
+
+  if(waiting){
+
+    current = n;
+    waiting = false;
+
+  }else{
+
+    if(current === "0"){
+      current = n;
+    }else{
+      current += n;
+    }
+
+  }
+
+  update();
+
+}
+
+
+function decimal(){
+
+  if(waiting){
+
+    current = "0.";
+    waiting = false;
+
+  }else if(!current.includes(".")){
+
+    current += ".";
+
+  }
+
+  update();
+
+}
+
+
+function setOperator(op){
+
+  if(current === "Error") return;
+
+  if(operator !== null && !waiting){
+    calculate(false);
+  }
+
+  firstNumber = parseFloat(current);
+
+  operator = op;
+
+  waiting = true;
+
+  expression.textContent =
+    firstNumber + " " + showOperator(op);
+
+}
+
+
+function calculate(save=true){
+
+  if(operator === null || firstNumber === null){
+    return;
+  }
+
+  let secondNumber = parseFloat(current);
+
+  let answer;
+
+  if(operator === "+"){
+    answer = firstNumber + secondNumber;
+  }
+
+  if(operator === "-"){
+    answer = firstNumber - secondNumber;
+  }
+
+  if(operator === "*"){
+    answer = firstNumber * secondNumber;
+  }
+
+  if(operator === "/"){
+
+    if(secondNumber === 0){
+
+      current = "Error";
+
+      firstNumber = null;
+      operator = null;
+      waiting = true;
+
+      update();
+
+      return;
+    }
+
+    answer = firstNumber / secondNumber;
+
+  }
+
+
+  answer = format(answer);
+
+
+  let fullExpression =
+    firstNumber + " " +
+    showOperator(operator) + " " +
+    secondNumber;
+
+
+  current = answer;
+
+  expression.textContent = fullExpression;
+
+
+  if(save){
+
+    addHistory(
+      fullExpression,
+      answer
+    );
+
+  }
+
+
+  firstNumber = null;
+  operator = null;
+  waiting = true;
+
+  update();
+
+}
+
+
+function format(num){
+
+  if(!Number.isFinite(num)){
+    return "Error";
+  }
+
+  return String(
+    parseFloat(num.toFixed(10))
+  );
+
+}
+
+
+function showOperator(op){
 
   if(op === "*") return "×";
   if(op === "/") return "÷";
   if(op === "-") return "−";
 
   return op;
-}
 
-
-function number(num){
-
-  if(waitingForNewNumber){
-
-    current = num;
-    waitingForNewNumber = false;
-
-  }else{
-
-    if(current === "0"){
-      current = num;
-    }else{
-      current += num;
-    }
-
-  }
-
-  updateDisplay();
-}
-
-
-function decimal(){
-
-  if(waitingForNewNumber){
-    current = "0.";
-    waitingForNewNumber = false;
-    updateDisplay();
-    return;
-  }
-
-  if(!current.includes(".")){
-    current += ".";
-  }
-
-  updateDisplay();
-}
-
-
-function operator(op){
-
-  if(currentOperator && !waitingForNewNumber){
-    calculate(false);
-  }
-
-  previous = current;
-  currentOperator = op;
-  waitingForNewNumber = true;
-
-  updateDisplay();
-}
-
-
-function calculate(saveHistory = true){
-
-  if(!currentOperator || previous === ""){
-    return;
-  }
-
-  const a = parseFloat(previous);
-  const b = parseFloat(current);
-
-  let answer;
-
-  if(currentOperator === "+"){
-    answer = a + b;
-  }
-
-  if(currentOperator === "-"){
-    answer = a - b;
-  }
-
-  if(currentOperator === "*"){
-    answer = a * b;
-  }
-
-  if(currentOperator === "/"){
-
-    if(b === 0){
-      current = "Error";
-      previous = "";
-      currentOperator = null;
-      waitingForNewNumber = true;
-      updateDisplay();
-      return;
-    }
-
-    answer = a / b;
-  }
-
-  const expression =
-    previous + " " +
-    displayOperator(currentOperator) +
-    " " +
-    current;
-
-  current = formatNumber(answer);
-
-  if(saveHistory){
-    addHistory(expression, current);
-  }
-
-  previous = "";
-  currentOperator = null;
-  waitingForNewNumber = true;
-
-  expressionEl.textContent = expression;
-
-  updateDisplay();
-
-  expressionEl.textContent = expression;
-}
-
-
-function formatNumber(num){
-
-  if(!Number.isFinite(num)){
-    return "Error";
-  }
-
-  if(Number.isInteger(num)){
-    return String(num);
-  }
-
-  return String(parseFloat(num.toFixed(10)));
 }
 
 
 function percent(){
 
-  const value = parseFloat(current);
+  let value = parseFloat(current);
 
-  if(isNaN(value)){
-    return;
-  }
+  if(isNaN(value)) return;
 
-  current = formatNumber(value / 100);
+  current = format(value / 100);
 
-  updateDisplay();
+  update();
+
 }
 
 
 function backspace(){
 
-  if(waitingForNewNumber){
-    return;
-  }
+  if(waiting) return;
 
   if(current.length <= 1){
+
     current = "0";
+
   }else{
-    current = current.slice(0,-1);
+
+    current =
+      current.slice(0,-1);
+
   }
 
-  updateDisplay();
+  update();
+
 }
 
 
 function clearAll(){
 
   current = "0";
-  previous = "";
-  currentOperator = null;
-  waitingForNewNumber = false;
+  firstNumber = null;
+  operator = null;
+  waiting = false;
 
-  updateDisplay();
+  expression.textContent = "";
+
+  update();
+
 }
 
 
-function addHistory(expression, answer){
+/* HISTORY */
+
+function addHistory(exp,res){
 
   history.unshift({
-    expression: expression,
-    result: answer
+    expression:exp,
+    result:res
   });
 
   if(history.length > 50){
-    history = history.slice(0,50);
+    history.pop();
   }
 
   localStorage.setItem(
-    "kjHistory",
+    "kj_history",
     JSON.stringify(history)
   );
 
-  renderHistory();
-}
-
-
-function renderHistory(){
-
-  historyList.innerHTML = "";
-
-  if(history.length === 0){
-
-    historyList.innerHTML =
-      '<div style="color:#7180a9;text-align:center;padding:30px 5px;">No calculations yet</div>';
-
-    return;
-  }
-
-  history.forEach((item,index)=>{
-
-    const div = document.createElement("div");
-
-    div.className = "history-item";
-
-    div.innerHTML = `
-      <div class="history-expression">
-        ${escapeHTML(item.expression)}
-      </div>
-
-      <div class="history-result">
-        = ${escapeHTML(item.result)}
-      </div>
-    `;
-
-    div.onclick = function(){
-
-      current = item.result;
-      previous = "";
-      currentOperator = null;
-      waitingForNewNumber = true;
-
-      updateDisplay();
-
-      closeHistory();
-
-    };
-
-    historyList.appendChild(div);
-
-  });
-}
-
-
-function clearHistory(){
-
-  history = [];
-
-  localStorage.removeItem("kjHistory");
-
-  renderHistory();
-}
-
-
-function escapeHTML(text){
-
-  return String(text)
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
 }
 
 
@@ -658,67 +586,107 @@ function openHistory(){
 
   renderHistory();
 
-  historyOverlay.classList.add("show");
+  document
+    .getElementById("overlay")
+    .classList.add("show");
 
 }
 
 
 function closeHistory(){
 
-  historyOverlay.classList.remove("show");
+  document
+    .getElementById("overlay")
+    .classList.remove("show");
 
 }
 
 
-menuBtn.addEventListener("click",openHistory);
+function renderHistory(){
 
-closeHistoryBtn.addEventListener("click",closeHistory);
+  const list =
+    document.getElementById("historyList");
+
+  list.innerHTML = "";
+
+  if(history.length === 0){
+
+    list.innerHTML =
+      '<div style="text-align:center;color:#7180a9;padding:30px 0;">No calculations yet</div>';
+
+    return;
+
+  }
 
 
-historyOverlay.addEventListener("click",function(e){
+  history.forEach((item,index)=>{
 
-  if(e.target === historyOverlay){
+    const div =
+      document.createElement("div");
+
+    div.className = "history-item";
+
+    div.innerHTML =
+
+      '<div class="history-expression">' +
+      item.expression +
+      '</div>' +
+
+      '<div class="history-result">= ' +
+      item.result +
+      '</div>';
+
+
+    div.onclick = function(){
+
+      current = item.result;
+
+      firstNumber = null;
+      operator = null;
+      waiting = true;
+
+      expression.textContent =
+        item.expression;
+
+      update();
+
+      closeHistory();
+
+    };
+
+
+    list.appendChild(div);
+
+  });
+
+}
+
+
+function clearHistory(){
+
+  history = [];
+
+  localStorage.removeItem("kj_history");
+
+  renderHistory();
+
+}
+
+
+document
+.getElementById("overlay")
+.addEventListener("click",function(e){
+
+  if(e.target === this){
     closeHistory();
   }
 
 });
 
 
-/* KEYBOARD SUPPORT */
-
-document.addEventListener("keydown",function(e){
-
-  if(e.key >= "0" && e.key <= "9"){
-    number(e.key);
-  }
-
-  else if(e.key === "."){
-    decimal();
-  }
-
-  else if(["+","-","*","/"].includes(e.key)){
-    operator(e.key);
-  }
-
-  else if(e.key === "Enter" || e.key === "="){
-    calculate();
-  }
-
-  else if(e.key === "Backspace"){
-    backspace();
-  }
-
-  else if(e.key === "Escape"){
-    clearAll();
-  }
-
-});
-
-
-renderHistory();
-updateDisplay();
+update();
 
 </script>
 
 </body>
-      </html>
+</html>
