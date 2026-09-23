@@ -3,256 +3,290 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#050816">
-<title>KJ Calculator v1.4</title>
+<meta name="theme-color" content="#060b1d">
+<title>KJ Calculator</title>
 
 <style>
 *{
   box-sizing:border-box;
-  margin:0;
-  padding:0;
   -webkit-tap-highlight-color:transparent;
 }
 
 html,body{
+  margin:0;
   width:100%;
   height:100%;
   overflow:hidden;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#060b1d;
+  color:white;
 }
 
 body{
-  background:#050816;
-  color:#fff;
-  font-family:Arial,sans-serif;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
 
 .app{
   width:100%;
-  height:100vh;
-  padding:16px;
+  height:100dvh;
+  max-width:520px;
+  padding:18px 18px 14px;
   display:flex;
   flex-direction:column;
+  position:relative;
 }
 
-.header{
-  height:58px;
+/* TOP BAR */
+.top{
+  height:82px;
+  min-height:82px;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  flex-shrink:0;
+  padding:0 2px;
 }
 
-.menu{
-  width:52px;
-  height:52px;
-  border-radius:17px;
-  background:#0d1732;
-  border:1px solid #293b69;
-  color:#fff;
-  font-size:28px;
+.menu-btn{
+  width:70px;
+  height:70px;
+  border-radius:25px;
+  border:1px solid #20345f;
+  background:#101a38;
+  color:white;
+  font-size:38px;
   display:flex;
   align-items:center;
   justify-content:center;
+  cursor:pointer;
+  box-shadow:0 8px 25px rgba(0,0,0,.2);
 }
 
 .logo{
-  font-size:22px;
+  font-size:42px;
   font-weight:800;
-  letter-spacing:4px;
-}
-
-.version{
-  color:#7180a5;
-  font-size:12px;
   letter-spacing:2px;
 }
 
+.version{
+  color:#7481a8;
+  font-size:17px;
+}
+
+/* DISPLAY */
 .display{
-  height:170px;
+  flex:1;
+  min-height:0;
   margin-top:8px;
-  padding:20px;
-  border-radius:30px;
-  background:linear-gradient(145deg,#111a38,#080e22);
-  border:1px solid #293b69;
-  box-shadow:
-    inset 0 1px 2px rgba(255,255,255,.04),
-    0 15px 35px rgba(0,0,0,.25);
+  margin-bottom:22px;
+  padding:25px 28px;
+  border-radius:38px;
+  border:1px solid #20345f;
+  background:#0d1530;
   display:flex;
   flex-direction:column;
   justify-content:flex-end;
   align-items:flex-end;
   overflow:hidden;
+  box-shadow:
+    inset 0 0 30px rgba(0,0,0,.12),
+    0 10px 30px rgba(0,0,0,.12);
 }
 
-.smallDisplay{
+.expression{
   width:100%;
-  min-height:22px;
-  color:#66769a;
   text-align:right;
-  font-size:15px;
+  min-height:30px;
+  color:#7180a9;
+  font-size:22px;
   white-space:nowrap;
   overflow:hidden;
+  text-overflow:ellipsis;
 }
 
-#display{
+.result{
   width:100%;
   text-align:right;
-  font-size:52px;
+  font-size:72px;
   font-weight:300;
   white-space:nowrap;
   overflow:hidden;
+  text-overflow:ellipsis;
 }
 
+/* BUTTONS */
 .buttons{
-  flex:1;
+  flex:none;
   display:grid;
   grid-template-columns:repeat(4,1fr);
-  grid-template-rows:repeat(5,1fr);
-  gap:10px;
-  margin-top:14px;
+  gap:18px;
 }
 
 button{
-  border:1px solid #1d2c52;
-  border-radius:21px;
-  color:#fff;
-  font-size:24px;
-  font-weight:bold;
-  transition:.1s;
+  border:0;
+  color:white;
+  font-family:inherit;
+  font-weight:700;
+  font-size:30px;
+  border-radius:30px;
+  background:#101a38;
+  min-height:82px;
+  cursor:pointer;
+  transition:transform .08s,filter .08s;
+  user-select:none;
 }
 
 button:active{
-  transform:scale(.92);
-  filter:brightness(1.25);
-}
-
-.number{
-  background:linear-gradient(145deg,#111d3c,#0d1730);
+  transform:scale(.94);
+  filter:brightness(1.3);
 }
 
 .operator{
-  background:linear-gradient(145deg,#1c315f,#14274d);
-  border-color:#304778;
-}
-
-.clear{
-  background:linear-gradient(145deg,#702c50,#501f3b);
-  border-color:#8b3760;
+  background:#172650;
 }
 
 .equals{
-  background:linear-gradient(145deg,#4772ff,#2855ef);
-  border-color:#6283ff;
-  box-shadow:0 8px 25px rgba(45,88,255,.3);
+  background:#315df5;
+  box-shadow:0 8px 25px rgba(49,93,245,.25);
+}
+
+.clear{
+  background:#652443;
 }
 
 .zero{
   grid-column:span 2;
 }
 
-/* HISTORY */
-.overlay{
+/* HISTORY PANEL */
+.history-overlay{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.7);
+  background:rgba(0,0,0,.55);
   display:none;
-  z-index:10;
+  z-index:20;
 }
 
-.overlay.show{
+.history-overlay.show{
   display:block;
 }
 
 .history{
-  position:fixed;
+  position:absolute;
   top:0;
-  left:-100%;
-  width:88%;
-  max-width:390px;
-  height:100vh;
-  padding:24px 20px;
-  background:#080e21;
-  border-right:1px solid #293b69;
-  z-index:20;
-  transition:left .25s ease;
-  box-shadow:15px 0 45px rgba(0,0,0,.4);
-}
-
-.history.open{
   left:0;
-}
-
-.historyHead{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:20px;
-}
-
-.historyTitle{
-  font-size:27px;
-  font-weight:800;
-}
-
-.close{
-  width:44px;
-  height:44px;
-  border-radius:14px;
-  background:#111d3b;
-  border:1px solid #293b69;
-  color:white;
-  font-size:25px;
-}
-
-.clearHistory{
-  width:100%;
-  height:48px;
-  border-radius:15px;
-  background:#54213f;
-  border:1px solid #783057;
-  color:#fff;
-  font-size:15px;
-  margin-bottom:15px;
-}
-
-.historyList{
-  height:calc(100% - 130px);
+  width:min(88%,390px);
+  height:100%;
+  background:#091127;
+  border-right:1px solid #24365f;
+  padding:22px;
+  transform:translateX(-100%);
+  transition:transform .25s ease;
   overflow-y:auto;
 }
 
-.historyItem{
-  padding:17px 5px;
-  border-bottom:1px solid #1b2949;
+.history-overlay.show .history{
+  transform:translateX(0);
+}
+
+.history-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:25px;
+}
+
+.history-title{
+  font-size:28px;
+  font-weight:800;
+}
+
+.close-history{
+  width:52px;
+  min-height:52px;
+  height:52px;
+  border-radius:18px;
+  font-size:25px;
+  background:#172342;
+}
+
+.clear-history{
+  width:100%;
+  min-height:54px;
+  height:54px;
+  margin-bottom:18px;
+  border-radius:18px;
   font-size:18px;
-  color:#e4e9f5;
+  background:#652443;
 }
 
-.empty{
-  text-align:center;
-  color:#687799;
-  margin-top:45px;
-  font-size:15px;
+.history-list{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
 }
 
-/* TOAST */
-.toast{
-  position:fixed;
-  left:50%;
-  bottom:25px;
-  transform:translateX(-50%) translateY(80px);
-  background:#17254a;
-  border:1px solid #304778;
-  padding:12px 20px;
-  border-radius:14px;
-  font-size:14px;
-  opacity:0;
-  transition:.25s;
-  z-index:50;
+.history-item{
+  padding:17px;
+  border-radius:20px;
+  background:#101a38;
+  border:1px solid #1c2d52;
+  cursor:pointer;
 }
 
-.toast.show{
-  transform:translateX(-50%) translateY(0);
-  opacity:1;
+.history-expression{
+  color:#7180a9;
+  font-size:16px;
+  margin-bottom:5px;
+}
+
+.history-result{
+  font-size:25px;
+  font-weight:700;
+}
+
+/* SMALL SCREENS */
+@media(max-height:700px){
+  .app{
+    padding-top:10px;
+  }
+
+  .top{
+    height:65px;
+    min-height:65px;
+  }
+
+  .menu-btn{
+    width:56px;
+    height:56px;
+    border-radius:20px;
+    font-size:31px;
+  }
+
+  .logo{
+    font-size:32px;
+  }
+
+  .display{
+    margin-top:5px;
+    margin-bottom:12px;
+    border-radius:30px;
+  }
+
+  .result{
+    font-size:58px;
+  }
+
+  .buttons{
+    gap:10px;
+  }
+
+  button{
+    min-height:68px;
+    border-radius:23px;
+    font-size:26px;
+  }
 }
 </style>
 </head>
@@ -261,293 +295,343 @@ button:active{
 
 <div class="app">
 
-  <div class="header">
-
-    <button class="menu" onclick="openHistory()">☰</button>
+  <div class="top">
+    <button class="menu-btn" id="menuBtn">☰</button>
 
     <div class="logo">KJ</div>
 
-    <div class="version">v1.4</div>
-
+    <div class="version">v1.5</div>
   </div>
 
   <div class="display">
-
-    <div class="smallDisplay" id="smallDisplay"></div>
-
-    <div id="display">0</div>
-
+    <div class="expression" id="expression"></div>
+    <div class="result" id="result">0</div>
   </div>
 
   <div class="buttons">
 
-    <button class="clear" onclick="clearDisplay()">AC</button>
-    <button class="number" onclick="deleteNumber()">⌫</button>
+    <button class="clear" onclick="clearAll()">AC</button>
+    <button onclick="backspace()">⌫</button>
     <button class="operator" onclick="percent()">%</button>
-    <button class="operator" onclick="add('/')">÷</button>
+    <button class="operator" onclick="operator('/')">÷</button>
 
-    <button class="number" onclick="add('7')">7</button>
-    <button class="number" onclick="add('8')">8</button>
-    <button class="number" onclick="add('9')">9</button>
-    <button class="operator" onclick="add('*')">×</button>
+    <button onclick="number('7')">7</button>
+    <button onclick="number('8')">8</button>
+    <button onclick="number('9')">9</button>
+    <button class="operator" onclick="operator('*')">×</button>
 
-    <button class="number" onclick="add('4')">4</button>
-    <button class="number" onclick="add('5')">5</button>
-    <button class="number" onclick="add('6')">6</button>
-    <button class="operator" onclick="add('-')">−</button>
+    <button onclick="number('4')">4</button>
+    <button onclick="number('5')">5</button>
+    <button onclick="number('6')">6</button>
+    <button class="operator" onclick="operator('-')">−</button>
 
-    <button class="number" onclick="add('1')">1</button>
-    <button class="number" onclick="add('2')">2</button>
-    <button class="number" onclick="add('3')">3</button>
-    <button class="operator" onclick="add('+')">+</button>
+    <button onclick="number('1')">1</button>
+    <button onclick="number('2')">2</button>
+    <button onclick="number('3')">3</button>
+    <button class="operator" onclick="operator('+')">+</button>
 
-    <button class="number zero" onclick="add('0')">0</button>
-    <button class="number" onclick="add('.')">.</button>
+    <button class="zero" onclick="number('0')">0</button>
+    <button onclick="decimal()">.</button>
     <button class="equals" onclick="calculate()">=</button>
 
   </div>
-
 </div>
 
-<div class="overlay" id="overlay" onclick="closeHistory()"></div>
+<!-- HISTORY -->
+<div class="history-overlay" id="historyOverlay">
 
-<div class="history" id="history">
+  <div class="history">
 
-  <div class="historyHead">
+    <div class="history-head">
+      <div class="history-title">History</div>
+      <button class="close-history" id="closeHistory">×</button>
+    </div>
 
-    <div class="historyTitle">History</div>
+    <button class="clear-history" onclick="clearHistory()">
+      Clear History
+    </button>
 
-    <button class="close" onclick="closeHistory()">×</button>
+    <div class="history-list" id="historyList"></div>
 
   </div>
-
-  <button class="clearHistory" onclick="clearHistory()">
-    Clear History
-  </button>
-
-  <div class="historyList" id="historyList"></div>
-
 </div>
-
-<div class="toast" id="toast">Copied</div>
 
 <script>
 
-let expression = "";
+let current = "0";
+let previous = "";
+let currentOperator = null;
+let waitingForNewNumber = false;
 
-let display = document.getElementById("display");
-let smallDisplay = document.getElementById("smallDisplay");
+const resultEl = document.getElementById("result");
+const expressionEl = document.getElementById("expression");
 
-let history =
-JSON.parse(localStorage.getItem("kjHistory") || "[]");
+const historyOverlay = document.getElementById("historyOverlay");
+const historyList = document.getElementById("historyList");
+const menuBtn = document.getElementById("menuBtn");
+const closeHistoryBtn = document.getElementById("closeHistory");
 
-function render(){
+let history = JSON.parse(localStorage.getItem("kjHistory") || "[]");
 
-  display.innerText =
-    expression === ""
-    ? "0"
-    : expression
-      .replace(/\*/g,"×")
-      .replace(/\//g,"÷")
-      .replace(/-/g,"−");
 
-}
+function updateDisplay(){
 
-function add(value){
+  resultEl.textContent = current;
 
-  if(
-    ["+","-","*","/"].includes(value) &&
-    expression !== "" &&
-    ["+","-","*","/"].includes(expression.slice(-1))
-  ){
-    expression =
-      expression.slice(0,-1) + value;
+  if(previous && currentOperator){
+    expressionEl.textContent =
+      previous + " " + displayOperator(currentOperator);
   }else{
-
-    if(value === "." ){
-
-      let parts =
-        expression.split(/[+\-*/]/);
-
-      if(parts[parts.length-1].includes(".")){
-        return;
-      }
-
-    }
-
-    expression += value;
+    expressionEl.textContent = "";
   }
 
-  render();
 }
+
+
+function displayOperator(op){
+
+  if(op === "*") return "×";
+  if(op === "/") return "÷";
+  if(op === "-") return "−";
+
+  return op;
+}
+
+
+function number(num){
+
+  if(waitingForNewNumber){
+
+    current = num;
+    waitingForNewNumber = false;
+
+  }else{
+
+    if(current === "0"){
+      current = num;
+    }else{
+      current += num;
+    }
+
+  }
+
+  updateDisplay();
+}
+
+
+function decimal(){
+
+  if(waitingForNewNumber){
+    current = "0.";
+    waitingForNewNumber = false;
+    updateDisplay();
+    return;
+  }
+
+  if(!current.includes(".")){
+    current += ".";
+  }
+
+  updateDisplay();
+}
+
+
+function operator(op){
+
+  if(currentOperator && !waitingForNewNumber){
+    calculate(false);
+  }
+
+  previous = current;
+  currentOperator = op;
+  waitingForNewNumber = true;
+
+  updateDisplay();
+}
+
+
+function calculate(saveHistory = true){
+
+  if(!currentOperator || previous === ""){
+    return;
+  }
+
+  const a = parseFloat(previous);
+  const b = parseFloat(current);
+
+  let answer;
+
+  if(currentOperator === "+"){
+    answer = a + b;
+  }
+
+  if(currentOperator === "-"){
+    answer = a - b;
+  }
+
+  if(currentOperator === "*"){
+    answer = a * b;
+  }
+
+  if(currentOperator === "/"){
+
+    if(b === 0){
+      current = "Error";
+      previous = "";
+      currentOperator = null;
+      waitingForNewNumber = true;
+      updateDisplay();
+      return;
+    }
+
+    answer = a / b;
+  }
+
+  const expression =
+    previous + " " +
+    displayOperator(currentOperator) +
+    " " +
+    current;
+
+  current = formatNumber(answer);
+
+  if(saveHistory){
+    addHistory(expression, current);
+  }
+
+  previous = "";
+  currentOperator = null;
+  waitingForNewNumber = true;
+
+  expressionEl.textContent = expression;
+
+  updateDisplay();
+
+  expressionEl.textContent = expression;
+}
+
+
+function formatNumber(num){
+
+  if(!Number.isFinite(num)){
+    return "Error";
+  }
+
+  if(Number.isInteger(num)){
+    return String(num);
+  }
+
+  return String(parseFloat(num.toFixed(10)));
+}
+
 
 function percent(){
 
-  if(expression === "") return;
+  const value = parseFloat(current);
 
-  let match =
-    expression.match(/(\d+\.?\d*)$/);
-
-  if(!match) return;
-
-  let number =
-    parseFloat(match[1]);
-
-  let result =
-    number / 100;
-
-  expression =
-    expression.slice(0,-match[1].length) +
-    result;
-
-  render();
-}
-
-function clearDisplay(){
-
-  expression = "";
-
-  display.innerText = "0";
-  smallDisplay.innerText = "";
-
-}
-
-function deleteNumber(){
-
-  expression =
-    expression.slice(0,-1);
-
-  render();
-
-}
-
-function calculate(){
-
-  if(expression === "") return;
-
-  try{
-
-    let original = expression;
-
-    let answer =
-      Function(
-        '"use strict";return (' +
-        expression +
-        ')'
-      )();
-
-    if(!Number.isFinite(answer)){
-      throw new Error();
-    }
-
-    answer =
-      Number.isInteger(answer)
-      ? answer
-      : parseFloat(answer.toFixed(10));
-
-    smallDisplay.innerText =
-      original
-      .replace(/\*/g,"×")
-      .replace(/\//g,"÷")
-      .replace(/-/g,"−");
-
-    display.innerText = answer;
-
-    expression = String(answer);
-
-    history.unshift(
-      original + " = " + answer
-    );
-
-    if(history.length > 50){
-      history.pop();
-    }
-
-    localStorage.setItem(
-      "kjHistory",
-      JSON.stringify(history)
-    );
-
-    showHistory();
-
-  }catch(e){
-
-    display.innerText = "Error";
-    expression = "";
-
+  if(isNaN(value)){
+    return;
   }
 
+  current = formatNumber(value / 100);
+
+  updateDisplay();
 }
 
-function openHistory(){
 
-  document
-  .getElementById("history")
-  .classList.add("open");
+function backspace(){
 
-  document
-  .getElementById("overlay")
-  .classList.add("show");
+  if(waitingForNewNumber){
+    return;
+  }
 
-  showHistory();
+  if(current.length <= 1){
+    current = "0";
+  }else{
+    current = current.slice(0,-1);
+  }
 
+  updateDisplay();
 }
 
-function closeHistory(){
 
-  document
-  .getElementById("history")
-  .classList.remove("open");
+function clearAll(){
 
-  document
-  .getElementById("overlay")
-  .classList.remove("show");
+  current = "0";
+  previous = "";
+  currentOperator = null;
+  waitingForNewNumber = false;
 
+  updateDisplay();
 }
 
-function showHistory(){
 
-  let list =
-    document.getElementById("historyList");
+function addHistory(expression, answer){
+
+  history.unshift({
+    expression: expression,
+    result: answer
+  });
+
+  if(history.length > 50){
+    history = history.slice(0,50);
+  }
+
+  localStorage.setItem(
+    "kjHistory",
+    JSON.stringify(history)
+  );
+
+  renderHistory();
+}
+
+
+function renderHistory(){
+
+  historyList.innerHTML = "";
 
   if(history.length === 0){
 
-    list.innerHTML =
-      '<div class="empty">No calculations yet</div>';
+    historyList.innerHTML =
+      '<div style="color:#7180a9;text-align:center;padding:30px 5px;">No calculations yet</div>';
 
     return;
-
   }
 
-  list.innerHTML =
-    history.map(function(item){
+  history.forEach((item,index)=>{
 
-      return `
-        <div class="historyItem"
-             onclick="useHistory('${item.replace(/'/g,"\\'")}')">
-          ${item
-            .replace(/\*/g,"×")
-            .replace(/\//g,"÷")
-            .replace(/-/g,"−")}
-        </div>
-      `;
+    const div = document.createElement("div");
 
-    }).join("");
+    div.className = "history-item";
 
+    div.innerHTML = `
+      <div class="history-expression">
+        ${escapeHTML(item.expression)}
+      </div>
+
+      <div class="history-result">
+        = ${escapeHTML(item.result)}
+      </div>
+    `;
+
+    div.onclick = function(){
+
+      current = item.result;
+      previous = "";
+      currentOperator = null;
+      waitingForNewNumber = true;
+
+      updateDisplay();
+
+      closeHistory();
+
+    };
+
+    historyList.appendChild(div);
+
+  });
 }
 
-function useHistory(item){
-
-  let result =
-    item.split(" = ")[1];
-
-  expression = result;
-
-  render();
-
-  closeHistory();
-
-}
 
 function clearHistory(){
 
@@ -555,13 +639,86 @@ function clearHistory(){
 
   localStorage.removeItem("kjHistory");
 
-  showHistory();
+  renderHistory();
+}
+
+
+function escapeHTML(text){
+
+  return String(text)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+
+function openHistory(){
+
+  renderHistory();
+
+  historyOverlay.classList.add("show");
 
 }
 
-showHistory();
+
+function closeHistory(){
+
+  historyOverlay.classList.remove("show");
+
+}
+
+
+menuBtn.addEventListener("click",openHistory);
+
+closeHistoryBtn.addEventListener("click",closeHistory);
+
+
+historyOverlay.addEventListener("click",function(e){
+
+  if(e.target === historyOverlay){
+    closeHistory();
+  }
+
+});
+
+
+/* KEYBOARD SUPPORT */
+
+document.addEventListener("keydown",function(e){
+
+  if(e.key >= "0" && e.key <= "9"){
+    number(e.key);
+  }
+
+  else if(e.key === "."){
+    decimal();
+  }
+
+  else if(["+","-","*","/"].includes(e.key)){
+    operator(e.key);
+  }
+
+  else if(e.key === "Enter" || e.key === "="){
+    calculate();
+  }
+
+  else if(e.key === "Backspace"){
+    backspace();
+  }
+
+  else if(e.key === "Escape"){
+    clearAll();
+  }
+
+});
+
+
+renderHistory();
+updateDisplay();
 
 </script>
 
 </body>
-</html>
+      </html>
