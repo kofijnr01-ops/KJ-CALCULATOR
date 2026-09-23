@@ -4,161 +4,152 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#080d20">
-
-<title>KJ Calculator v1.1</title>
+<title>Kofi Jnr Calculator v1.1</title>
 
 <style>
 * {
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
-    margin: 0;
-    min-height: 100vh;
-    background: #050a18;
-    color: white;
-    font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
+  margin: 0;
+  min-height: 100vh;
+  background: #050a18;
+  color: white;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
 }
 
 .calculator {
-    width: 100%;
-    max-width: 390px;
-    background: #0b1228;
-    border: 2px solid #1d2948;
-    border-radius: 30px;
-    padding: 20px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.35);
+  width: 100%;
+  max-width: 390px;
+  background: #0b1228;
+  border: 2px solid #1d2948;
+  border-radius: 30px;
+  padding: 20px;
+  box-shadow: 0 15px 40px rgba(0,0,0,.35);
 }
 
 .header {
-    text-align: center;
-    margin-bottom: 22px;
+  text-align: center;
+  margin-bottom: 22px;
 }
 
 .header h1 {
-    margin: 0 0 10px;
-    font-size: 42px;
+  margin: 0 0 10px;
+  font-size: 42px;
 }
 
 .header p {
-    margin: 0;
-    font-size: 18px;
+  margin: 0;
+  font-size: 18px;
 }
 
 .version {
-    margin-top: 8px !important;
-    font-size: 13px !important;
-    opacity: 0.55;
+  margin-top: 8px !important;
+  font-size: 13px !important;
+  opacity: .55;
 }
 
 .display {
-    background: #050a18;
-    border: 2px solid #1d2948;
-    border-radius: 35px;
-    padding: 16px;
-    margin-bottom: 20px;
+  background: #050a18;
+  border: 2px solid #1d2948;
+  border-radius: 35px;
+  padding: 16px;
+  margin-bottom: 20px;
 }
 
 #history {
-    min-height: 20px;
-    max-height: 45px;
-    overflow: hidden;
-    text-align: right;
-    font-size: 13px;
-    opacity: 0.5;
-    margin-bottom: 5px;
+  height: 22px;
+  text-align: right;
+  font-size: 13px;
+  opacity: .5;
+  overflow: hidden;
 }
 
 #display {
-    width: 100%;
-    border: none;
-    outline: none;
-    background: transparent;
-    color: white;
-    text-align: right;
-    font-size: 44px;
-    font-weight: bold;
+  width: 100%;
+  height: 65px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: white;
+  text-align: right;
+  font-size: 44px;
+  font-weight: bold;
 }
 
-.extra-buttons {
-    display: flex;
-    justify-content: flex-start;
-    gap: 8px;
-    margin-top: 10px;
+.extra {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
 }
 
-.sign-button {
-    height: 38px;
-    padding: 0 14px;
-    border: none;
-    border-radius: 15px;
-    background: #263656;
-    color: white;
-    font-size: 15px;
-    font-weight: bold;
+.small-btn {
+  height: 40px;
+  padding: 0 15px;
+  border: 0;
+  border-radius: 15px;
+  background: #263656;
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
 }
 
 .buttons {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
 }
 
 button {
-    height: 78px;
-    border: none;
-    border-radius: 28px;
-    background: #141f3d;
-    color: white;
-    font-size: 27px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: transform 0.08s, opacity 0.08s;
+  height: 78px;
+  border: 0;
+  border-radius: 28px;
+  background: #141f3d;
+  color: white;
+  font-size: 27px;
+  font-weight: bold;
 }
 
 button:active {
-    transform: scale(0.94);
-    opacity: 0.75;
+  transform: scale(.94);
+  opacity: .75;
 }
 
-button.action {
-    background: #202f52;
+.action,
+.operator {
+  background: #202f52;
 }
 
-button.operator {
-    background: #202f52;
+.equals {
+  background: #3763b5;
 }
 
-button.equals {
-    background: #3763b5;
-}
-
-button.zero {
-    grid-column: span 2;
+.zero {
+  grid-column: span 2;
 }
 
 @media (max-width: 380px) {
-    .calculator {
-        padding: 16px;
-    }
+  .calculator {
+    padding: 16px;
+  }
 
-    button {
-        height: 68px;
-        font-size: 24px;
-    }
+  button {
+    height: 68px;
+  }
 
-    #display {
-        font-size: 38px;
-    }
+  #display {
+    font-size: 38px;
+  }
 
-    .header h1 {
-        font-size: 36px;
-    }
+  .header h1 {
+    font-size: 36px;
+  }
 }
 </style>
 </head>
@@ -167,180 +158,197 @@ button.zero {
 
 <div class="calculator">
 
-    <div class="header">
-        <h1>KJ Calculator</h1>
-        <p>Simple • Fast • Accurate</p>
-        <p class="version">Version 1.1</p>
+  <div class="header">
+    <h1>KJ Calculator</h1>
+    <p>Simple • Fast • Accurate</p>
+    <p class="version">Version 1.1</p>
+  </div>
+
+  <div class="display">
+    <div id="history"></div>
+
+    <input
+      id="display"
+      type="text"
+      value="0"
+      readonly
+    >
+
+    <div class="extra">
+      <button class="small-btn" onclick="toggleSign()">+/−</button>
+      <button class="small-btn" onclick="copyResult()">COPY</button>
     </div>
+  </div>
 
-    <div class="display">
+  <div class="buttons">
 
-        <div id="history"></div>
+    <button class="action" onclick="clearDisplay()">AC</button>
+    <button class="action" onclick="deleteLast()">DEL</button>
+    <button class="action" onclick="percent()">%</button>
+    <button class="operator" onclick="addValue('/')">÷</button>
 
-        <input
-            type="text"
-            id="display"
-            value="0"
-            readonly
-        >
+    <button onclick="addValue('7')">7</button>
+    <button onclick="addValue('8')">8</button>
+    <button onclick="addValue('9')">9</button>
+    <button class="operator" onclick="addValue('*')">×</button>
 
-        <div class="extra-buttons">
-            <button class="sign-button" onclick="toggleSign()">+/−</button>
-            <button class="sign-button" onclick="copyResult()">COPY</button>
-        </div>
+    <button onclick="addValue('4')">4</button>
+    <button onclick="addValue('5')">5</button>
+    <button onclick="addValue('6')">6</button>
+    <button class="operator" onclick="addValue('-')">−</button>
 
-    </div>
+    <button onclick="addValue('1')">1</button>
+    <button onclick="addValue('2')">2</button>
+    <button onclick="addValue('3')">3</button>
+    <button class="operator" onclick="addValue('+')">+</button>
 
-    <div class="buttons">
+    <button class="zero" onclick="addValue('0')">0</button>
+    <button onclick="addValue('.')">.</button>
+    <button class="equals" onclick="calculate()">=</button>
 
-        <button class="action" onclick="clearDisplay()">AC</button>
-        <button class="action" onclick="deleteLast()">DEL</button>
-        <button class="action" onclick="percent()">%</button>
-        <button class="operator" onclick="appendValue('/')">÷</button>
-
-        <button onclick="appendValue('7')">7</button>
-        <button onclick="appendValue('8')">8</button>
-        <button onclick="appendValue('9')">9</button>
-        <button class="operator" onclick="appendValue('*')">×</button>
-
-        <button onclick="appendValue('4')">4</button>
-        <button onclick="appendValue('5')">5</button>
-        <button onclick="appendValue('6')">6</button>
-        <button class="operator" onclick="appendValue('-')">−</button>
-
-        <button onclick="appendValue('1')">1</button>
-        <button onclick="appendValue('2')">2</button>
-        <button onclick="appendValue('3')">3</button>
-        <button class="operator" onclick="appendValue('+')">+</button>
-
-        <button class="zero" onclick="appendValue('0')">0</button>
-        <button onclick="appendValue('.')">.</button>
-        <button class="equals" onclick="calculate()">=</button>
-
-    </div>
+  </div>
 
 </div>
 
 <script>
+var display = document.getElementById("display");
+var history = document.getElementById("history");
 
-const display = document.getElementById("display");
-const history = document.getElementById("history");
+function addValue(value) {
 
-function appendValue(value) {
+  if (display.value === "Error") {
+    display.value = "0";
+  }
 
-    if (display.value === "Error") {
-        display.value = "0";
-    }
-
-    if (
-        display.value === "0" &&
-        !["+", "-", "*", "/", "."].includes(value)
-    ) {
-        display.value = value;
-    } else {
-        display.value += value;
-    }
+  if (
+    display.value === "0" &&
+    value !== "." &&
+    value !== "+" &&
+    value !== "-" &&
+    value !== "*" &&
+    value !== "/"
+  ) {
+    display.value = value;
+  } else {
+    display.value += value;
+  }
 }
 
 function clearDisplay() {
-    display.value = "0";
-    history.innerHTML = "";
+  display.value = "0";
+  history.textContent = "";
 }
 
 function deleteLast() {
 
-    if (
-        display.value.length > 1 &&
-        display.value !== "Error"
-    ) {
-        display.value = display.value.slice(0, -1);
-    } else {
-        display.value = "0";
-    }
+  if (display.value === "Error") {
+    display.value = "0";
+    return;
+  }
+
+  if (display.value.length > 1) {
+    display.value = display.value.slice(0, -1);
+  } else {
+    display.value = "0";
+  }
 }
 
 function toggleSign() {
 
-    if (
-        display.value !== "0" &&
-        display.value !== "Error"
-    ) {
+  if (
+    display.value !== "0" &&
+    display.value !== "Error"
+  ) {
 
-        if (display.value.startsWith("-")) {
-            display.value = display.value.substring(1);
-        } else {
-            display.value = "-" + display.value;
-        }
-
+    if (display.value.charAt(0) === "-") {
+      display.value = display.value.substring(1);
+    } else {
+      display.value = "-" + display.value;
     }
+  }
 }
 
 function percent() {
 
-    if (
-        display.value !== "Error" &&
-        !isNaN(parseFloat(display.value))
-    ) {
-        display.value = String(
-            parseFloat(display.value) / 100
-        );
-    }
-}
+  var number = parseFloat(display.value);
 
-function copyResult() {
-
-    if (display.value === "Error") {
-        return;
-    }
-
-    navigator.clipboard.writeText(display.value)
-        .then(() => {
-            alert("Result copied!");
-        })
-        .catch(() => {
-            alert("Copy failed");
-        });
+  if (!isNaN(number)) {
+    display.value = String(number / 100);
+  }
 }
 
 function calculate() {
 
-    try {
+  try {
 
-        let expression = display.value;
+    var expression = display.value;
 
-        if (!expression || expression === "Error") {
-            return;
-        }
-
-        expression = expression
-            .replace(/×/g, "*")
-            .replace(/÷/g, "/")
-            .replace(/−/g, "-");
-
-        if (!/^[0-9+\-*/().\s]+$/.test(expression)) {
-            throw new Error("Invalid expression");
-        }
-
-        const result = Function(
-            "return " + expression
-        )();
-
-        if (!Number.isFinite(result)) {
-            throw new Error("Invalid result");
-        }
-
-        history.textContent =
-            expression + " = " + result;
-
-        display.value = String(result);
-
-    } catch (error) {
-
-        display.value = "Error";
-
+    if (
+      expression === "" ||
+      expression === "Error"
+    ) {
+      return;
     }
+
+    expression = expression.replace(/×/g, "*");
+    expression = expression.replace(/÷/g, "/");
+    expression = expression.replace(/−/g, "-");
+
+    if (!/^[0-9+\-*/().\s]+$/.test(expression)) {
+      throw new Error();
+    }
+
+    var result = Function(
+      "return (" + expression + ")"
+    )();
+
+    if (!isFinite(result)) {
+      throw new Error();
+    }
+
+    history.textContent =
+      expression + " = " + result;
+
+    display.value = String(result);
+
+  } catch (error) {
+
+    display.value = "Error";
+
+  }
 }
 
+function copyResult() {
+
+  if (display.value === "Error") {
+    return;
+  }
+
+  if (
+    navigator.clipboard &&
+    navigator.clipboard.writeText
+  ) {
+
+    navigator.clipboard.writeText(display.value)
+      .then(function() {
+        alert("Result copied!");
+      })
+      .catch(function() {
+        alert("Copy failed");
+      });
+
+  } else {
+
+    var temp = document.createElement("textarea");
+    temp.value = display.value;
+    document.body.appendChild(temp);
+    temp.select();
+    document.execCommand("copy");
+    document.body.removeChild(temp);
+
+    alert("Result copied!");
+  }
+}
 </script>
 
 </body>
