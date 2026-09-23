@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#050816">
-<title>KJ Calculator v1.3</title>
+<title>KJ Calculator v1.4</title>
 
 <style>
 *{
@@ -34,7 +34,6 @@ body{
   flex-direction:column;
 }
 
-/* HEADER */
 .header{
   height:58px;
   display:flex;
@@ -43,40 +42,41 @@ body{
   flex-shrink:0;
 }
 
-.historyBtn{
-  width:48px;
-  height:48px;
-  border:1px solid #253762;
-  border-radius:16px;
-  background:#0c1530;
+.menu{
+  width:52px;
+  height:52px;
+  border-radius:17px;
+  background:#0d1732;
+  border:1px solid #293b69;
   color:#fff;
-  font-size:24px;
+  font-size:28px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
 .logo{
-  font-size:21px;
+  font-size:22px;
   font-weight:800;
-  letter-spacing:3px;
+  letter-spacing:4px;
 }
 
 .version{
-  font-size:11px;
   color:#7180a5;
-  letter-spacing:1px;
+  font-size:12px;
+  letter-spacing:2px;
 }
 
-/* DISPLAY */
 .display{
-  width:100%;
-  height:175px;
+  height:170px;
   margin-top:8px;
-  padding:22px;
+  padding:20px;
   border-radius:30px;
-  background:linear-gradient(145deg,#101a38,#080e22);
-  border:1px solid #263866;
+  background:linear-gradient(145deg,#111a38,#080e22);
+  border:1px solid #293b69;
   box-shadow:
-    0 15px 40px rgba(0,0,0,.28),
-    inset 0 1px 1px rgba(255,255,255,.05);
+    inset 0 1px 2px rgba(255,255,255,.04),
+    0 15px 35px rgba(0,0,0,.25);
   display:flex;
   flex-direction:column;
   justify-content:flex-end;
@@ -86,24 +86,23 @@ body{
 
 .smallDisplay{
   width:100%;
-  min-height:24px;
+  min-height:22px;
+  color:#66769a;
   text-align:right;
-  color:#68789e;
-  font-size:16px;
-  overflow:hidden;
+  font-size:15px;
   white-space:nowrap;
+  overflow:hidden;
 }
 
 #display{
   width:100%;
   text-align:right;
-  font-size:50px;
+  font-size:52px;
   font-weight:300;
   white-space:nowrap;
   overflow:hidden;
 }
 
-/* BUTTONS */
 .buttons{
   flex:1;
   display:grid;
@@ -114,38 +113,37 @@ body{
 }
 
 button{
-  border:1px solid transparent;
+  border:1px solid #1d2c52;
   border-radius:21px;
-  color:white;
+  color:#fff;
   font-size:24px;
   font-weight:bold;
-  transition:transform .08s,filter .08s;
+  transition:.1s;
 }
 
 button:active{
-  transform:scale(.93);
+  transform:scale(.92);
   filter:brightness(1.25);
 }
 
 .number{
-  background:linear-gradient(145deg,#111c3b,#0d1730);
-  border-color:#1b2a50;
+  background:linear-gradient(145deg,#111d3c,#0d1730);
 }
 
 .operator{
-  background:linear-gradient(145deg,#1b2d5b,#152449);
-  border-color:#2a4074;
+  background:linear-gradient(145deg,#1c315f,#14274d);
+  border-color:#304778;
 }
 
 .clear{
-  background:linear-gradient(145deg,#642847,#4b1d37);
-  border-color:#793253;
+  background:linear-gradient(145deg,#702c50,#501f3b);
+  border-color:#8b3760;
 }
 
 .equals{
-  background:linear-gradient(145deg,#4770ff,#2854ec);
-  border-color:#6384ff;
-  box-shadow:0 8px 24px rgba(49,92,255,.28);
+  background:linear-gradient(145deg,#4772ff,#2855ef);
+  border-color:#6283ff;
+  box-shadow:0 8px 25px rgba(45,88,255,.3);
 }
 
 .zero{
@@ -156,65 +154,64 @@ button:active{
 .overlay{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.68);
-  z-index:10;
+  background:rgba(0,0,0,.7);
   display:none;
+  z-index:10;
 }
 
 .overlay.show{
   display:block;
 }
 
-.historyPanel{
+.history{
   position:fixed;
   top:0;
   left:-100%;
   width:88%;
-  max-width:380px;
+  max-width:390px;
   height:100vh;
   padding:24px 20px;
   background:#080e21;
-  border-right:1px solid #263866;
+  border-right:1px solid #293b69;
   z-index:20;
   transition:left .25s ease;
-  box-shadow:15px 0 40px rgba(0,0,0,.35);
+  box-shadow:15px 0 45px rgba(0,0,0,.4);
 }
 
-.historyPanel.open{
+.history.open{
   left:0;
 }
 
-.historyTop{
+.historyHead{
   display:flex;
-  align-items:center;
   justify-content:space-between;
-  margin-bottom:22px;
+  align-items:center;
+  margin-bottom:20px;
 }
 
 .historyTitle{
-  font-size:26px;
+  font-size:27px;
   font-weight:800;
 }
 
-.closeBtn{
+.close{
   width:44px;
   height:44px;
   border-radius:14px;
-  background:#111c38;
-  border:1px solid #24355d;
-  color:#fff;
+  background:#111d3b;
+  border:1px solid #293b69;
+  color:white;
   font-size:25px;
 }
 
 .clearHistory{
   width:100%;
   height:48px;
-  border:0;
   border-radius:15px;
-  background:#54203d;
+  background:#54213f;
+  border:1px solid #783057;
   color:#fff;
   font-size:15px;
-  font-weight:bold;
   margin-bottom:15px;
 }
 
@@ -224,17 +221,38 @@ button:active{
 }
 
 .historyItem{
-  padding:16px 7px;
-  border-bottom:1px solid #1c2949;
-  color:#dce4f5;
+  padding:17px 5px;
+  border-bottom:1px solid #1b2949;
   font-size:18px;
+  color:#e4e9f5;
 }
 
 .empty{
-  color:#667696;
   text-align:center;
-  margin-top:40px;
+  color:#687799;
+  margin-top:45px;
   font-size:15px;
+}
+
+/* TOAST */
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:25px;
+  transform:translateX(-50%) translateY(80px);
+  background:#17254a;
+  border:1px solid #304778;
+  padding:12px 20px;
+  border-radius:14px;
+  font-size:14px;
+  opacity:0;
+  transition:.25s;
+  z-index:50;
+}
+
+.toast.show{
+  transform:translateX(-50%) translateY(0);
+  opacity:1;
 }
 </style>
 </head>
@@ -244,23 +262,28 @@ button:active{
 <div class="app">
 
   <div class="header">
-    <button class="historyBtn" onclick="openHistory()">☰</button>
+
+    <button class="menu" onclick="openHistory()">☰</button>
 
     <div class="logo">KJ</div>
 
-    <div class="version">v1.3</div>
+    <div class="version">v1.4</div>
+
   </div>
 
   <div class="display">
+
     <div class="smallDisplay" id="smallDisplay"></div>
+
     <div id="display">0</div>
+
   </div>
 
   <div class="buttons">
 
     <button class="clear" onclick="clearDisplay()">AC</button>
     <button class="number" onclick="deleteNumber()">⌫</button>
-    <button class="operator" onclick="add('%')">%</button>
+    <button class="operator" onclick="percent()">%</button>
     <button class="operator" onclick="add('/')">÷</button>
 
     <button class="number" onclick="add('7')">7</button>
@@ -288,11 +311,14 @@ button:active{
 
 <div class="overlay" id="overlay" onclick="closeHistory()"></div>
 
-<div class="historyPanel" id="historyPanel">
+<div class="history" id="history">
 
-  <div class="historyTop">
+  <div class="historyHead">
+
     <div class="historyTitle">History</div>
-    <button class="closeBtn" onclick="closeHistory()">×</button>
+
+    <button class="close" onclick="closeHistory()">×</button>
+
   </div>
 
   <button class="clearHistory" onclick="clearHistory()">
@@ -303,30 +329,78 @@ button:active{
 
 </div>
 
+<div class="toast" id="toast">Copied</div>
+
 <script>
+
+let expression = "";
 
 let display = document.getElementById("display");
 let smallDisplay = document.getElementById("smallDisplay");
 
-let expression = "";
-
 let history =
 JSON.parse(localStorage.getItem("kjHistory") || "[]");
 
-function add(value){
-
-  if(value === "%"){
-    expression += "/100";
-  }else{
-    expression += value;
-  }
+function render(){
 
   display.innerText =
-    expression
+    expression === ""
+    ? "0"
+    : expression
       .replace(/\*/g,"×")
       .replace(/\//g,"÷")
       .replace(/-/g,"−");
 
+}
+
+function add(value){
+
+  if(
+    ["+","-","*","/"].includes(value) &&
+    expression !== "" &&
+    ["+","-","*","/"].includes(expression.slice(-1))
+  ){
+    expression =
+      expression.slice(0,-1) + value;
+  }else{
+
+    if(value === "." ){
+
+      let parts =
+        expression.split(/[+\-*/]/);
+
+      if(parts[parts.length-1].includes(".")){
+        return;
+      }
+
+    }
+
+    expression += value;
+  }
+
+  render();
+}
+
+function percent(){
+
+  if(expression === "") return;
+
+  let match =
+    expression.match(/(\d+\.?\d*)$/);
+
+  if(!match) return;
+
+  let number =
+    parseFloat(match[1]);
+
+  let result =
+    number / 100;
+
+  expression =
+    expression.slice(0,-match[1].length) +
+    result;
+
+  render();
 }
 
 function clearDisplay(){
@@ -335,6 +409,7 @@ function clearDisplay(){
 
   display.innerText = "0";
   smallDisplay.innerText = "";
+
 }
 
 function deleteNumber(){
@@ -342,15 +417,8 @@ function deleteNumber(){
   expression =
     expression.slice(0,-1);
 
-  if(expression === ""){
-    display.innerText = "0";
-  }else{
-    display.innerText =
-      expression
-        .replace(/\*/g,"×")
-        .replace(/\//g,"÷")
-        .replace(/-/g,"−");
-  }
+  render();
+
 }
 
 function calculate(){
@@ -361,25 +429,27 @@ function calculate(){
 
     let original = expression;
 
-    let answer = Function(
-      '"use strict"; return (' +
-      expression +
-      ')'
-    )();
+    let answer =
+      Function(
+        '"use strict";return (' +
+        expression +
+        ')'
+      )();
 
     if(!Number.isFinite(answer)){
       throw new Error();
     }
 
-    answer = Number.isInteger(answer)
+    answer =
+      Number.isInteger(answer)
       ? answer
       : parseFloat(answer.toFixed(10));
 
     smallDisplay.innerText =
       original
-        .replace(/\*/g,"×")
-        .replace(/\//g,"÷")
-        .replace(/-/g,"−");
+      .replace(/\*/g,"×")
+      .replace(/\//g,"÷")
+      .replace(/-/g,"−");
 
     display.innerText = answer;
 
@@ -389,42 +459,50 @@ function calculate(){
       original + " = " + answer
     );
 
+    if(history.length > 50){
+      history.pop();
+    }
+
     localStorage.setItem(
       "kjHistory",
       JSON.stringify(history)
     );
 
-  }catch(error){
+    showHistory();
 
-    smallDisplay.innerText = "";
+  }catch(e){
+
     display.innerText = "Error";
     expression = "";
 
   }
+
 }
 
 function openHistory(){
 
   document
-    .getElementById("historyPanel")
-    .classList.add("open");
+  .getElementById("history")
+  .classList.add("open");
 
   document
-    .getElementById("overlay")
-    .classList.add("show");
+  .getElementById("overlay")
+  .classList.add("show");
 
   showHistory();
+
 }
 
 function closeHistory(){
 
   document
-    .getElementById("historyPanel")
-    .classList.remove("open");
+  .getElementById("history")
+  .classList.remove("open");
 
   document
-    .getElementById("overlay")
-    .classList.remove("show");
+  .getElementById("overlay")
+  .classList.remove("show");
+
 }
 
 function showHistory(){
@@ -435,22 +513,40 @@ function showHistory(){
   if(history.length === 0){
 
     list.innerHTML =
-      '<div class="empty">No calculations yet.</div>';
+      '<div class="empty">No calculations yet</div>';
 
     return;
+
   }
 
   list.innerHTML =
     history.map(function(item){
 
-      return '<div class="historyItem">' +
-        item
-        .replace(/\*/g,"×")
-        .replace(/\//g,"÷")
-        .replace(/-/g,"−") +
-        '</div>';
+      return `
+        <div class="historyItem"
+             onclick="useHistory('${item.replace(/'/g,"\\'")}')">
+          ${item
+            .replace(/\*/g,"×")
+            .replace(/\//g,"÷")
+            .replace(/-/g,"−")}
+        </div>
+      `;
 
     }).join("");
+
+}
+
+function useHistory(item){
+
+  let result =
+    item.split(" = ")[1];
+
+  expression = result;
+
+  render();
+
+  closeHistory();
+
 }
 
 function clearHistory(){
@@ -460,6 +556,7 @@ function clearHistory(){
   localStorage.removeItem("kjHistory");
 
   showHistory();
+
 }
 
 showHistory();
