@@ -5,105 +5,359 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#080d20">
 
-<title>KJ Calculator</title>
+<title>KJ Calculator v1.1</title>
 
-<link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="style.css">
+<style>
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: #050a18;
+    color: white;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.calculator {
+    width: 100%;
+    max-width: 390px;
+    background: #0b1228;
+    border: 2px solid #1d2948;
+    border-radius: 30px;
+    padding: 20px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.35);
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 22px;
+}
+
+.header h1 {
+    margin: 0 0 10px;
+    font-size: 42px;
+}
+
+.header p {
+    margin: 0;
+    font-size: 18px;
+}
+
+.version {
+    margin-top: 8px !important;
+    font-size: 13px !important;
+    opacity: 0.55;
+}
+
+.display {
+    background: #050a18;
+    border: 2px solid #1d2948;
+    border-radius: 35px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+#history {
+    min-height: 20px;
+    max-height: 45px;
+    overflow: hidden;
+    text-align: right;
+    font-size: 13px;
+    opacity: 0.5;
+    margin-bottom: 5px;
+}
+
+#display {
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: white;
+    text-align: right;
+    font-size: 44px;
+    font-weight: bold;
+}
+
+.sign-button {
+    width: 55px;
+    height: 38px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 15px;
+    background: #263656;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+button {
+    height: 78px;
+    border: none;
+    border-radius: 28px;
+    background: #141f3d;
+    color: white;
+    font-size: 27px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.08s, opacity 0.08s;
+}
+
+button:active {
+    transform: scale(0.94);
+    opacity: 0.75;
+}
+
+button.action {
+    background: #202f52;
+}
+
+button.operator {
+    background: #202f52;
+}
+
+button.equals {
+    background: #3763b5;
+}
+
+button.zero {
+    grid-column: span 2;
+}
+
+@media (max-width: 380px) {
+    .calculator {
+        padding: 16px;
+    }
+
+    button {
+        height: 68px;
+        font-size: 24px;
+    }
+
+    #display {
+        font-size: 38px;
+    }
+
+    .header h1 {
+        font-size: 36px;
+    }
+}
+</style>
 </head>
 
 <body>
 
 <div class="calculator">
 
-  <div class="header">
-    <h1>KJ Calculator</h1>
-    <p>Simple • Fast • Accurate</p>
-  </div>
+    <div class="header">
+        <h1>KJ Calculator</h1>
+        <p>Simple • Fast • Accurate</p>
+        <p class="version">Version 1.1</p>
+    </div>
 
-  <div class="display">
-    <div id="history"></div>
+    <div class="display">
 
-    <input
-      type="text"
-      id="display"
-      value="0"
-      readonly
-    >
-  </div>
+        <div id="history"></div>
 
-  <div class="buttons">
+        <input
+            type="text"
+            id="display"
+            value="0"
+            readonly
+        >
 
-    <button class="action" onclick="clearDisplay()">AC</button>
-    <button class="action" onclick="deleteLast()">DEL</button>
-    <button class="action" onclick="appendValue('%')">%</button>
-    <button class="operator" onclick="appendValue('/')">÷</button>
+        <button class="sign-button" onclick="toggleSign()">+/−</button>
 
-    <button onclick="appendValue('7')">7</button>
-    <button onclick="appendValue('8')">8</button>
-    <button onclick="appendValue('9')">9</button>
-    <button class="operator" onclick="appendValue('*')">×</button>
+    </div>
 
-    <button onclick="appendValue('4')">4</button>
-    <button onclick="appendValue('5')">5</button>
-    <button onclick="appendValue('6')">6</button>
-    <button class="operator" onclick="appendValue('-')">−</button>
+    <div class="buttons">
 
-    <button onclick="appendValue('1')">1</button>
-    <button onclick="appendValue('2')">2</button>
-    <button onclick="appendValue('3')">3</button>
-    <button class="operator" onclick="appendValue('+')">+</button>
+        <button class="action" onclick="clearDisplay()">AC</button>
 
-    <button onclick="appendValue('0')" class="zero">0</button>
-    <button onclick="appendValue('.')">.</button>
-    <button class="equals" onclick="calculate()">=</button>
+        <button class="action" onclick="deleteLast()">DEL</button>
 
-  </div>
+        <button class="action" onclick="percent()">%</button>
+
+        <button class="operator" onclick="appendValue('/')">÷</button>
+
+
+        <button onclick="appendValue('7')">7</button>
+
+        <button onclick="appendValue('8')">8</button>
+
+        <button onclick="appendValue('9')">9</button>
+
+        <button class="operator" onclick="appendValue('*')">×</button>
+
+
+        <button onclick="appendValue('4')">4</button>
+
+        <button onclick="appendValue('5')">5</button>
+
+        <button onclick="appendValue('6')">6</button>
+
+        <button class="operator" onclick="appendValue('-')">−</button>
+
+
+        <button onclick="appendValue('1')">1</button>
+
+        <button onclick="appendValue('2')">2</button>
+
+        <button onclick="appendValue('3')">3</button>
+
+        <button class="operator" onclick="appendValue('+')">+</button>
+
+
+        <button class="zero" onclick="appendValue('0')">0</button>
+
+        <button onclick="appendValue('.')">.</button>
+
+        <button class="equals" onclick="calculate()">=</button>
+
+    </div>
 
 </div>
 
+
 <script>
+
 const display = document.getElementById("display");
 const history = document.getElementById("history");
 
+
 function appendValue(value) {
-    if (display.value === "0" && value !== ".") {
+
+    if (display.value === "Error") {
+        display.value = "0";
+    }
+
+    if (
+        display.value === "0" &&
+        !["+", "-", "*", "/", "."].includes(value)
+    ) {
         display.value = value;
     } else {
         display.value += value;
     }
 }
 
+
 function clearDisplay() {
+
     display.value = "0";
     history.innerHTML = "";
+
 }
 
+
 function deleteLast() {
-    if (display.value.length > 1) {
+
+    if (
+        display.value.length > 1 &&
+        display.value !== "Error"
+    ) {
         display.value = display.value.slice(0, -1);
     } else {
         display.value = "0";
     }
+
 }
 
-function calculate() {
+
+function toggleSign() {
+
+    if (
+        display.value !== "0" &&
+        display.value !== "Error"
+    ) {
+
+        if (display.value.startsWith("-")) {
+
+            display.value = display.value.substring(1);
+
+        } else {
+
+            display.value = "-" + display.value;
+
+        }
+
+    }
+
+}
+
+
+function percent() {
+
     try {
+
+        let value = parseFloat(display.value);
+
+        if (!isNaN(value)) {
+
+            display.value = value / 100;
+
+        }
+
+    } catch {
+
+        display.value = "Error";
+
+    }
+
+}
+
+
+function calculate() {
+
+    try {
+
         let expression = display.value;
 
-        expression = expression.replace(/%/g, "/100");
+        if (!expression || expression === "Error") {
+            return;
+        }
+
+        expression = expression.replace(/×/g, "*");
+        expression = expression.replace(/÷/g, "/");
+        expression = expression.replace(/−/g, "-");
+
+        if (!/^[0-9+\-*/().\s]+$/.test(expression)) {
+            throw new Error("Invalid expression");
+        }
 
         const result = Function(
             '"use strict"; return (' + expression + ')'
         )();
 
-        history.innerHTML +=
-            "<div>" + display.value + " = " + result + "</div>";
+        if (!Number.isFinite(result)) {
+            throw new Error("Invalid result");
+        }
+
+        history.innerHTML =
+            expression + " = " + result;
 
         display.value = result;
+
     } catch (error) {
+
         display.value = "Error";
+
     }
+
 }
+
 </script>
 
 </body>
