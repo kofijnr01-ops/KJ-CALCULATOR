@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#060b1d">
-<title>KJ Calculator v1.6</title>
+<title>KJ Calculator v1.7</title>
 
 <style>
 *{
@@ -286,7 +286,7 @@ button:active{
 
     <div class="logo">KJ</div>
 
-    <div class="version">v1.6</div>
+    <div class="version">v1.7</div>
 
   </div>
 
@@ -355,10 +355,15 @@ button:active{
 
 <script>
 
+/* =========================
+   KJ CALCULATOR v1.7
+========================= */
+
 let current = "0";
-let firstNumber = null;
+let expressionParts = [];
 let operator = null;
 let waiting = false;
+let justCalculated = false;
 
 let history =
 JSON.parse(localStorage.getItem("kj_history") || "[]");
@@ -370,7 +375,9 @@ const expression =
 document.getElementById("expression");
 
 
-/* FEEDBACK */
+/* =========================
+   FEEDBACK
+========================= */
 
 function feedback(){
 
@@ -381,21 +388,39 @@ function feedback(){
 }
 
 
-/* UPDATE */
+/* =========================
+   UPDATE DISPLAY
+========================= */
 
 function update(){
+
   result.textContent = current;
+
 }
 
 
-/* NUMBER */
+/* =========================
+   NUMBER
+========================= */
 
 function number(n){
 
   feedback();
 
   if(current === "Error"){
-    current = "0";
+    clearAll();
+  }
+
+  if(justCalculated){
+
+    current = n;
+    expression.textContent = "";
+    expressionParts = [];
+    justCalculated = false;
+    waiting = false;
+
+    update();
+    return;
   }
 
   if(waiting){
@@ -414,14 +439,29 @@ function number(n){
   }
 
   update();
+
 }
 
 
-/* DECIMAL */
+/* =========================
+   DECIMAL
+========================= */
 
 function decimal(){
 
   feedback();
+
+  if(justCalculated){
+
+    current = "0.";
+    expression.textContent = "";
+    expressionParts = [];
+    justCalculated = false;
+    waiting = false;
+
+    update();
+    return;
+  }
 
   if(waiting){
 
@@ -435,10 +475,13 @@ function decimal(){
   }
 
   update();
+
 }
 
 
-/* PLUS / MINUS */
+/* =========================
+   PLUS / MINUS
+========================= */
 
 function plusMinus(){
 
@@ -449,16 +492,25 @@ function plusMinus(){
   }
 
   if(current.startsWith("-")){
-    current = current.substring(1);
+
+    current =
+      current.substring(1);
+
   }else{
-    current = "-" + current;
+
+    current =
+      "-" + current;
+
   }
 
   update();
+
 }
 
 
-/* OPERATOR */
+/* =========================
+   OPERATOR
+========================= */
 
 function setOperator(op){
 
@@ -468,30 +520,55 @@ function setOperator(op){
     return;
   }
 
-  if(operator !== null && !waiting){
-    calculate(false);
+  if(justCalculated){
+
+    expressionParts = [
+      parseFloat(current)
+    ];
+
+    justCalculated = false;
+
   }
 
-  firstNumber = parseFloat(current);
+  if(operator !== null && !waiting){
+
+    calculate(false);
+
+  }
+
+  const value =
+    parseFloat(current);
+
+  expressionParts = [
+    value
+  ];
 
   operator = op;
-
   waiting = true;
 
   expression.textContent =
-    firstNumber + " " + showOperator(op);
+    value + " " +
+    showOperator(op);
+
 }
 
 
-/* CALCULATE */
+/* =========================
+   CALCULATE
+========================= */
 
 function calculate(save=true){
 
   feedback();
 
-  if(operator === null || firstNumber === null){
+  if(operator === null ||
+     expressionParts.length === 0){
+
     return;
   }
+
+  const firstNumber =
+    parseFloat(expressionParts[0]);
 
   const secondNumber =
     parseFloat(current);
@@ -504,18 +581,15 @@ function calculate(save=true){
       firstNumber + secondNumber;
   }
 
-
   if(operator === "-"){
     answer =
       firstNumber - secondNumber;
   }
 
-
   if(operator === "*"){
     answer =
       firstNumber * secondNumber;
   }
-
 
   if(operator === "/"){
 
@@ -523,12 +597,12 @@ function calculate(save=true){
 
       current = "Error";
 
-      firstNumber = null;
       operator = null;
+      expressionParts = [];
       waiting = true;
+      justCalculated = true;
 
       update();
-
       return;
     }
 
@@ -538,7 +612,8 @@ function calculate(save=true){
   }
 
 
-  answer = format(answer);
+  answer =
+    format(answer);
 
 
   const fullExpression =
@@ -563,15 +638,20 @@ function calculate(save=true){
   }
 
 
-  firstNumber = null;
   operator = null;
+  expressionParts = [];
+
   waiting = true;
+  justCalculated = true;
 
   update();
+
 }
 
 
-/* FORMAT */
+/* =========================
+   FORMAT
+========================= */
 
 function format(num){
 
@@ -584,22 +664,30 @@ function format(num){
       num.toFixed(10)
     )
   );
+
 }
 
 
-/* OPERATOR SYMBOL */
+/* =========================
+   OPERATOR SYMBOL
+========================= */
 
 function showOperator(op){
 
   if(op === "*") return "×";
+
   if(op === "/") return "÷";
+
   if(op === "-") return "−";
 
   return op;
+
 }
 
 
-/* PERCENT */
+/* =========================
+   PERCENT
+========================= */
 
 function percent(){
 
@@ -616,17 +704,37 @@ function percent(){
     format(value / 100);
 
   update();
+
 }
 
 
-/* BACKSPACE */
+/* =========================
+   BACKSPACE
+========================= */
 
 function backspace(){
 
   feedback();
 
+  if(justCalculated){
+
+    current = "0";
+    expression.textContent = "";
+    justCalculated = false;
+
+    update();
+    return;
+  }
+
   if(waiting){
     return;
+  }
+
+  if(current === "Error"){
+
+    clearAll();
+    return;
+
   }
 
   if(current.length <= 1){
@@ -641,43 +749,55 @@ function backspace(){
   }
 
   update();
+
 }
 
 
-/* CLEAR */
+/* =========================
+   CLEAR
+========================= */
 
 function clearAll(){
 
   feedback();
 
   current = "0";
-  firstNumber = null;
+  expressionParts = [];
   operator = null;
   waiting = false;
+  justCalculated = false;
 
   expression.textContent = "";
 
   update();
+
 }
 
 
-/* HISTORY */
+/* =========================
+   HISTORY
+========================= */
 
 function addHistory(exp,res){
 
   history.unshift({
+
     expression:exp,
     result:res
+
   });
 
   if(history.length > 50){
+
     history.pop();
+
   }
 
   localStorage.setItem(
     "kj_history",
     JSON.stringify(history)
   );
+
 }
 
 
@@ -690,6 +810,7 @@ function openHistory(){
   document
     .getElementById("overlay")
     .classList.add("show");
+
 }
 
 
@@ -698,6 +819,7 @@ function closeHistory(){
   document
     .getElementById("overlay")
     .classList.remove("show");
+
 }
 
 
@@ -715,6 +837,7 @@ function renderHistory(){
       '<div style="text-align:center;color:#7180a9;padding:30px 0;">No calculations yet</div>';
 
     return;
+
   }
 
 
@@ -742,9 +865,10 @@ function renderHistory(){
       current =
         item.result;
 
-      firstNumber = null;
+      expressionParts = [];
       operator = null;
       waiting = true;
+      justCalculated = true;
 
       expression.textContent =
         item.expression;
@@ -759,6 +883,7 @@ function renderHistory(){
     list.appendChild(div);
 
   });
+
 }
 
 
@@ -773,10 +898,13 @@ function clearHistory(){
   );
 
   renderHistory();
+
 }
 
 
-/* CLOSE HISTORY OUTSIDE */
+/* =========================
+   CLOSE HISTORY OUTSIDE
+========================= */
 
 document
 .getElementById("overlay")
@@ -785,7 +913,82 @@ document
   function(e){
 
     if(e.target === this){
+
       closeHistory();
+
+    }
+
+  }
+);
+
+
+/* =========================
+   KEYBOARD SUPPORT
+========================= */
+
+document.addEventListener(
+  "keydown",
+  function(e){
+
+    if(e.key >= "0" && e.key <= "9"){
+
+      number(e.key);
+
+    }
+
+    else if(e.key === "."){
+
+      decimal();
+
+    }
+
+    else if(e.key === "+"){
+
+      setOperator("+");
+
+    }
+
+    else if(e.key === "-"){
+
+      setOperator("-");
+
+    }
+
+    else if(e.key === "*"){
+
+      setOperator("*");
+
+    }
+
+    else if(e.key === "/"){
+
+      e.preventDefault();
+      setOperator("/");
+
+    }
+
+    else if(e.key === "%"){
+
+      percent();
+
+    }
+
+    else if(e.key === "Enter" || e.key === "="){
+
+      calculate();
+
+    }
+
+    else if(e.key === "Backspace"){
+
+      backspace();
+
+    }
+
+    else if(e.key === "Escape"){
+
+      clearAll();
+
     }
 
   }
@@ -799,4 +1002,4 @@ update();
 </script>
 
 </body>
-</html>
+  </html>
