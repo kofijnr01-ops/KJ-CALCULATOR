@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#060b1d">
-<title>KJ Calculator v1.7</title>
+<title>KJ Calculator v1.9</title>
 
 <style>
 *{
@@ -95,6 +95,7 @@ body{
   font-size:19px;
   white-space:nowrap;
   overflow:hidden;
+  text-overflow:ellipsis;
 }
 
 .result{
@@ -104,9 +105,33 @@ body{
   font-weight:300;
   white-space:nowrap;
   overflow:hidden;
+  text-overflow:ellipsis;
+  transition:font-size .12s ease;
+  cursor:pointer;
 }
 
-/* KEYBOARD */
+.copy-hint{
+  position:fixed;
+  left:50%;
+  bottom:25px;
+  transform:translateX(-50%) translateY(20px);
+  background:#172650;
+  border:1px solid #31528f;
+  padding:12px 18px;
+  border-radius:15px;
+  font-size:15px;
+  opacity:0;
+  pointer-events:none;
+  transition:.2s;
+  z-index:500;
+}
+
+.copy-hint.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+
+/* BUTTONS */
 
 .buttons{
   height:390px;
@@ -286,7 +311,7 @@ button:active{
 
     <div class="logo">KJ</div>
 
-    <div class="version">v1.7</div>
+    <div class="version">v1.9</div>
 
   </div>
 
@@ -294,7 +319,7 @@ button:active{
 
     <div class="expression" id="expression"></div>
 
-    <div class="result" id="result">0</div>
+    <div class="result" id="result" onclick="copyResult()">0</div>
 
   </div>
 
@@ -329,8 +354,6 @@ button:active{
 
 </div>
 
-<!-- HISTORY -->
-
 <div class="overlay" id="overlay">
 
   <div class="history">
@@ -353,16 +376,18 @@ button:active{
 
 </div>
 
+<div class="copy-hint" id="copyHint">
+  Result copied
+</div>
+
 <script>
 
 /* =========================
-   KJ CALCULATOR v1.7
+   KJ CALCULATOR v1.9
 ========================= */
 
 let current = "0";
-let expressionParts = [];
-let operator = null;
-let waiting = false;
+let expressionInput = "";
 let justCalculated = false;
 
 let history =
@@ -376,7 +401,7 @@ document.getElementById("expression");
 
 
 /* =========================
-   FEEDBACK
+   VIBRATION
 ========================= */
 
 function feedback(){
@@ -389,12 +414,47 @@ function feedback(){
 
 
 /* =========================
-   UPDATE DISPLAY
+   UPDATE
 ========================= */
 
 function update(){
 
   result.textContent = current;
+
+  autoSizeResult();
+
+}
+
+
+/* =========================
+   AUTO SIZE RESULT
+========================= */
+
+function autoSizeResult(){
+
+  let size = 62;
+
+  if(window.innerHeight <= 700){
+    size = 50;
+  }
+
+  if(current.length > 12){
+    size -= 8;
+  }
+
+  if(current.length > 16){
+    size -= 8;
+  }
+
+  if(current.length > 20){
+    size -= 6;
+  }
+
+  if(size < 28){
+    size = 28;
+  }
+
+  result.style.fontSize = size + "px";
 
 }
 
@@ -414,27 +474,22 @@ function number(n){
   if(justCalculated){
 
     current = n;
+    expressionInput = "";
     expression.textContent = "";
-    expressionParts = [];
     justCalculated = false;
-    waiting = false;
 
     update();
     return;
+
   }
 
-  if(waiting){
+  if(current === "0"){
 
     current = n;
-    waiting = false;
 
   }else{
 
-    if(current === "0"){
-      current = n;
-    }else{
-      current += n;
-    }
+    current += n;
 
   }
 
@@ -454,52 +509,18 @@ function decimal(){
   if(justCalculated){
 
     current = "0.";
+    expressionInput = "";
     expression.textContent = "";
-    expressionParts = [];
     justCalculated = false;
-    waiting = false;
 
     update();
     return;
+
   }
 
-  if(waiting){
-
-    current = "0.";
-    waiting = false;
-
-  }else if(!current.includes(".")){
+  if(!current.includes(".")){
 
     current += ".";
-
-  }
-
-  update();
-
-}
-
-
-/* =========================
-   PLUS / MINUS
-========================= */
-
-function plusMinus(){
-
-  feedback();
-
-  if(current === "0" || current === "Error"){
-    return;
-  }
-
-  if(current.startsWith("-")){
-
-    current =
-      current.substring(1);
-
-  }else{
-
-    current =
-      "-" + current;
 
   }
 
@@ -522,33 +543,49 @@ function setOperator(op){
 
   if(justCalculated){
 
-    expressionParts = [
-      parseFloat(current)
-    ];
-
+    expressionInput = current;
     justCalculated = false;
 
   }
 
-  if(operator !== null && !waiting){
+  if(
+    expressionInput === "" ||
+    /[+\-*/]$/.test(expressionInput)
+  ){
 
-    calculate(false);
+    expressionInput += current;
 
   }
 
-  const value =
-    parseFloat(current);
+  if(/[+\-*/]$/.test(expressionInput)){
 
-  expressionParts = [
-    value
-  ];
+    expressionInput =
+      expressionInput.slice(0,-1);
 
-  operator = op;
-  waiting = true;
+  }
+
+  expressionInput += op;
+
+  current = "0";
 
   expression.textContent =
-    value + " " +
-    showOperator(op);
+    displayExpression(expressionInput);
+
+  update();
+
+}
+
+
+/* =========================
+   DISPLAY EXPRESSION
+========================= */
+
+function displayExpression(exp){
+
+  return exp
+    .replace(/\*/g,"×")
+    .replace(/\//g,"÷")
+    .replace(/-/g,"−");
 
 }
 
@@ -557,94 +594,176 @@ function setOperator(op){
    CALCULATE
 ========================= */
 
-function calculate(save=true){
+function calculate(){
 
   feedback();
 
-  if(operator === null ||
-     expressionParts.length === 0){
-
+  if(current === "Error"){
     return;
   }
 
-  const firstNumber =
-    parseFloat(expressionParts[0]);
+  let exp = expressionInput;
 
-  const secondNumber =
-    parseFloat(current);
+  if(exp === "" || /[+\-*/]$/.test(exp)){
 
-  let answer;
+    exp += current;
 
-
-  if(operator === "+"){
-    answer =
-      firstNumber + secondNumber;
   }
 
-  if(operator === "-"){
-    answer =
-      firstNumber - secondNumber;
+  if(!exp){
+    return;
   }
 
-  if(operator === "*"){
-    answer =
-      firstNumber * secondNumber;
-  }
+  try{
 
-  if(operator === "/"){
+    const answer =
+      evaluateExpression(exp);
 
-    if(secondNumber === 0){
-
-      current = "Error";
-
-      operator = null;
-      expressionParts = [];
-      waiting = true;
-      justCalculated = true;
-
-      update();
-      return;
+    if(!Number.isFinite(answer)){
+      throw new Error();
     }
 
-    answer =
-      firstNumber / secondNumber;
+    const formatted =
+      format(answer);
 
-  }
+    const shownExpression =
+      displayExpression(exp);
 
+    current =
+      formatted;
 
-  answer =
-    format(answer);
-
-
-  const fullExpression =
-    firstNumber + " " +
-    showOperator(operator) + " " +
-    secondNumber;
-
-
-  current = answer;
-
-  expression.textContent =
-    fullExpression;
-
-
-  if(save){
+    expression.textContent =
+      shownExpression;
 
     addHistory(
-      fullExpression,
-      answer
+      shownExpression,
+      formatted
     );
+
+    expressionInput = "";
+
+    justCalculated = true;
+
+    update();
+
+  }catch(e){
+
+    current = "Error";
+    expressionInput = "";
+    justCalculated = true;
+
+    update();
 
   }
 
+}
 
-  operator = null;
-  expressionParts = [];
 
-  waiting = true;
-  justCalculated = true;
+/* =========================
+   CALCULATOR ENGINE
+========================= */
 
-  update();
+function evaluateExpression(exp){
+
+  const tokens =
+    exp.match(
+      /(?:\d+(?:\.\d*)?|\.\d+|[+\-*/])/g
+    );
+
+  if(!tokens || tokens.length === 0){
+    throw new Error();
+  }
+
+  let values = [];
+  let operators = [];
+  let i = 0;
+
+  function getNumber(){
+
+    let sign = 1;
+
+    if(tokens[i] === "-"){
+
+      sign = -1;
+      i++;
+
+    }
+
+    const value =
+      parseFloat(tokens[i]);
+
+    if(!Number.isFinite(value)){
+      throw new Error();
+    }
+
+    i++;
+
+    return sign * value;
+
+  }
+
+  values.push(getNumber());
+
+  while(i < tokens.length){
+
+    const op =
+      tokens[i++];
+
+    if(op !== "+" &&
+       op !== "-" &&
+       op !== "*" &&
+       op !== "/"){
+
+      throw new Error();
+
+    }
+
+    const next =
+      getNumber();
+
+    if(op === "*"){
+
+      values[values.length - 1] *= next;
+
+    }else if(op === "/"){
+
+      if(next === 0){
+        throw new Error();
+      }
+
+      values[values.length - 1] /= next;
+
+    }else{
+
+      operators.push(op);
+      values.push(next);
+
+    }
+
+  }
+
+  let answer =
+    values[0];
+
+  for(
+    let j = 0;
+    j < operators.length;
+    j++
+  ){
+
+    if(operators[j] === "+"){
+
+      answer += values[j + 1];
+
+    }else{
+
+      answer -= values[j + 1];
+
+    }
+
+  }
+
+  return answer;
 
 }
 
@@ -655,32 +774,11 @@ function calculate(save=true){
 
 function format(num){
 
-  if(!Number.isFinite(num)){
-    return "Error";
-  }
-
   return String(
     parseFloat(
       num.toFixed(10)
     )
   );
-
-}
-
-
-/* =========================
-   OPERATOR SYMBOL
-========================= */
-
-function showOperator(op){
-
-  if(op === "*") return "×";
-
-  if(op === "/") return "÷";
-
-  if(op === "-") return "−";
-
-  return op;
 
 }
 
@@ -696,12 +794,44 @@ function percent(){
   const value =
     parseFloat(current);
 
-  if(isNaN(value)){
+  if(!Number.isFinite(value)){
     return;
   }
 
   current =
     format(value / 100);
+
+  update();
+
+}
+
+
+/* =========================
+   PLUS / MINUS
+========================= */
+
+function plusMinus(){
+
+  feedback();
+
+  if(
+    current === "Error" ||
+    current === "0"
+  ){
+    return;
+  }
+
+  if(current.startsWith("-")){
+
+    current =
+      current.substring(1);
+
+  }else{
+
+    current =
+      "-" + current;
+
+  }
 
   update();
 
@@ -719,15 +849,13 @@ function backspace(){
   if(justCalculated){
 
     current = "0";
+    expressionInput = "";
     expression.textContent = "";
     justCalculated = false;
 
     update();
     return;
-  }
 
-  if(waiting){
-    return;
   }
 
   if(current === "Error"){
@@ -762,14 +890,62 @@ function clearAll(){
   feedback();
 
   current = "0";
-  expressionParts = [];
-  operator = null;
-  waiting = false;
+  expressionInput = "";
   justCalculated = false;
 
   expression.textContent = "";
 
   update();
+
+}
+
+
+/* =========================
+   COPY RESULT
+========================= */
+
+async function copyResult(){
+
+  if(
+    current === "0" ||
+    current === "Error"
+  ){
+    return;
+  }
+
+  try{
+
+    await navigator.clipboard.writeText(current);
+
+  }catch(e){
+
+    const temp =
+      document.createElement("textarea");
+
+    temp.value = current;
+
+    document.body.appendChild(temp);
+
+    temp.select();
+
+    document.execCommand("copy");
+
+    temp.remove();
+
+  }
+
+  feedback();
+
+  const hint =
+    document.getElementById("copyHint");
+
+  hint.classList.add("show");
+
+  setTimeout(function(){
+
+    hint.classList.remove("show");
+
+  },1200);
 
 }
 
@@ -830,7 +1006,6 @@ function renderHistory(){
 
   list.innerHTML = "";
 
-
   if(history.length === 0){
 
     list.innerHTML =
@@ -840,8 +1015,7 @@ function renderHistory(){
 
   }
 
-
-  history.forEach((item)=>{
+  history.forEach(function(item){
 
     const div =
       document.createElement("div");
@@ -850,7 +1024,6 @@ function renderHistory(){
       "history-item";
 
     div.innerHTML =
-
       '<div class="history-expression">' +
       item.expression +
       '</div>' +
@@ -859,15 +1032,13 @@ function renderHistory(){
       item.result +
       '</div>';
 
-
     div.onclick = function(){
 
       current =
         item.result;
 
-      expressionParts = [];
-      operator = null;
-      waiting = true;
+      expressionInput = "";
+
       justCalculated = true;
 
       expression.textContent =
@@ -878,7 +1049,6 @@ function renderHistory(){
       closeHistory();
 
     };
-
 
     list.appendChild(div);
 
@@ -923,7 +1093,7 @@ document
 
 
 /* =========================
-   KEYBOARD SUPPORT
+   KEYBOARD
 ========================= */
 
 document.addEventListener(
@@ -973,7 +1143,10 @@ document.addEventListener(
 
     }
 
-    else if(e.key === "Enter" || e.key === "="){
+    else if(
+      e.key === "Enter" ||
+      e.key === "="
+    ){
 
       calculate();
 
@@ -995,11 +1168,13 @@ document.addEventListener(
 );
 
 
-/* START */
+/* =========================
+   START
+========================= */
 
 update();
 
 </script>
 
 </body>
-  </html>
+</html>
