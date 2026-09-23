@@ -1,14 +1,179 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>KJ TEST</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KJ Calculator</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #050a18;
+  color: white;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.calculator {
+  width: 100%;
+  max-width: 390px;
+  padding: 20px;
+}
+
+.display {
+  background: #0b1228;
+  border: 1px solid #1d2948;
+  border-radius: 20px;
+  min-height: 120px;
+  padding: 20px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  font-size: 42px;
+  overflow: hidden;
+}
+
+#display {
+  width: 100%;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+button {
+  height: 70px;
+  border: 0;
+  border-radius: 18px;
+  background: #111a35;
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+.operator {
+  background: #172448;
+}
+
+.clear {
+  background: #54243c;
+}
+
+.equals {
+  background: #315cff;
+}
+
+.zero {
+  grid-column: span 2;
+}
+</style>
 </head>
 
-<body style="background:white; color:black; padding:50px;">
+<body>
 
-<h1>KJ CALCULATOR TEST</h1>
+<div class="calculator">
 
-<p>If you can see this, it is working.</p>
+  <div class="display">
+    <div id="display">0</div>
+  </div>
+
+  <div class="buttons">
+
+    <button class="clear" onclick="clearDisplay()">AC</button>
+    <button onclick="deleteNumber()">⌫</button>
+    <button class="operator" onclick="add('%')">%</button>
+    <button class="operator" onclick="add('/')">÷</button>
+
+    <button onclick="add('7')">7</button>
+    <button onclick="add('8')">8</button>
+    <button onclick="add('9')">9</button>
+    <button class="operator" onclick="add('*')">×</button>
+
+    <button onclick="add('4')">4</button>
+    <button onclick="add('5')">5</button>
+    <button onclick="add('6')">6</button>
+    <button class="operator" onclick="add('-')">−</button>
+
+    <button onclick="add('1')">1</button>
+    <button onclick="add('2')">2</button>
+    <button onclick="add('3')">3</button>
+    <button class="operator" onclick="add('+')">+</button>
+
+    <button class="zero" onclick="add('0')">0</button>
+    <button onclick="add('.')">.</button>
+    <button class="equals" onclick="calculate()">=</button>
+
+  </div>
+</div>
+
+<script>
+
+let display = document.getElementById("display");
+let expression = "";
+
+function add(value) {
+
+  if (value === "%") {
+    expression += "/100";
+  } else {
+    expression += value;
+  }
+
+  display.innerText = expression;
+}
+
+function clearDisplay() {
+  expression = "";
+  display.innerText = "0";
+}
+
+function deleteNumber() {
+  expression = expression.slice(0, -1);
+
+  if (expression === "") {
+    display.innerText = "0";
+  } else {
+    display.innerText = expression;
+  }
+}
+
+function calculate() {
+
+  if (expression === "") {
+    return;
+  }
+
+  try {
+    let answer = Function(
+      '"use strict"; return (' + expression + ')'
+    )();
+
+    display.innerText = answer;
+    expression = String(answer);
+
+  } catch (error) {
+    display.innerText = "Error";
+    expression = "";
+  }
+}
+
+</script>
 
 </body>
 </html>
