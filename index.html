@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#060b1d">
-<title>KJ Calculator</title>
+<title>KJ Calculator v1.6</title>
 
 <style>
 *{
@@ -31,54 +31,53 @@ body{
   width:100%;
   max-width:520px;
   height:100dvh;
-  padding:10px 30px 10px;
-  position:relative;
+  padding:12px 24px;
   display:flex;
   flex-direction:column;
 }
 
 /* TOP */
+
 .top{
-  height:72px;
-  min-height:72px;
+  height:64px;
+  min-height:64px;
   display:flex;
   align-items:center;
   justify-content:space-between;
 }
 
 .menu{
-  width:62px;
-  height:62px;
-  min-width:62px;
-  border-radius:25px;
+  width:56px;
+  height:56px;
+  border-radius:19px;
   background:#101a38;
   border:1px solid #233968;
   color:white;
-  font-size:36px;
+  font-size:31px;
   display:flex;
   align-items:center;
   justify-content:center;
 }
 
 .logo{
-  font-size:40px;
+  font-size:38px;
   font-weight:800;
   letter-spacing:2px;
 }
 
 .version{
   color:#7180a9;
-  font-size:18px;
+  font-size:16px;
 }
 
 /* DISPLAY */
+
 .display{
   flex:1;
   min-height:0;
-  margin-top:12px;
-  margin-bottom:18px;
-  padding:22px 28px;
-  border-radius:38px;
+  margin:10px 0 15px;
+  padding:22px 24px;
+  border-radius:34px;
   background:#0d1530;
   border:1px solid #243968;
   display:flex;
@@ -90,47 +89,48 @@ body{
 
 .expression{
   width:100%;
+  min-height:27px;
   text-align:right;
   color:#7180a9;
-  font-size:20px;
-  min-height:28px;
-  overflow:hidden;
+  font-size:19px;
   white-space:nowrap;
+  overflow:hidden;
 }
 
 .result{
   width:100%;
   text-align:right;
-  font-size:64px;
+  font-size:62px;
   font-weight:300;
-  overflow:hidden;
   white-space:nowrap;
+  overflow:hidden;
 }
 
-/* BUTTONS */
+/* KEYBOARD */
+
 .buttons{
-  height:400px;
-  min-height:400px;
+  height:390px;
+  min-height:390px;
   display:grid;
   grid-template-columns:repeat(4,1fr);
-  grid-template-rows:repeat(5,1fr);
   gap:12px;
 }
 
 button{
-  border:0;
+  border:none;
+  outline:none;
   color:white;
   background:#101a38;
-  height:100%;
-  border-radius:30px;
-  font-size:30px;
+  border-radius:23px;
+  font-size:27px;
   font-weight:700;
   touch-action:manipulation;
+  transition:transform .08s,filter .08s;
 }
 
 button:active{
-  transform:scale(.94);
-  filter:brightness(1.2);
+  transform:scale(.93);
+  filter:brightness(1.25);
 }
 
 .operator{
@@ -145,15 +145,16 @@ button:active{
   background:#315df5;
 }
 
-.zero{
-  grid-column:span 2;
+.plusminus{
+  background:#172650;
 }
 
 /* HISTORY */
+
 .overlay{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.55);
+  background:rgba(0,0,0,.62);
   display:none;
   z-index:100;
 }
@@ -219,61 +220,57 @@ button:active{
   font-weight:700;
 }
 
-/* VERY SMALL SCREENS */
+/* SMALL PHONES */
+
 @media(max-height:700px){
 
   .app{
-    padding-left:20px;
-    padding-right:20px;
-    padding-top:6px;
-    padding-bottom:6px;
+    padding:7px 18px;
   }
 
   .top{
-    height:58px;
-    min-height:58px;
+    height:54px;
+    min-height:54px;
   }
 
   .menu{
-    width:52px;
-    height:52px;
-    min-width:52px;
-    border-radius:20px;
-    font-size:30px;
+    width:50px;
+    height:50px;
+    border-radius:17px;
+    font-size:28px;
   }
 
   .logo{
-    font-size:32px;
+    font-size:31px;
   }
 
   .version{
-    font-size:15px;
+    font-size:14px;
   }
 
   .display{
-    margin-top:8px;
-    margin-bottom:10px;
-    padding:16px 20px;
-    border-radius:30px;
+    margin:7px 0 9px;
+    padding:15px 18px;
+    border-radius:28px;
   }
 
   .result{
-    font-size:52px;
+    font-size:50px;
   }
 
   .expression{
-    font-size:17px;
+    font-size:16px;
   }
 
   .buttons{
-    height:340px;
-    min-height:340px;
+    height:330px;
+    min-height:330px;
     gap:9px;
   }
 
   button{
-    border-radius:24px;
-    font-size:26px;
+    border-radius:20px;
+    font-size:24px;
   }
 }
 </style>
@@ -289,7 +286,7 @@ button:active{
 
     <div class="logo">KJ</div>
 
-    <div class="version">v1.5</div>
+    <div class="version">v1.6</div>
 
   </div>
 
@@ -323,7 +320,8 @@ button:active{
     <button onclick="number('3')">3</button>
     <button class="operator" onclick="setOperator('+')">+</button>
 
-    <button class="zero" onclick="number('0')">0</button>
+    <button class="plusminus" onclick="plusMinus()">±</button>
+    <button onclick="number('0')">0</button>
     <button onclick="decimal()">.</button>
     <button class="equals" onclick="calculate()">=</button>
 
@@ -365,111 +363,205 @@ let waiting = false;
 let history =
 JSON.parse(localStorage.getItem("kj_history") || "[]");
 
-const result = document.getElementById("result");
-const expression = document.getElementById("expression");
+const result =
+document.getElementById("result");
+
+const expression =
+document.getElementById("expression");
+
+
+/* FEEDBACK */
+
+function feedback(){
+
+  if(navigator.vibrate){
+    navigator.vibrate(8);
+  }
+
+}
+
+
+/* UPDATE */
 
 function update(){
   result.textContent = current;
 }
 
+
+/* NUMBER */
+
 function number(n){
+
+  feedback();
 
   if(current === "Error"){
     current = "0";
   }
 
   if(waiting){
+
     current = n;
     waiting = false;
+
   }else{
+
     if(current === "0"){
       current = n;
     }else{
       current += n;
     }
+
   }
 
   update();
 }
+
+
+/* DECIMAL */
 
 function decimal(){
 
+  feedback();
+
   if(waiting){
+
     current = "0.";
     waiting = false;
+
   }else if(!current.includes(".")){
+
     current += ".";
+
   }
 
   update();
 }
 
+
+/* PLUS / MINUS */
+
+function plusMinus(){
+
+  feedback();
+
+  if(current === "0" || current === "Error"){
+    return;
+  }
+
+  if(current.startsWith("-")){
+    current = current.substring(1);
+  }else{
+    current = "-" + current;
+  }
+
+  update();
+}
+
+
+/* OPERATOR */
+
 function setOperator(op){
 
-  if(current === "Error") return;
+  feedback();
+
+  if(current === "Error"){
+    return;
+  }
 
   if(operator !== null && !waiting){
     calculate(false);
   }
 
   firstNumber = parseFloat(current);
+
   operator = op;
+
   waiting = true;
 
   expression.textContent =
     firstNumber + " " + showOperator(op);
 }
 
+
+/* CALCULATE */
+
 function calculate(save=true){
+
+  feedback();
 
   if(operator === null || firstNumber === null){
     return;
   }
 
-  let secondNumber = parseFloat(current);
+  const secondNumber =
+    parseFloat(current);
+
   let answer;
 
+
   if(operator === "+"){
-    answer = firstNumber + secondNumber;
+    answer =
+      firstNumber + secondNumber;
   }
+
 
   if(operator === "-"){
-    answer = firstNumber - secondNumber;
+    answer =
+      firstNumber - secondNumber;
   }
 
+
   if(operator === "*"){
-    answer = firstNumber * secondNumber;
+    answer =
+      firstNumber * secondNumber;
   }
+
 
   if(operator === "/"){
 
     if(secondNumber === 0){
 
       current = "Error";
+
       firstNumber = null;
       operator = null;
       waiting = true;
 
       update();
+
       return;
     }
 
-    answer = firstNumber / secondNumber;
+    answer =
+      firstNumber / secondNumber;
+
   }
+
 
   answer = format(answer);
 
-  let fullExpression =
+
+  const fullExpression =
     firstNumber + " " +
     showOperator(operator) + " " +
     secondNumber;
 
+
   current = answer;
-  expression.textContent = fullExpression;
+
+  expression.textContent =
+    fullExpression;
+
 
   if(save){
-    addHistory(fullExpression, answer);
+
+    addHistory(
+      fullExpression,
+      answer
+    );
+
   }
+
 
   firstNumber = null;
   operator = null;
@@ -478,6 +570,9 @@ function calculate(save=true){
   update();
 }
 
+
+/* FORMAT */
+
 function format(num){
 
   if(!Number.isFinite(num)){
@@ -485,9 +580,14 @@ function format(num){
   }
 
   return String(
-    parseFloat(num.toFixed(10))
+    parseFloat(
+      num.toFixed(10)
+    )
   );
 }
+
+
+/* OPERATOR SYMBOL */
 
 function showOperator(op){
 
@@ -498,31 +598,57 @@ function showOperator(op){
   return op;
 }
 
+
+/* PERCENT */
+
 function percent(){
 
-  let value = parseFloat(current);
+  feedback();
 
-  if(isNaN(value)) return;
+  const value =
+    parseFloat(current);
 
-  current = format(value / 100);
+  if(isNaN(value)){
+    return;
+  }
+
+  current =
+    format(value / 100);
 
   update();
 }
 
+
+/* BACKSPACE */
+
 function backspace(){
 
-  if(waiting) return;
+  feedback();
+
+  if(waiting){
+    return;
+  }
 
   if(current.length <= 1){
+
     current = "0";
+
   }else{
-    current = current.slice(0,-1);
+
+    current =
+      current.slice(0,-1);
+
   }
 
   update();
 }
 
+
+/* CLEAR */
+
 function clearAll(){
+
+  feedback();
 
   current = "0";
   firstNumber = null;
@@ -533,6 +659,7 @@ function clearAll(){
 
   update();
 }
+
 
 /* HISTORY */
 
@@ -553,7 +680,10 @@ function addHistory(exp,res){
   );
 }
 
+
 function openHistory(){
+
+  feedback();
 
   renderHistory();
 
@@ -562,6 +692,7 @@ function openHistory(){
     .classList.add("show");
 }
 
+
 function closeHistory(){
 
   document
@@ -569,12 +700,14 @@ function closeHistory(){
     .classList.remove("show");
 }
 
+
 function renderHistory(){
 
   const list =
     document.getElementById("historyList");
 
   list.innerHTML = "";
+
 
   if(history.length === 0){
 
@@ -584,14 +717,17 @@ function renderHistory(){
     return;
   }
 
+
   history.forEach((item)=>{
 
     const div =
       document.createElement("div");
 
-    div.className = "history-item";
+    div.className =
+      "history-item";
 
     div.innerHTML =
+
       '<div class="history-expression">' +
       item.expression +
       '</div>' +
@@ -600,9 +736,11 @@ function renderHistory(){
       item.result +
       '</div>';
 
+
     div.onclick = function(){
 
-      current = item.result;
+      current =
+        item.result;
 
       firstNumber = null;
       operator = null;
@@ -614,31 +752,47 @@ function renderHistory(){
       update();
 
       closeHistory();
+
     };
+
 
     list.appendChild(div);
 
   });
 }
 
+
 function clearHistory(){
+
+  feedback();
 
   history = [];
 
-  localStorage.removeItem("kj_history");
+  localStorage.removeItem(
+    "kj_history"
+  );
 
   renderHistory();
 }
 
+
+/* CLOSE HISTORY OUTSIDE */
+
 document
 .getElementById("overlay")
-.addEventListener("click",function(e){
+.addEventListener(
+  "click",
+  function(e){
 
-  if(e.target === this){
-    closeHistory();
+    if(e.target === this){
+      closeHistory();
+    }
+
   }
+);
 
-});
+
+/* START */
 
 update();
 
