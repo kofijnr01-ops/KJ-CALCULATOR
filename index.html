@@ -31,33 +31,37 @@ body{
   width:100%;
   max-width:520px;
   height:100dvh;
-  padding:18px 30px 14px;
+  padding:10px 30px 10px;
   position:relative;
+  display:flex;
+  flex-direction:column;
 }
 
 /* TOP */
 .top{
-  height:86px;
+  height:72px;
+  min-height:72px;
   display:flex;
   align-items:center;
   justify-content:space-between;
 }
 
 .menu{
-  width:70px;
-  height:70px;
+  width:62px;
+  height:62px;
+  min-width:62px;
   border-radius:25px;
   background:#101a38;
   border:1px solid #233968;
   color:white;
-  font-size:40px;
+  font-size:36px;
   display:flex;
   align-items:center;
   justify-content:center;
 }
 
 .logo{
-  font-size:42px;
+  font-size:40px;
   font-weight:800;
   letter-spacing:2px;
 }
@@ -69,10 +73,11 @@ body{
 
 /* DISPLAY */
 .display{
-  height:332px;
-  margin-top:18px;
-  margin-bottom:28px;
-  padding:25px 28px;
+  flex:1;
+  min-height:0;
+  margin-top:12px;
+  margin-bottom:18px;
+  padding:22px 28px;
   border-radius:38px;
   background:#0d1530;
   border:1px solid #243968;
@@ -87,8 +92,8 @@ body{
   width:100%;
   text-align:right;
   color:#7180a9;
-  font-size:22px;
-  min-height:30px;
+  font-size:20px;
+  min-height:28px;
   overflow:hidden;
   white-space:nowrap;
 }
@@ -96,7 +101,7 @@ body{
 .result{
   width:100%;
   text-align:right;
-  font-size:72px;
+  font-size:64px;
   font-weight:300;
   overflow:hidden;
   white-space:nowrap;
@@ -104,19 +109,23 @@ body{
 
 /* BUTTONS */
 .buttons{
+  height:400px;
+  min-height:400px;
   display:grid;
   grid-template-columns:repeat(4,1fr);
-  gap:18px;
+  grid-template-rows:repeat(5,1fr);
+  gap:12px;
 }
 
 button{
   border:0;
   color:white;
   background:#101a38;
-  height:82px;
+  height:100%;
   border-radius:30px;
   font-size:30px;
   font-weight:700;
+  touch-action:manipulation;
 }
 
 button:active{
@@ -210,40 +219,61 @@ button:active{
   font-weight:700;
 }
 
-/* SMALL PHONE */
-@media(max-height:800px){
+/* VERY SMALL SCREENS */
+@media(max-height:700px){
+
   .app{
-    padding-top:10px;
-    padding-left:30px;
-    padding-right:30px;
+    padding-left:20px;
+    padding-right:20px;
+    padding-top:6px;
+    padding-bottom:6px;
   }
 
   .top{
-    height:72px;
+    height:58px;
+    min-height:58px;
   }
 
   .menu{
-    width:62px;
-    height:62px;
-    font-size:34px;
+    width:52px;
+    height:52px;
+    min-width:52px;
+    border-radius:20px;
+    font-size:30px;
   }
 
   .logo{
-    font-size:36px;
+    font-size:32px;
+  }
+
+  .version{
+    font-size:15px;
   }
 
   .display{
-    height:300px;
-    margin-top:12px;
-    margin-bottom:18px;
+    margin-top:8px;
+    margin-bottom:10px;
+    padding:16px 20px;
+    border-radius:30px;
+  }
+
+  .result{
+    font-size:52px;
+  }
+
+  .expression{
+    font-size:17px;
   }
 
   .buttons{
-    gap:12px;
+    height:340px;
+    min-height:340px;
+    gap:9px;
   }
 
   button{
-    height:76px;
+    border-radius:24px;
+    font-size:26px;
   }
 }
 </style>
@@ -263,7 +293,6 @@ button:active{
 
   </div>
 
-
   <div class="display">
 
     <div class="expression" id="expression"></div>
@@ -271,7 +300,6 @@ button:active{
     <div class="result" id="result">0</div>
 
   </div>
-
 
   <div class="buttons">
 
@@ -303,7 +331,6 @@ button:active{
 
 </div>
 
-
 <!-- HISTORY -->
 
 <div class="overlay" id="overlay">
@@ -328,7 +355,6 @@ button:active{
 
 </div>
 
-
 <script>
 
 let current = "0";
@@ -339,17 +365,12 @@ let waiting = false;
 let history =
 JSON.parse(localStorage.getItem("kj_history") || "[]");
 
-
 const result = document.getElementById("result");
 const expression = document.getElementById("expression");
 
-
 function update(){
-
   result.textContent = current;
-
 }
-
 
 function number(n){
 
@@ -358,42 +379,30 @@ function number(n){
   }
 
   if(waiting){
-
     current = n;
     waiting = false;
-
   }else{
-
     if(current === "0"){
       current = n;
     }else{
       current += n;
     }
-
   }
 
   update();
-
 }
-
 
 function decimal(){
 
   if(waiting){
-
     current = "0.";
     waiting = false;
-
   }else if(!current.includes(".")){
-
     current += ".";
-
   }
 
   update();
-
 }
-
 
 function setOperator(op){
 
@@ -404,16 +413,12 @@ function setOperator(op){
   }
 
   firstNumber = parseFloat(current);
-
   operator = op;
-
   waiting = true;
 
   expression.textContent =
     firstNumber + " " + showOperator(op);
-
 }
-
 
 function calculate(save=true){
 
@@ -422,7 +427,6 @@ function calculate(save=true){
   }
 
   let secondNumber = parseFloat(current);
-
   let answer;
 
   if(operator === "+"){
@@ -442,53 +446,37 @@ function calculate(save=true){
     if(secondNumber === 0){
 
       current = "Error";
-
       firstNumber = null;
       operator = null;
       waiting = true;
 
       update();
-
       return;
     }
 
     answer = firstNumber / secondNumber;
-
   }
 
-
   answer = format(answer);
-
 
   let fullExpression =
     firstNumber + " " +
     showOperator(operator) + " " +
     secondNumber;
 
-
   current = answer;
-
   expression.textContent = fullExpression;
 
-
   if(save){
-
-    addHistory(
-      fullExpression,
-      answer
-    );
-
+    addHistory(fullExpression, answer);
   }
-
 
   firstNumber = null;
   operator = null;
   waiting = true;
 
   update();
-
 }
-
 
 function format(num){
 
@@ -499,9 +487,7 @@ function format(num){
   return String(
     parseFloat(num.toFixed(10))
   );
-
 }
-
 
 function showOperator(op){
 
@@ -510,9 +496,7 @@ function showOperator(op){
   if(op === "-") return "−";
 
   return op;
-
 }
-
 
 function percent(){
 
@@ -523,29 +507,20 @@ function percent(){
   current = format(value / 100);
 
   update();
-
 }
-
 
 function backspace(){
 
   if(waiting) return;
 
   if(current.length <= 1){
-
     current = "0";
-
   }else{
-
-    current =
-      current.slice(0,-1);
-
+    current = current.slice(0,-1);
   }
 
   update();
-
 }
-
 
 function clearAll(){
 
@@ -557,9 +532,7 @@ function clearAll(){
   expression.textContent = "";
 
   update();
-
 }
-
 
 /* HISTORY */
 
@@ -578,9 +551,7 @@ function addHistory(exp,res){
     "kj_history",
     JSON.stringify(history)
   );
-
 }
-
 
 function openHistory(){
 
@@ -589,18 +560,14 @@ function openHistory(){
   document
     .getElementById("overlay")
     .classList.add("show");
-
 }
-
 
 function closeHistory(){
 
   document
     .getElementById("overlay")
     .classList.remove("show");
-
 }
-
 
 function renderHistory(){
 
@@ -615,11 +582,9 @@ function renderHistory(){
       '<div style="text-align:center;color:#7180a9;padding:30px 0;">No calculations yet</div>';
 
     return;
-
   }
 
-
-  history.forEach((item,index)=>{
+  history.forEach((item)=>{
 
     const div =
       document.createElement("div");
@@ -627,7 +592,6 @@ function renderHistory(){
     div.className = "history-item";
 
     div.innerHTML =
-
       '<div class="history-expression">' +
       item.expression +
       '</div>' +
@@ -635,7 +599,6 @@ function renderHistory(){
       '<div class="history-result">= ' +
       item.result +
       '</div>';
-
 
     div.onclick = function(){
 
@@ -651,16 +614,12 @@ function renderHistory(){
       update();
 
       closeHistory();
-
     };
-
 
     list.appendChild(div);
 
   });
-
 }
-
 
 function clearHistory(){
 
@@ -669,9 +628,7 @@ function clearHistory(){
   localStorage.removeItem("kj_history");
 
   renderHistory();
-
 }
-
 
 document
 .getElementById("overlay")
@@ -682,7 +639,6 @@ document
   }
 
 });
-
 
 update();
 
