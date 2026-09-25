@@ -828,4 +828,1204 @@ body.light .trash-btn{
 
 <div id="app">
 
-<!--
+<!-- SPLASH -->
+<div class="splash" id="splash">
+ <div class="splash-box">
+  <div class="splash-logo">KJ</div>
+  <div class="splash-title">KJ Calculator</div>
+  <div class="splash-version">v2.0</div>
+  <div class="splash-text">Calculate More. Do More.</div>
+ </div>
+</div>
+
+<!-- CALCULATOR -->
+<section class="screen active" id="calculatorScreen">
+
+ <div class="topbar">
+  <button class="menu-btn" onclick="openDrawer()">☰</button>
+
+  <div>
+   <span class="top-title">KJ</span>
+   <span class="top-version">v2.0</span>
+  </div>
+
+  <div style="width:48px"></div>
+ </div>
+
+ <div class="calc-body">
+
+  <div class="display">
+   <div class="expression" id="expression"></div>
+
+   <div class="result" id="result">0</div>
+
+   <div class="display-line">
+    <span>⌁</span>
+    <span id="memoryDisplay">0</span>
+    <span class="divider"></span>
+    <span id="lastOperator"></span>
+    <span id="lastNumber"></span>
+   </div>
+  </div>
+
+  <div class="keys">
+
+   <button class="key ac" onclick="clearCalc()">AC</button>
+   <button class="key advanced" onclick="openAdvanced()">()</button>
+   <button class="key advanced" onclick="percent()">%</button>
+   <button class="key blue" onclick="inputOperator('/')">÷</button>
+
+   <button class="key" onclick="inputNumber('7')">7</button>
+   <button class="key" onclick="inputNumber('8')">8</button>
+   <button class="key" onclick="inputNumber('9')">9</button>
+   <button class="key blue" onclick="inputOperator('*')">×</button>
+
+   <button class="key" onclick="inputNumber('4')">4</button>
+   <button class="key" onclick="inputNumber('5')">5</button>
+   <button class="key" onclick="inputNumber('6')">6</button>
+   <button class="key blue" onclick="inputOperator('-')">−</button>
+
+   <button class="key" onclick="inputNumber('1')">1</button>
+   <button class="key" onclick="inputNumber('2')">2</button>
+   <button class="key" onclick="inputNumber('3')">3</button>
+   <button class="key blue" onclick="inputOperator('+')">+</button>
+
+   <button class="key advanced" onclick="advancedFunction('sqrt')">√</button>
+   <button class="key" onclick="inputNumber('0')">0</button>
+   <button class="key" onclick="decimal()">.</button>
+   <button class="key equals" onclick="calculate()">=</button>
+
+  </div>
+
+ </div>
+</section>
+
+<!-- HISTORY -->
+<section class="screen" id="historyScreen">
+
+ <div class="history-top">
+  <button class="back-btn" onclick="showScreen('calculator')">‹</button>
+  <div class="history-title">History</div>
+  <button class="trash-btn" onclick="clearHistory()">♜</button>
+ </div>
+
+ <div class="search">
+  <span>⌕</span>
+  <input id="historySearch" placeholder="Search calculations..." oninput="renderHistory()">
+ </div>
+
+ <div class="history-list" id="historyList"></div>
+
+ <button class="clear-history" onclick="clearHistory()">
+  ♜ &nbsp; Clear All History
+ </button>
+
+</section>
+
+<!-- SETTINGS -->
+<section class="screen" id="settingsScreen">
+
+ <div class="settings-head">
+  <button class="back-btn" onclick="showScreen('calculator')">‹</button>
+  <div class="settings-title">Settings</div>
+ </div>
+
+ <div class="settings-scroll">
+
+  <div class="section">
+
+   <div class="section-title">🎨 &nbsp; Appearance</div>
+
+   <div class="setting">
+    <div class="setting-icon">◩</div>
+    <div class="setting-info">
+     <div class="setting-name">Theme</div>
+     <div class="setting-desc">Choose your preferred theme</div>
+    </div>
+    <div class="setting-arrow">›</div>
+   </div>
+
+   <div class="theme-options">
+    <button class="theme-option selected" id="darkTheme" onclick="setTheme('dark')">
+     ◐
+     <span>Dark</span>
+    </button>
+
+    <button class="theme-option theme-light" id="lightTheme" onclick="setTheme('light')">
+     ◑
+     <span>Light</span>
+    </button>
+
+    <button class="theme-option theme-auto" id="autoTheme" onclick="setTheme('auto')">
+     ◐
+     <span>Auto</span>
+    </button>
+   </div>
+
+   <div class="setting" onclick="changeAccent()">
+    <div class="setting-icon">◉</div>
+    <div class="setting-info">
+     <div class="setting-name">Accent Color</div>
+     <div class="setting-desc">Choose KJ's accent color</div>
+    </div>
+    <div class="setting-arrow">›</div>
+   </div>
+
+   <div class="setting" onclick="toggleSetting('sound')">
+    <div class="setting-icon">◌</div>
+    <div class="setting-info">
+     <div class="setting-name">Button Sound</div>
+     <div class="setting-desc">Play sound when pressing buttons</div>
+    </div>
+    <div class="toggle on" id="soundToggle"><span></span></div>
+   </div>
+
+   <div class="setting" onclick="toggleSetting('vibration')">
+    <div class="setting-icon">♬</div>
+    <div class="setting-info">
+     <div class="setting-name">Vibration</div>
+     <div class="setting-desc">Vibrate on button press</div>
+    </div>
+    <div class="toggle on" id="vibrationToggle"><span></span></div>
+   </div>
+
+  </div>
+
+  <div class="section">
+
+   <div class="section-title">▣ &nbsp; Calculator</div>
+
+   <div class="setting" onclick="changePrecision()">
+    <div class="setting-icon">▦</div>
+    <div class="setting-info">
+     <div class="setting-name">Decimal Precision</div>
+     <div class="setting-desc">Number of decimal places</div>
+    </div>
+    <span id="precisionValue">10</span>
+    <div class="setting-arrow">›</div>
+   </div>
+
+   <div class="setting" onclick="toggleSetting('auto')">
+    <div class="setting-icon">◌</div>
+    <div class="setting-info">
+     <div class="setting-name">Auto Calculation</div>
+     <div class="setting-desc">Calculate as you type</div>
+    </div>
+    <div class="toggle on" id="autoToggle"><span></span></div>
+   </div>
+
+   <div class="setting" onclick="toggleSetting('parentheses')">
+    <div class="setting-icon">( )</div>
+    <div class="setting-info">
+     <div class="setting-name">Parentheses Support</div>
+     <div class="setting-desc">Use ( ) for advanced calculations</div>
+    </div>
+    <div class="toggle on" id="parenthesesToggle"><span></span></div>
+   </div>
+
+  </div>
+
+  <div class="section">
+
+   <div class="section-title">▱ &nbsp; Data</div>
+
+   <div class="setting" onclick="clearHistory()">
+    <div class="setting-icon">▣</div>
+    <div class="setting-info">
+     <div class="setting-name">Clear History</div>
+     <div class="setting-desc">Remove all saved calculations</div>
+    </div>
+    <div class="setting-arrow">›</div>
+   </div>
+
+  </div>
+
+ </div>
+</section>
+
+<!-- ADVANCED -->
+<section class="screen" id="advancedScreen">
+
+ <div class="settings-head">
+  <button class="back-btn" onclick="showScreen('calculator')">‹</button>
+  <div class="settings-title">Advanced Functions</div>
+ </div>
+
+ <div class="advanced-body">
+
+  <div class="advanced-grid">
+   <button class="adv-btn" onclick="advancedFunction('sqrt')">√</button>
+   <button class="adv-btn" onclick="advancedFunction('square')">x²</button>
+   <button class="adv-btn" onclick="inputOperator('^')">xʸ</button>
+
+   <button class="adv-btn" onclick="parentheses()">()</button>
+   <button class="adv-btn" onclick="percent()">%</button>
+   <button class="adv-btn" onclick="toggleSign()">+/−</button>
+  </div>
+
+  <div class="examples">
+
+   <div class="examples-title">Example Calculations</div>
+
+   <div class="example">
+    <span>√144</span>
+    <b>= 12</b>
+   </div>
+
+   <div class="example">
+    <span>5²</span>
+    <b>= 25</b>
+   </div>
+
+   <div class="example">
+    <span>2²</span>
+    <b>= 4</b>
+   </div>
+
+   <div class="example">
+    <span>(5 + 3) × 2</span>
+    <b>= 16</b>
+   </div>
+
+   <div class="example">
+    <span>10 ÷ (5 − 3)</span>
+    <b>= 5</b>
+   </div>
+
+  </div>
+
+ </div>
+</section>
+
+<!-- DRAWER -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+
+<div class="drawer" id="drawer">
+
+ <div class="drawer-logo">
+  <div class="drawer-logo-box">KJ</div>
+  <div>
+   <div class="drawer-name">KJ Calculator</div>
+   <div class="drawer-version">Version 2.0</div>
+  </div>
+ </div>
+
+ <div class="nav">
+
+  <button class="active" onclick="navigate('calculator')">
+   <span class="nav-icon">▦</span> Calculator
+  </button>
+
+  <button onclick="navigate('history')">
+   <span class="nav-icon">◷</span> History
+  </button>
+
+  <button onclick="navigate('advanced')">
+   <span class="nav-icon">√</span> Advanced Functions
+  </button>
+
+  <button onclick="navigate('settings')">
+   <span class="nav-icon">⚙</span> Settings
+  </button>
+
+ </div>
+
+</div>
+
+<!-- SHARE MODAL -->
+<div class="modal-bg" id="shareModal">
+
+ <div class="modal">
+
+  <h2>Calculation</h2>
+
+  <div class="modal-result" id="shareResult">0</div>
+
+  <button class="modal-btn primary" onclick="copyResult()">
+   ▣ &nbsp; Copy Result
+  </button>
+
+  <button class="modal-btn" onclick="shareCalculation()">
+   ⤴ &nbsp; Share Calculation
+  </button>
+
+  <button class="modal-btn cancel" onclick="closeModal()">
+   Cancel
+  </button>
+
+ </div>
+
+</div>
+
+</div>
+
+<script>
+/* =========================
+   KJ CALCULATOR v2.0
+========================= */
+
+let expression="";
+let result="0";
+let lastExpression="";
+let memory=0;
+
+let settings={
+ sound:true,
+ vibration:true,
+ auto:true,
+ parentheses:true,
+ precision:10,
+ theme:"dark"
+};
+
+let history=[];
+
+/* STORAGE */
+
+function loadData(){
+
+ try{
+  history=JSON.parse(localStorage.getItem("KJ_HISTORY")||"[]");
+ }catch(e){
+  history=[];
+ }
+
+ try{
+  let saved=JSON.parse(localStorage.getItem("KJ_SETTINGS")||"null");
+
+  if(saved){
+   settings={...settings,...saved};
+  }
+ }catch(e){}
+
+ applySettings();
+ renderHistory();
+}
+
+function saveData(){
+
+ try{
+  localStorage.setItem("KJ_HISTORY",JSON.stringify(history));
+  localStorage.setItem("KJ_SETTINGS",JSON.stringify(settings));
+ }catch(e){}
+}
+
+/* SCREEN */
+
+function showScreen(name){
+
+ document.querySelectorAll(".screen").forEach(s=>{
+  s.classList.remove("active");
+ });
+
+ if(name==="calculator"){
+  document.getElementById("calculatorScreen").classList.add("active");
+ }
+
+ if(name==="history"){
+  document.getElementById("historyScreen").classList.add("active");
+  renderHistory();
+ }
+
+ if(name==="settings"){
+  document.getElementById("settingsScreen").classList.add("active");
+ }
+
+ if(name==="advanced"){
+  document.getElementById("advancedScreen").classList.add("active");
+ }
+}
+
+function navigate(name){
+ closeDrawer();
+ showScreen(name);
+}
+
+function openDrawer(){
+ document.getElementById("drawer").classList.add("open");
+ document.getElementById("drawerOverlay").classList.add("open");
+}
+
+function closeDrawer(){
+ document.getElementById("drawer").classList.remove("open");
+ document.getElementById("drawerOverlay").classList.remove("open");
+}
+
+function openAdvanced(){
+ showScreen("advanced");
+}
+
+/* INPUT */
+
+function inputNumber(n){
+
+ tap();
+
+ if(result!=="0" && !expression){
+  result="";
+ }
+
+ expression+=n;
+
+ updateDisplay();
+
+ autoPreview();
+}
+
+function decimal(){
+
+ tap();
+
+ if(!expression){
+  expression="0.";
+ }else{
+
+  let part=expression.split(/[+\-*\/^()]/).pop();
+
+  if(!part.includes(".")){
+   expression+=".";
+  }
+ }
+
+ updateDisplay();
+}
+
+function inputOperator(op){
+
+ tap();
+
+ if(!expression){
+  if(result!=="0"){
+   expression=result;
+  }else{
+   return;
+  }
+ }
+
+ let last=expression.slice(-1);
+
+ if(/[+\-*\/^]/.test(last)){
+  expression=expression.slice(0,-1)+op;
+ }else{
+  expression+=op;
+ }
+
+ updateDisplay();
+ autoPreview();
+}
+
+function parentheses(){
+
+ tap();
+
+ if(!settings.parentheses)return;
+
+ if(!expression){
+  expression="(";
+ }else{
+
+  let opens=(expression.match(/\(/g)||[]).length;
+  let closes=(expression.match(/\)/g)||[]).length;
+  let last=expression.slice(-1);
+
+  if(opens>closes && /[0-9)]/.test(last)){
+   expression+=")";
+  }else if(/[0-9)]/.test(last)){
+   expression+="*(";
+  }else{
+   expression+="(";
+  }
+ }
+
+ updateDisplay();
+}
+
+function percent(){
+
+ tap();
+
+ if(!expression)return;
+
+ try{
+  let value=evaluate(expression);
+  expression=formatNumber(value/100);
+  updateDisplay();
+ }catch(e){
+  expression=expression+"%";
+  updateDisplay();
+ }
+}
+
+function toggleSign(){
+
+ tap();
+
+ if(!expression){
+  expression="-";
+  updateDisplay();
+  return;
+ }
+
+ if(expression.startsWith("-")){
+  expression=expression.substring(1);
+ }else{
+  expression="-"+expression;
+ }
+
+ updateDisplay();
+}
+
+function clearCalc(){
+
+ tap();
+
+ expression="";
+ result="0";
+ lastExpression="";
+
+ updateDisplay();
+
+ document.getElementById("lastOperator").textContent="";
+ document.getElementById("lastNumber").textContent="";
+}
+
+/* CALCULATE */
+
+function calculate(){
+
+ tap();
+
+ if(!expression)return;
+
+ try{
+
+  let answer=evaluate(expression);
+
+  if(!Number.isFinite(answer)){
+   throw new Error();
+  }
+
+  answer=formatNumber(answer);
+
+  lastExpression=expression;
+
+  addHistory(expression,answer);
+
+  result=answer;
+
+  document.getElementById("lastNumber").textContent=answer;
+
+  let op=expression.match(/[+\-*\/^]/g);
+
+  document.getElementById("lastOperator").textContent=
+   op ? displayOperator(op[op.length-1]) : "";
+
+  expression="";
+
+  updateDisplay();
+
+ }catch(e){
+
+  result="Error";
+  updateDisplay();
+
+  setTimeout(()=>{
+   result="0";
+   updateDisplay();
+  },1000);
+ }
+}
+
+function autoPreview(){
+
+ if(!settings.auto)return;
+
+ if(!expression)return;
+
+ try{
+
+  let answer=evaluate(expression);
+
+  if(Number.isFinite(answer)){
+   result=formatNumber(answer);
+  }
+
+ }catch(e){}
+}
+
+function updateDisplay(){
+
+ let shownExpression=expression
+  .replace(/\*/g,"×")
+  .replace(/\//g,"÷")
+  .replace(/-/g,"−")
+  .replace(/\^/g,"^");
+
+ document.getElementById("expression").textContent=
+  shownExpression || lastExpression || "";
+
+ document.getElementById("result").textContent=result;
+ document.getElementById("memoryDisplay").textContent=
+  formatNumber(memory);
+}
+
+function displayOperator(op){
+
+ return op==="*"?"×":
+ op==="/"?"÷":
+ op==="-"?"−":
+ op;
+}
+
+/* MATH ENGINE */
+
+function evaluate(input){
+
+ input=input.replace(/\s/g,"");
+
+ if(!input)return 0;
+
+ let tokens=tokenize(input);
+ let output=[];
+ let operators=[];
+
+ const precedence={
+  "+":1,
+  "-":1,
+  "*":2,
+  "/":2,
+  "^":3
+ };
+
+ tokens.forEach(token=>{
+
+  if(typeof token==="number"){
+   output.push(token);
+  }
+
+  else if(token==="("){
+   operators.push(token);
+  }
+
+  else if(token===")"){
+
+   while(
+    operators.length &&
+    operators[operators.length-1]!=="("
+   ){
+    output.push(operators.pop());
+   }
+
+   if(operators.pop()!=="("){
+    throw new Error();
+   }
+  }
+
+  else{
+
+   while(
+    operators.length &&
+    operators[operators.length-1]!=="(" &&
+    precedence[operators[operators.length-1]]>=precedence[token]
+   ){
+    output.push(operators.pop());
+   }
+
+   operators.push(token);
+  }
+ });
+
+ while(operators.length){
+  let op=operators.pop();
+
+  if(op==="(")throw new Error();
+
+  output.push(op);
+ }
+
+ let stack=[];
+
+ output.forEach(token=>{
+
+  if(typeof token==="number"){
+   stack.push(token);
+   return;
+  }
+
+  let b=stack.pop();
+  let a=stack.pop();
+
+  if(a===undefined || b===undefined){
+   throw new Error();
+  }
+
+  let r;
+
+  if(token==="+")r=a+b;
+  if(token==="-")r=a-b;
+  if(token==="*")r=a*b;
+  if(token==="/"){
+   if(b===0)throw new Error();
+   r=a/b;
+  }
+  if(token==="^")r=Math.pow(a,b);
+
+  stack.push(r);
+ });
+
+ if(stack.length!==1)throw new Error();
+
+ return stack[0];
+}
+
+function tokenize(input){
+
+ let tokens=[];
+ let number="";
+
+ for(let i=0;i<input.length;i++){
+
+  let c=input[i];
+
+  if(/[0-9.]/.test(c)){
+   number+=c;
+   continue;
+  }
+
+  if(number){
+   let n=Number(number);
+
+   if(!Number.isFinite(n))throw new Error();
+
+   tokens.push(n);
+   number="";
+  }
+
+  if("+-*/^()".includes(c)){
+
+   if(
+    c==="-" &&
+    (
+     tokens.length===0 ||
+     tokens[tokens.length-1]==="(" ||
+     "+-*/^".includes(tokens[tokens.length-1])
+    )
+   ){
+    number="-";
+   }else{
+    tokens.push(c);
+   }
+  }
+ }
+
+ if(number){
+
+  if(number==="-")throw new Error();
+
+  tokens.push(Number(number));
+ }
+
+ return tokens;
+}
+
+function formatNumber(n){
+
+ if(!Number.isFinite(n))return "Error";
+
+ let p=Number(settings.precision)||10;
+
+ let rounded=
+  Math.round((n+Number.EPSILON)*10**p)/10**p;
+
+ return String(rounded);
+}
+
+/* ADVANCED */
+
+function advancedFunction(type){
+
+ tap();
+
+ if(!expression && result==="0")return;
+
+ let value;
+
+ try{
+  value=expression ? evaluate(expression) : Number(result);
+ }catch(e){
+  return;
+ }
+
+ if(type==="sqrt"){
+  if(value<0){
+   result="Error";
+  }else{
+   result=formatNumber(Math.sqrt(value));
+  }
+ }
+
+ if(type==="square"){
+  result=formatNumber(value*value);
+ }
+
+ expression="";
+ updateDisplay();
+}
+
+function openShare(value){
+
+ document.getElementById("shareResult").textContent=value;
+ document.getElementById("shareModal").classList.add("open");
+}
+
+function closeModal(){
+ document.getElementById("shareModal").classList.remove("open");
+}
+
+function copyResult(){
+
+ let value=document.getElementById("shareResult").textContent;
+
+ navigator.clipboard.writeText(value).then(()=>{
+  closeModal();
+ }).catch(()=>{
+  alert("Result: "+value);
+ });
+}
+
+async function shareCalculation(){
+
+ let value=document.getElementById("shareResult").textContent;
+
+ if(navigator.share){
+
+  try{
+   await navigator.share({
+    title:"KJ Calculator",
+    text:"KJ Calculator result: "+value
+   });
+  }catch(e){}
+
+ }else{
+  copyResult();
+ }
+}
+
+/* HISTORY */
+
+function addHistory(exp,res){
+
+ history.unshift({
+  expression:exp,
+  result:res,
+  time:Date.now()
+ });
+
+ if(history.length>100){
+  history=history.slice(0,100);
+ }
+
+ saveData();
+ renderHistory();
+}
+
+function renderHistory(){
+
+ let list=document.getElementById("historyList");
+
+ if(!list)return;
+
+ let search=
+  (document.getElementById("historySearch")?.value||"")
+  .toLowerCase();
+
+ let filtered=history.filter(item=>
+  item.expression.toLowerCase().includes(search) ||
+  String(item.result).includes(search)
+ );
+
+ if(!filtered.length){
+
+  list.innerHTML=
+   '<div style="text-align:center;color:#8498c0;margin-top:60px">No calculations yet</div>';
+
+  return;
+ }
+
+ list.innerHTML=filtered.map(item=>{
+
+  let date=new Date(item.time);
+
+  let time=date.toLocaleTimeString([],{
+   hour:"numeric",
+   minute:"2-digit"
+  });
+
+  let exp=item.expression
+   .replace(/\*/g,"×")
+   .replace(/\//g,"÷")
+   .replace(/-/g,"−");
+
+  return `
+   <div class="history-item" onclick="reuseHistory(${item.time})">
+
+    <div class="history-icon">◷</div>
+
+    <div class="history-info">
+     <div class="history-expression">${escapeHTML(exp)}</div>
+     <div class="history-result">= ${escapeHTML(item.result)}</div>
+     <div class="history-time">Today, ${time}</div>
+    </div>
+
+    <div class="history-arrow">›</div>
+
+   </div>
+  `;
+
+ }).join("");
+}
+
+function reuseHistory(time){
+
+ let item=history.find(x=>x.time===time);
+
+ if(!item)return;
+
+ expression=item.expression;
+ result=item.result;
+
+ showScreen("calculator");
+ updateDisplay();
+}
+
+function clearHistory(){
+
+ if(!history.length)return;
+
+ if(confirm("Clear all KJ Calculator history?")){
+
+  history=[];
+  saveData();
+  renderHistory();
+ }
+}
+
+function escapeHTML(value){
+
+ return String(value)
+ .replaceAll("&","&amp;")
+ .replaceAll("<","&lt;")
+ .replaceAll(">","&gt;")
+ .replaceAll('"',"&quot;")
+ .replaceAll("'","&#039;");
+}
+
+/* SETTINGS */
+
+function toggleSetting(type){
+
+ settings[type]=!settings[type];
+
+ updateToggle(type);
+ saveData();
+ tap(false);
+}
+
+function updateToggle(type){
+
+ let id=
+  type==="sound"?"soundToggle":
+  type==="vibration"?"vibrationToggle":
+  type==="auto"?"autoToggle":
+  "parenthesesToggle";
+
+ let el=document.getElementById(id);
+
+ if(!el)return;
+
+ el.classList.toggle("on",settings[type]);
+}
+
+function changePrecision(){
+
+ let value=prompt(
+  "Decimal precision (0 - 15):",
+  settings.precision
+ );
+
+ if(value===null)return;
+
+ value=parseInt(value);
+
+ if(!Number.isFinite(value))return;
+
+ value=Math.max(0,Math.min(15,value));
+
+ settings.precision=value;
+
+ document.getElementById("precisionValue").textContent=value;
+
+ saveData();
+}
+
+function changeAccent(){
+
+ let color=prompt(
+  "Enter an accent color:",
+  getComputedStyle(document.documentElement)
+   .getPropertyValue("--blue")
+   .trim()
+ );
+
+ if(!color)return;
+
+ document.documentElement.style.setProperty("--blue",color);
+ document.documentElement.style.setProperty("--blue2",color);
+
+ saveData();
+}
+
+function setTheme(theme){
+
+ settings.theme=theme;
+
+ if(theme==="light"){
+  document.body.classList.add("light");
+ }
+
+ else if(theme==="dark"){
+  document.body.classList.remove("light");
+ }
+
+ else{
+
+  if(
+   window.matchMedia &&
+   window.matchMedia("(prefers-color-scheme: light)").matches
+  ){
+   document.body.classList.add("light");
+  }else{
+   document.body.classList.remove("light");
+  }
+ }
+
+ document.querySelectorAll(".theme-option")
+  .forEach(x=>x.classList.remove("selected"));
+
+ let id=
+  theme==="dark"?"darkTheme":
+  theme==="light"?"lightTheme":
+  "autoTheme";
+
+ document.getElementById(id).classList.add("selected");
+
+ saveData();
+}
+
+function applySettings(){
+
+ setTheme(settings.theme);
+
+ document.getElementById("precisionValue").textContent=
+  settings.precision;
+
+ updateToggle("sound");
+ updateToggle("vibration");
+ updateToggle("auto");
+ updateToggle("parentheses");
+}
+
+/* SOUND / VIBRATION */
+
+function tap(useSound=true){
+
+ if(settings.vibration && navigator.vibrate){
+  navigator.vibrate(8);
+ }
+
+ if(!useSound || !settings.sound)return;
+
+ try{
+
+  let AudioContext=
+   window.AudioContext||window.webkitAudioContext;
+
+  if(!AudioContext)return;
+
+  let ctx=new AudioContext();
+
+  let osc=ctx.createOscillator();
+  let gain=ctx.createGain();
+
+  osc.frequency.value=520;
+  gain.gain.value=.025;
+
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+
+  osc.start();
+
+  setTimeout(()=>{
+   osc.stop();
+   ctx.close();
+  },35);
+
+ }catch(e){}
+}
+
+/* KEYBOARD */
+
+document.addEventListener("keydown",e=>{
+
+ if(e.key>="0"&&e.key<="9"){
+  inputNumber(e.key);
+ }
+
+ else if(e.key==="."){
+  decimal();
+ }
+
+ else if(e.key==="+"){
+  inputOperator("+");
+ }
+
+ else if(e.key==="-"){
+  inputOperator("-");
+ }
+
+ else if(e.key==="*"){
+  inputOperator("*");
+ }
+
+ else if(e.key==="/"){
+  e.preventDefault();
+  inputOperator("/");
+ }
+
+ else if(e.key==="Enter"||e.key==="="){
+  calculate();
+ }
+
+ else if(e.key==="Escape"){
+  clearCalc();
+ }
+
+ else if(e.key==="Backspace"){
+
+  expression=expression.slice(0,-1);
+  updateDisplay();
+ }
+});
+
+/* START */
+
+loadData();
+updateDisplay();
+
+setTimeout(()=>{
+ document.getElementById("splash").classList.add("hide");
+},1400);
+</script>
+
+</body>
+</html>
