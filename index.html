@@ -2,728 +2,830 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#050b20">
 <title>KJ Calculator v2.0</title>
 
 <style>
+:root{
+ --bg:#050b20;
+ --panel:#09152f;
+ --panel2:#0d1d40;
+ --button:#102653;
+ --button2:#0b1d40;
+ --text:#f7f9ff;
+ --muted:#91a4d1;
+ --blue:#2166ff;
+ --blue2:#4d8cff;
+ --danger:#a51e55;
+ --border:rgba(70,130,255,.32);
+ --shadow:0 15px 40px rgba(0,0,0,.28);
+}
+
 *{
-    box-sizing:border-box;
-    -webkit-tap-highlight-color:transparent;
+ box-sizing:border-box;
+ -webkit-tap-highlight-color:transparent;
 }
 
 html,body{
-    margin:0;
-    padding:0;
-    width:100%;
-    height:100%;
-    overflow:hidden;
-    font-family:Arial,Helvetica,sans-serif;
-    background:#050a18;
-    color:white;
-}
-
-body{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-}
-
-.app{
-    width:100%;
-    height:100%;
-    max-width:520px;
-    display:flex;
-    flex-direction:column;
-    background:#050a18;
-    position:relative;
-}
-
-/* HEADER */
-
-.header{
-    height:62px;
-    min-height:62px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:0 18px;
-    border-bottom:1px solid rgba(255,255,255,.08);
-}
-
-.logo{
-    font-size:22px;
-    font-weight:800;
-    letter-spacing:.5px;
-}
-
-.version{
-    font-size:11px;
-    color:#8e99ad;
-    margin-top:3px;
-}
-
-/* HISTORY BUTTON */
-
-.history-btn{
-    border:0;
-    background:#101a31;
-    color:white;
-    width:42px;
-    height:42px;
-    border-radius:14px;
-    font-size:20px;
-    cursor:pointer;
-}
-
-.history-btn:active{
-    transform:scale(.94);
-}
-
-/* DISPLAY */
-
-.display{
-    flex:1;
-    min-height:170px;
-    display:flex;
-    flex-direction:column;
-    justify-content:flex-end;
-    align-items:flex-end;
-    padding:20px 22px 18px;
-    overflow:hidden;
-}
-
-.previous{
-    width:100%;
-    min-height:30px;
-    text-align:right;
-    color:#7e899d;
-    font-size:18px;
-    overflow:hidden;
-    white-space:nowrap;
-    text-overflow:ellipsis;
-}
-
-.current{
-    width:100%;
-    text-align:right;
-    font-size:48px;
-    font-weight:700;
-    letter-spacing:-1px;
-    overflow:hidden;
-    white-space:nowrap;
-    text-overflow:ellipsis;
-}
-
-/* BUTTON AREA */
-
-.buttons{
-    width:100%;
-    padding:12px;
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    grid-auto-rows:minmax(62px,1fr);
-    gap:10px;
-    max-height:470px;
+ margin:0;
+ width:100%;
+ height:100%;
+ overflow:hidden;
+ font-family:Arial,Helvetica,sans-serif;
+ background:var(--bg);
+ color:var(--text);
 }
 
 button{
-    border:0;
-    outline:none;
-    color:white;
-    background:#101a31;
-    border-radius:20px;
-    font-size:22px;
-    font-weight:600;
-    cursor:pointer;
-    transition:transform .08s,background .08s;
+ font:inherit;
+ border:0;
+ color:inherit;
+ cursor:pointer;
 }
 
-button:active{
-    transform:scale(.94);
-    background:#182541;
+#app{
+ width:100%;
+ height:100%;
+ position:relative;
+ overflow:hidden;
+ background:
+ radial-gradient(circle at 50% -20%,rgba(35,92,255,.15),transparent 38%),
+ var(--bg);
 }
 
-.number{
-    background:#0d162b;
+/* SPLASH */
+
+.splash{
+ position:absolute;
+ inset:0;
+ z-index:1000;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ background:
+ radial-gradient(circle at 50% 35%,rgba(31,91,255,.18),transparent 35%),
+ #030817;
+ transition:opacity .5s,visibility .5s;
 }
 
-.operator{
-    background:#182541;
+.splash.hide{
+ opacity:0;
+ visibility:hidden;
 }
 
-.special{
-    background:#202c47;
+.splash-box{
+ text-align:center;
 }
 
-.equals{
-    background:#ffffff;
-    color:#050a18;
+.splash-logo{
+ width:90px;
+ height:90px;
+ margin:auto;
+ border-radius:24px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-size:35px;
+ font-weight:900;
+ background:linear-gradient(145deg,#10295d,#07132d);
+ border:1px solid #2b70ff;
+ box-shadow:0 0 50px rgba(25,91,255,.3);
+}
+
+.splash-title{
+ margin-top:22px;
+ font-size:30px;
+ font-weight:800;
+}
+
+.splash-version{
+ color:#4384ff;
+ font-size:20px;
+ font-weight:bold;
+ margin-top:6px;
+}
+
+.splash-text{
+ color:#8799c0;
+ margin-top:18px;
+}
+
+/* SCREENS */
+
+.screen{
+ position:absolute;
+ inset:0;
+ display:none;
+ flex-direction:column;
+}
+
+.screen.active{
+ display:flex;
+}
+
+/* TOP BAR */
+
+.topbar{
+ height:76px;
+ min-height:76px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ padding:0 21px;
+}
+
+.top-title{
+ font-size:28px;
+ font-weight:800;
+}
+
+.top-version{
+ color:#80a9ff;
+ font-size:13px;
+ margin-left:8px;
+}
+
+.menu-btn,
+.back-btn,
+.trash-btn{
+ width:48px;
+ height:48px;
+ border-radius:16px;
+ background:#0b1b3a;
+ border:1px solid rgba(92,139,255,.18);
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-size:25px;
+}
+
+.menu-btn:active,
+.back-btn:active,
+.trash-btn:active{
+ transform:scale(.94);
+}
+
+/* CALCULATOR */
+
+.calc-body{
+ flex:1;
+ min-height:0;
+ display:flex;
+ flex-direction:column;
+ padding:0 21px 18px;
+}
+
+.display{
+ min-height:215px;
+ border:1px solid #2864d9;
+ border-radius:27px;
+ background:
+ linear-gradient(145deg,rgba(15,35,76,.95),rgba(5,17,42,.96));
+ box-shadow:var(--shadow);
+ padding:24px 20px 17px;
+ display:flex;
+ flex-direction:column;
+ justify-content:flex-end;
+ overflow:hidden;
+}
+
+.expression{
+ min-height:35px;
+ text-align:right;
+ color:#78a2ff;
+ font-size:24px;
+ overflow:hidden;
+ white-space:nowrap;
+ text-overflow:ellipsis;
+}
+
+.result{
+ margin-top:7px;
+ text-align:right;
+ font-size:55px;
+ line-height:1;
+ font-weight:400;
+ overflow:hidden;
+ white-space:nowrap;
+ text-overflow:ellipsis;
+}
+
+.display-line{
+ display:flex;
+ align-items:center;
+ justify-content:flex-end;
+ gap:18px;
+ color:#9bb1dd;
+ margin-top:25px;
+ font-size:15px;
+ min-height:22px;
+}
+
+.display-line .divider{
+ width:1px;
+ height:18px;
+ background:#536a9d;
+}
+
+.keys{
+ flex:1;
+ min-height:0;
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:10px;
+ margin-top:18px;
+}
+
+.key{
+ min-height:54px;
+ border-radius:20px;
+ background:linear-gradient(145deg,#10295a,#0c2048);
+ font-size:25px;
+ font-weight:700;
+ box-shadow:inset 0 1px rgba(255,255,255,.03);
+}
+
+.key:active{
+ transform:scale(.94);
+}
+
+.key.blue{
+ color:#8fb4ff;
+}
+
+.key.ac{
+ background:linear-gradient(145deg,#a9245b,#751943);
+}
+
+.key.equals{
+ background:linear-gradient(145deg,#347cff,#1350e8);
+ box-shadow:0 8px 25px rgba(24,88,255,.25);
+}
+
+.key.advanced{
+ background:#0c1e42;
 }
 
 .zero{
-    grid-column:span 2;
+ grid-column:span 1;
 }
 
-/* HISTORY PANEL */
+/* DRAWER */
 
-.history-panel{
-    position:absolute;
-    z-index:20;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:#050a18;
-    transform:translateX(-100%);
-    transition:transform .22s ease;
-    display:flex;
-    flex-direction:column;
+.drawer-overlay{
+ position:absolute;
+ inset:0;
+ z-index:100;
+ background:rgba(0,0,0,.55);
+ opacity:0;
+ visibility:hidden;
+ transition:.2s;
 }
 
-.history-panel.open{
-    transform:translateX(0);
+.drawer-overlay.open{
+ opacity:1;
+ visibility:visible;
 }
 
-.history-header{
-    height:62px;
-    min-height:62px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:0 16px;
-    border-bottom:1px solid rgba(255,255,255,.08);
+.drawer{
+ position:absolute;
+ z-index:101;
+ left:0;
+ top:0;
+ bottom:0;
+ width:82%;
+ max-width:340px;
+ background:#07132c;
+ border-right:1px solid rgba(73,125,255,.25);
+ transform:translateX(-105%);
+ transition:.25s;
+ padding:25px 18px;
+}
+
+.drawer.open{
+ transform:translateX(0);
+}
+
+.drawer-logo{
+ display:flex;
+ align-items:center;
+ gap:13px;
+ padding:10px 8px 28px;
+}
+
+.drawer-logo-box{
+ width:45px;
+ height:45px;
+ border-radius:13px;
+ background:#10285a;
+ border:1px solid #2864d9;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-weight:900;
+}
+
+.drawer-name{
+ font-size:22px;
+ font-weight:800;
+}
+
+.drawer-version{
+ color:#76a0ff;
+ font-size:12px;
+}
+
+.nav{
+ display:flex;
+ flex-direction:column;
+ gap:9px;
+}
+
+.nav button{
+ width:100%;
+ text-align:left;
+ padding:16px;
+ border-radius:15px;
+ background:transparent;
+ color:#b9c8e8;
+ font-size:16px;
+}
+
+.nav button.active,
+.nav button:active{
+ background:#102858;
+ color:white;
+}
+
+.nav-icon{
+ display:inline-block;
+ width:30px;
+}
+
+/* HISTORY */
+
+.history-top{
+ display:flex;
+ align-items:center;
+ gap:14px;
+ padding:14px 20px 10px;
 }
 
 .history-title{
-    font-size:20px;
-    font-weight:800;
+ font-size:28px;
+ font-weight:800;
 }
 
-.close-history{
-    width:42px;
-    height:42px;
-    border-radius:14px;
-    font-size:22px;
-    background:#101a31;
+.search{
+ margin:0 20px 14px;
+ height:52px;
+ border-radius:17px;
+ background:#0b1b3b;
+ border:1px solid rgba(67,120,230,.15);
+ display:flex;
+ align-items:center;
+ padding:0 15px;
+ gap:10px;
 }
 
-.clear-history{
-    margin:14px;
-    height:48px;
-    border-radius:16px;
-    background:#101a31;
-    font-size:15px;
+.search input{
+ flex:1;
+ background:none;
+ border:0;
+ outline:none;
+ color:white;
+ font-size:15px;
+}
+
+.search input::placeholder{
+ color:#8294ba;
 }
 
 .history-list{
-    flex:1;
-    overflow-y:auto;
-    padding:0 14px 20px;
+ flex:1;
+ overflow-y:auto;
+ padding:0 20px 20px;
 }
 
 .history-item{
-    background:#0d162b;
-    border-radius:17px;
-    padding:14px;
-    margin-bottom:10px;
+ background:linear-gradient(145deg,#0b2049,#091a3b);
+ border:1px solid rgba(62,112,222,.14);
+ border-radius:18px;
+ padding:15px;
+ margin-bottom:10px;
+ display:flex;
+ align-items:center;
+ gap:12px;
+}
+
+.history-icon{
+ width:38px;
+ height:38px;
+ flex:none;
+ border-radius:50%;
+ background:#102c5d;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ color:#86aaff;
+}
+
+.history-info{
+ flex:1;
+ min-width:0;
 }
 
 .history-expression{
-    color:#8994a8;
-    font-size:14px;
-    margin-bottom:7px;
-    overflow:hidden;
-    white-space:nowrap;
-    text-overflow:ellipsis;
+ font-size:14px;
+ white-space:nowrap;
+ overflow:hidden;
+ text-overflow:ellipsis;
 }
 
 .history-result{
-    font-size:22px;
-    font-weight:700;
-    overflow:hidden;
-    white-space:nowrap;
-    text-overflow:ellipsis;
+ margin-top:5px;
+ font-size:15px;
+ font-weight:bold;
 }
 
-.empty-history{
-    text-align:center;
-    color:#707b90;
-    margin-top:80px;
-    font-size:15px;
+.history-time{
+ margin-top:4px;
+ color:#91a5cf;
+ font-size:11px;
 }
 
-/* SMALL SCREENS */
+.history-arrow{
+ font-size:25px;
+ color:#9cb4e5;
+}
 
-@media(max-height:650px){
-    .header{
-        height:54px;
-        min-height:54px;
-    }
+.clear-history{
+ margin:0 20px 18px;
+ height:56px;
+ border-radius:17px;
+ background:linear-gradient(145deg,#a52259,#751841);
+ font-weight:700;
+}
 
-    .display{
-        min-height:120px;
-        padding-top:10px;
-    }
+/* SETTINGS */
 
-    .current{
-        font-size:40px;
-    }
+.settings-head{
+ display:flex;
+ align-items:center;
+ gap:14px;
+ padding:14px 20px 18px;
+}
 
-    .buttons{
-        grid-auto-rows:minmax(52px,1fr);
-        gap:7px;
-        padding:8px;
-    }
+.settings-title{
+ font-size:28px;
+ font-weight:800;
+}
 
-    button{
-        border-radius:16px;
-        font-size:20px;
-    }
+.settings-scroll{
+ flex:1;
+ overflow-y:auto;
+ padding:0 20px 30px;
+}
+
+.section{
+ background:#0a1733;
+ border:1px solid rgba(64,112,220,.13);
+ border-radius:18px;
+ overflow:hidden;
+ margin-bottom:14px;
+}
+
+.section-title{
+ padding:15px;
+ color:white;
+ font-weight:800;
+ border-bottom:1px solid rgba(67,112,212,.14);
+}
+
+.setting{
+ min-height:65px;
+ padding:13px 15px;
+ display:flex;
+ align-items:center;
+ gap:13px;
+ border-bottom:1px solid rgba(67,112,212,.1);
+}
+
+.setting:last-child{
+ border-bottom:0;
+}
+
+.setting-icon{
+ width:31px;
+ text-align:center;
+ font-size:19px;
+ color:#9abaff;
+}
+
+.setting-info{
+ flex:1;
+ min-width:0;
+}
+
+.setting-name{
+ font-size:14px;
+}
+
+.setting-desc{
+ color:#8498c0;
+ font-size:11px;
+ margin-top:5px;
+}
+
+.setting-arrow{
+ color:#b3c3e3;
+ font-size:22px;
+}
+
+.toggle{
+ width:42px;
+ height:25px;
+ border-radius:20px;
+ background:#263b64;
+ padding:3px;
+ transition:.2s;
+}
+
+.toggle span{
+ display:block;
+ width:19px;
+ height:19px;
+ border-radius:50%;
+ background:white;
+ transition:.2s;
+}
+
+.toggle.on{
+ background:#2770ff;
+}
+
+.toggle.on span{
+ transform:translateX(17px);
+}
+
+/* THEME CHOOSER */
+
+.theme-options{
+ display:flex;
+ gap:10px;
+ padding:12px 15px 16px;
+}
+
+.theme-option{
+ flex:1;
+ height:64px;
+ border-radius:16px;
+ background:#0d2249;
+ border:1px solid transparent;
+ display:flex;
+ flex-direction:column;
+ align-items:center;
+ justify-content:center;
+ gap:4px;
+}
+
+.theme-option.selected{
+ border-color:#2d75ff;
+ box-shadow:0 0 0 1px #2d75ff;
+}
+
+.theme-light{
+ background:#f4f7ff;
+ color:#102047;
+}
+
+.theme-auto{
+ background:linear-gradient(90deg,#09152f 50%,#f4f7ff 50%);
+ color:#111;
+}
+
+/* ADVANCED */
+
+.advanced-body{
+ flex:1;
+ overflow-y:auto;
+ padding:0 20px 25px;
+}
+
+.advanced-grid{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:10px;
+}
+
+.adv-btn{
+ height:62px;
+ border-radius:16px;
+ background:linear-gradient(145deg,#0d2450,#091a3a);
+ font-size:19px;
+ font-weight:bold;
+}
+
+.examples{
+ margin-top:18px;
+ background:#0a1734;
+ border:1px solid rgba(67,112,220,.15);
+ border-radius:17px;
+ overflow:hidden;
+}
+
+.examples-title{
+ padding:15px;
+ font-weight:bold;
+ border-bottom:1px solid rgba(67,112,220,.12);
+}
+
+.example{
+ display:flex;
+ justify-content:space-between;
+ padding:14px 15px;
+ border-bottom:1px solid rgba(67,112,220,.1);
+ color:#dce6ff;
+}
+
+.example:last-child{
+ border:0;
+}
+
+.example span{
+ color:#83a9ff;
+}
+
+/* MODAL */
+
+.modal-bg{
+ position:absolute;
+ inset:0;
+ z-index:300;
+ background:rgba(0,0,0,.6);
+ display:none;
+ align-items:flex-end;
+ justify-content:center;
+}
+
+.modal-bg.open{
+ display:flex;
+}
+
+.modal{
+ width:100%;
+ max-width:520px;
+ background:#09162f;
+ border-radius:25px 25px 0 0;
+ padding:22px;
+ border-top:1px solid #2a66d8;
+}
+
+.modal h2{
+ margin:0 0 15px;
+}
+
+.modal-result{
+ padding:16px;
+ background:#0d2146;
+ border-radius:16px;
+ font-size:28px;
+ text-align:center;
+ margin-bottom:14px;
+}
+
+.modal-btn{
+ width:100%;
+ height:50px;
+ border-radius:15px;
+ margin-top:9px;
+ background:#112858;
+}
+
+.modal-btn.primary{
+ background:#2467ff;
+}
+
+.modal-btn.cancel{
+ background:#6e1740;
+}
+
+/* LIGHT THEME */
+
+body.light{
+ --bg:#f3f6fc;
+ --panel:#f5f8ff;
+ --panel2:#e8effb;
+ --button:#e8eef9;
+ --button2:#e0e8f6;
+ --text:#102047;
+ --muted:#60708e;
+ --border:rgba(30,83,180,.2);
+}
+
+body.light #app{
+ background:#f3f6fc;
+}
+
+body.light .display{
+ background:linear-gradient(145deg,#eef4fd,#e2ebfa);
+}
+
+body.light .key,
+body.light .drawer,
+body.light .drawer-overlay,
+body.light .section,
+body.light .history-item,
+body.light .search,
+body.light .modal,
+body.light .examples,
+body.light .setting{
+ background:#eef3fb;
+ color:#102047;
+}
+
+body.light .key{
+ color:#102047;
+}
+
+body.light .drawer{
+ border-right-color:#ccd8ed;
+}
+
+body.light .search input{
+ color:#102047;
+}
+
+body.light .history-expression,
+body.light .setting-name,
+body.light .example{
+ color:#102047;
+}
+
+body.light .nav button{
+ color:#536584;
+}
+
+body.light .nav button.active{
+ color:#102047;
+ background:#dce7fa;
+}
+
+body.light .menu-btn,
+body.light .back-btn,
+body.light .trash-btn{
+ background:#e6edf9;
+ color:#102047;
+}
+
+/* RESPONSIVE */
+
+@media(max-height:680px){
+ .topbar{
+  height:63px;
+  min-height:63px;
+ }
+
+ .display{
+  min-height:170px;
+ }
+
+ .keys{
+  gap:7px;
+  margin-top:10px;
+ }
+
+ .key{
+  min-height:45px;
+  border-radius:16px;
+ }
+
+ .result{
+  font-size:45px;
+ }
+}
+
+@media(min-width:600px){
+ .calc-body{
+  max-width:520px;
+  width:100%;
+  margin:auto;
+ }
+
+ .history-list,
+ .settings-scroll,
+ .advanced-body{
+  max-width:600px;
+  width:100%;
+  margin:auto;
+ }
 }
 </style>
 </head>
 
 <body>
 
-<div class="app">
+<div id="app">
 
-    <!-- HEADER -->
-    <div class="header">
-        <div>
-            <div class="logo">KJ Calculator</div>
-            <div class="version">Simple • Fast • Accurate • v2.0</div>
-        </div>
-
-        <button class="history-btn" onclick="openHistory()">☷</button>
-    </div>
-
-    <!-- DISPLAY -->
-    <div class="display">
-        <div class="previous" id="previous"></div>
-        <div class="current" id="current">0</div>
-    </div>
-
-    <!-- BUTTONS -->
-    <div class="buttons">
-
-        <button class="special" onclick="clearAll()">AC</button>
-        <button class="special" onclick="backspace()">⌫</button>
-        <button class="special" onclick="percent()">%</button>
-        <button class="operator" onclick="chooseOperator('÷')">÷</button>
-
-        <button class="number" onclick="inputNumber('7')">7</button>
-        <button class="number" onclick="inputNumber('8')">8</button>
-        <button class="number" onclick="inputNumber('9')">9</button>
-        <button class="operator" onclick="chooseOperator('×')">×</button>
-
-        <button class="number" onclick="inputNumber('4')">4</button>
-        <button class="number" onclick="inputNumber('5')">5</button>
-        <button class="number" onclick="inputNumber('6')">6</button>
-        <button class="operator" onclick="chooseOperator('−')">−</button>
-
-        <button class="number" onclick="inputNumber('1')">1</button>
-        <button class="number" onclick="inputNumber('2')">2</button>
-        <button class="number" onclick="inputNumber('3')">3</button>
-        <button class="operator" onclick="chooseOperator('+')">+</button>
-
-        <button class="special" onclick="toggleSign()">±</button>
-        <button class="number zero" onclick="inputNumber('0')">0</button>
-        <button class="number" onclick="inputDecimal()">.</button>
-
-        <button class="equals" onclick="calculate()">=</button>
-
-    </div>
-
-    <!-- HISTORY -->
-    <div class="history-panel" id="historyPanel">
-
-        <div class="history-header">
-            <div class="history-title">History</div>
-            <button class="close-history" onclick="closeHistory()">×</button>
-        </div>
-
-        <button class="clear-history" onclick="clearHistory()">
-            Clear History
-        </button>
-
-        <div class="history-list" id="historyList"></div>
-
-    </div>
-
-</div>
-
-<script>
-let current = "0";
-let previous = "";
-let operator = null;
-let waitingForNumber = false;
-
-const currentDisplay = document.getElementById("current");
-const previousDisplay = document.getElementById("previous");
-
-function updateDisplay(){
-    currentDisplay.textContent = current;
-    previousDisplay.textContent =
-        operator && previous !== ""
-        ? previous + " " + operator
-        : "";
-}
-
-function inputNumber(number){
-
-    if(waitingForNumber){
-        current = number;
-        waitingForNumber = false;
-    }else{
-        if(current === "0"){
-            current = number;
-        }else{
-            current += number;
-        }
-    }
-
-    updateDisplay();
-}
-
-function inputDecimal(){
-
-    if(waitingForNumber){
-        current = "0.";
-        waitingForNumber = false;
-        updateDisplay();
-        return;
-    }
-
-    if(!current.includes(".")){
-        current += ".";
-    }
-
-    updateDisplay();
-}
-
-function chooseOperator(newOperator){
-
-    if(operator && waitingForNumber){
-        operator = newOperator;
-        updateDisplay();
-        return;
-    }
-
-    if(operator && previous !== ""){
-        calculate(false);
-    }
-
-    previous = current;
-    operator = newOperator;
-    waitingForNumber = true;
-
-    updateDisplay();
-}
-
-function calculate(saveHistory = true){
-
-    if(!operator || previous === ""){
-        return;
-    }
-
-    const a = parseFloat(previous);
-    const b = parseFloat(current);
-
-    let result;
-
-    if(operator === "+"){
-        result = a + b;
-    }
-
-    if(operator === "−"){
-        result = a - b;
-    }
-
-    if(operator === "×"){
-        result = a * b;
-    }
-
-    if(operator === "÷"){
-        if(b === 0){
-            current = "Error";
-            previous = "";
-            operator = null;
-            waitingForNumber = true;
-            updateDisplay();
-            return;
-        }
-
-        result = a / b;
-    }
-
-    result = formatNumber(result);
-
-    if(saveHistory){
-        addHistory(
-            previous + " " + operator + " " + current,
-            result
-        );
-    }
-
-    current = result;
-    previous = "";
-    operator = null;
-    waitingForNumber = true;
-
-    updateDisplay();
-}
-
-function formatNumber(number){
-
-    if(!Number.isFinite(number)){
-        return "Error";
-    }
-
-    const rounded =
-        Math.round((number + Number.EPSILON) * 100000000) / 100000000;
-
-    return String(rounded);
-}
-
-function clearAll(){
-
-    current = "0";
-    previous = "";
-    operator = null;
-    waitingForNumber = false;
-
-    updateDisplay();
-}
-
-function backspace(){
-
-    if(waitingForNumber){
-        return;
-    }
-
-    if(current.length <= 1){
-        current = "0";
-    }else{
-        current = current.slice(0,-1);
-    }
-
-    updateDisplay();
-}
-
-function toggleSign(){
-
-    if(current === "0" || current === "Error"){
-        return;
-    }
-
-    current =
-        current.startsWith("-")
-        ? current.slice(1)
-        : "-" + current;
-
-    updateDisplay();
-}
-
-function percent(){
-
-    if(current === "Error"){
-        return;
-    }
-
-    current = formatNumber(parseFloat(current) / 100);
-
-    updateDisplay();
-}
-
-/* HISTORY */
-
-function getHistory(){
-
-    try{
-        return JSON.parse(
-            localStorage.getItem("kjCalculatorHistory") || "[]"
-        );
-    }catch(e){
-        return [];
-    }
-}
-
-function saveHistory(history){
-
-    try{
-        localStorage.setItem(
-            "kjCalculatorHistory",
-            JSON.stringify(history)
-        );
-    }catch(e){
-        // Storage unavailable — calculator still works.
-    }
-}
-
-function addHistory(expression,result){
-
-    const history = getHistory();
-
-    history.unshift({
-        expression:expression,
-        result:result,
-        time:Date.now()
-    });
-
-    if(history.length > 50){
-        history.length = 50;
-    }
-
-    saveHistory(history);
-}
-
-function renderHistory(){
-
-    const list = document.getElementById("historyList");
-    const history = getHistory();
-
-    list.innerHTML = "";
-
-    if(history.length === 0){
-
-        list.innerHTML =
-            '<div class="empty-history">No calculations yet</div>';
-
-        return;
-    }
-
-    history.forEach((item,index)=>{
-
-        const div = document.createElement("div");
-
-        div.className = "history-item";
-
-        div.innerHTML = `
-            <div class="history-expression">
-                ${escapeHTML(item.expression)}
-            </div>
-
-            <div class="history-result">
-                = ${escapeHTML(item.result)}
-            </div>
-        `;
-
-        div.onclick = function(){
-
-            current = String(item.result);
-            previous = "";
-            operator = null;
-            waitingForNumber = true;
-
-            updateDisplay();
-            closeHistory();
-        };
-
-        list.appendChild(div);
-    });
-}
-
-function escapeHTML(value){
-
-    return String(value)
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-}
-
-function openHistory(){
-
-    renderHistory();
-
-    document
-        .getElementById("historyPanel")
-        .classList.add("open");
-}
-
-function closeHistory(){
-
-    document
-        .getElementById("historyPanel")
-        .classList.remove("open");
-}
-
-function clearHistory(){
-
-    if(confirm("Clear all calculator history?")){
-
-        try{
-            localStorage.removeItem("kjCalculatorHistory");
-        }catch(e){}
-
-        renderHistory();
-    }
-}
-
-/* KEYBOARD SUPPORT */
-
-document.addEventListener("keydown",function(event){
-
-    const key = event.key;
-
-    if(key >= "0" && key <= "9"){
-        inputNumber(key);
-        return;
-    }
-
-    if(key === "."){
-        inputDecimal();
-        return;
-    }
-
-    if(key === "+"){
-        chooseOperator("+");
-        return;
-    }
-
-    if(key === "-"){
-        chooseOperator("−");
-        return;
-    }
-
-    if(key === "*"){
-        chooseOperator("×");
-        return;
-    }
-
-    if(key === "/"){
-        event.preventDefault();
-        chooseOperator("÷");
-        return;
-    }
-
-    if(key === "%"){
-        percent();
-        return;
-    }
-
-    if(key === "Enter" || key === "="){
-        calculate();
-        return;
-    }
-
-    if(key === "Backspace"){
-        backspace();
-        return;
-    }
-
-    if(key === "Escape"){
-        clearAll();
-        return;
-    }
-});
-
-/* START */
-
-updateDisplay();
-</script>
-
-</body>
-  </html>
+<!--
