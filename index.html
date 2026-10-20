@@ -3,357 +3,181 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#071426">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#050c18">
 <title>KJ Calculator 3.0</title>
-<style>
-:root{--bg:#050c18;--panel:#0b1a2e;--blue:#168cff;--cyan:#35d5ff;--text:#f3f8ff;--muted:#8fa8c4;--line:#1c3858}
-*{box-sizing:border-box}
-body{margin:0;background:radial-gradient(ellipse at top,#102747,#071426 50%,#030813);color:var(--text);font-family:Arial,sans-serif;min-height:100vh}
-.app{max-width:780px;margin:auto;padding:14px 12px 28px}
-.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
-.brand{display:flex;align-items:center;gap:10px}
-.logo{width:42px;height:42px;border-radius:13px;background:linear-gradient(145deg,#25c6ff,#1267ff);display:grid;place-items:center;font-weight:900;color:#04101f}
-h1{font-size:18px;margin:0}
-.brand small{color:var(--muted);font-size:11px}
-.pill{border:1px solid #25517b;background:#0b213b;color:#9edfff;border-radius:99px;padding:7px;font-size:11px}
-.display{background:linear-gradient(145deg,#0d2038,#071321);border:1px solid #204568;border-radius:20px;padding:15px;margin-bottom:12px}
-.displaytop{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px}
-button{cursor:pointer}
-.displaytop button,.smallbtn{border:1px solid #244767;background:#102944;color:#cdeaff;border-radius:9px;padding:8px}
-.expr{width:100%;background:transparent;border:0;color:#a8c9e8;font-size:19px;outline:0;padding:18px 0 8px}
-.answer{font-size:clamp(28px,7vw,42px);font-weight:bold;overflow-wrap:anywhere;min-height:50px;text-align:right}
-.status{font-size:11px;color:var(--cyan);min-height:16px;text-align:right;margin-top:4px}
-.tabs{display:flex;gap:7px;overflow-x:auto;padding:4px 0 10px}
-.tab{flex:0 0 auto;border:1px solid var(--line);background:#0b1a2c;color:#aac0d8;padding:10px;border-radius:12px}
-.tab.active{background:linear-gradient(135deg,#168cff,#0757ca);color:white}
-.section{display:none;background:#09172a;border:1px solid #183653;border-radius:18px;padding:12px;margin-bottom:12px}
-.section.active{display:block}
-.section h2{font-size:15px;color:#bce9ff}
-.grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}
-.key{min-height:47px;border:1px solid #1c3856;border-radius:12px;background:linear-gradient(160deg,#122944,#0b1a2b);color:#edf7ff;font-size:16px;font-weight:bold}
-.key.fn{color:#83d5ff;background:#102b47}
-.key.op{color:#43d6ff;background:#10304d}
-.key.danger{color:#ff9abb;background:#35192c}
-.key.equal{background:linear-gradient(145deg,#26baff,#0864ed);color:white}
-.wide{grid-column:span 2}
-.subnote{font-size:11px;color:var(--muted);line-height:1.5}
-.toolsgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:9px}
-.field{display:flex;flex-direction:column;gap:5px;font-size:12px;color:#a9c3dc}
-.field input,.field select{width:100%;background:#061222;border:1px solid #254665;color:white;border-radius:10px;padding:11px;font:inherit;min-width:0}
-.action{border:0;background:linear-gradient(135deg,#168cff,#0758ce);color:white;padding:11px;border-radius:11px;font-weight:bold;margin-top:9px;width:100%}
-.resultbox{background:#061222;border:1px solid #203e5d;border-radius:12px;padding:11px;margin-top:10px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px}
-.historyrow{display:flex;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid #19324d;font-size:13px}
-.historyrow span{color:var(--muted);overflow-wrap:anywhere}
-.footer{text-align:center;color:#6684a4;font-size:10px;padding:10px}
-@media(min-width:600px){.app{padding:22px}.key{min-height:53px}.grid{gap:9px}}
-</style>
 <script src="https://cdn.jsdelivr.net/npm/mathjs@12.4.2/lib/browser/math.js"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#050c18;color:#f2f7ff;font-family:Arial,sans-serif}
+.app{max-width:650px;margin:auto;padding:16px}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+h1{font-size:23px;margin:0}small,.muted{color:#8fa8c4}
+.badge{color:#40cfff}
+.display{background:#0b1b36;border:1px solid #2865b5;border-radius:24px;padding:18px;margin-bottom:14px;min-height:155px}
+.top{display:flex;justify-content:space-between;color:#9cb6d7;font-size:12px}
+input,select,textarea{background:#061326;color:white;border:1px solid #254568;border-radius:10px;padding:12px;width:100%;font-size:16px}
+#expr{background:transparent;border:0;padding:22px 0 10px;font-size:20px}
+#answer{font-size:38px;text-align:right;overflow-wrap:anywhere;min-height:48px}
+#status{text-align:right;color:#39d4ff;font-size:12px}
+.tabs{display:flex;gap:7px;overflow:auto;margin:12px 0}
+button{cursor:pointer}
+.tab,.minor{border:1px solid #234367;background:#102440;color:#dcecff;border-radius:10px;padding:10px}
+.tab.active{background:#176cff}
+.panel{display:none;background:#0a182b;border:1px solid #1c395a;border-radius:17px;padding:12px;margin-bottom:12px}
+.panel.active{display:block}
+.keys{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.key{height:58px;border:0;border-radius:15px;background:#10264a;color:white;font-size:20px;font-weight:bold}
+.fn{color:#62d7ff}.op{color:#73aaff}.clear{background:#8d1e54}.equal{background:#216dff}
+.wide{grid-column:span 2}
+h3{color:#9fe5ff;font-size:16px}
+.field{display:block;margin:10px 0;color:#9fb8d5;font-size:13px}
+.field input,.field select{margin-top:6px}
+.action{background:#176cff;color:white;border:0;border-radius:10px;padding:12px;width:100%;margin:5px 0;font-weight:bold}
+.result{white-space:pre-wrap;overflow-wrap:anywhere;background:#061326;border-radius:10px;padding:12px;margin-top:10px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.historyitem{padding:10px;border-bottom:1px solid #24405d;overflow-wrap:anywhere}
+footer{text-align:center;color:#637d9d;font-size:11px;padding:15px}
+</style>
 </head>
 <body>
 <div class="app">
-<header class="top">
-<div class="brand"><div class="logo">KJ</div><div><h1>KJ CALCULATOR <span style="color:#35d5ff">3.0</span></h1><small>SHS SCIENTIFIC • ENGINEERING</small></div></div>
-<span class="pill">VERSION 3.0</span>
+<header>
+<div><h1>KJ <span class="badge">v3.0</span></h1><small>SCIENTIFIC CALCULATOR</small></div>
+<button class="minor" onclick="angleMode=angleMode==='DEG'?'RAD':'DEG';this.textContent=angleMode;document.getElementById('status').textContent='Angle mode: '+angleMode">DEG</button>
 </header>
 
 <div class="display">
-<div class="displaytop"><span id="modeLabel">DEG • SCIENTIFIC</span><div><button id="angleBtn" onclick="toggleAngle()">DEG</button> <button onclick="showTab('history')">History</button></div></div>
-<input id="expr" class="expr" placeholder="Enter calculation..." autocomplete="off">
-<div id="answer" class="answer">0</div>
-<div id="status" class="status">Ready</div>
+<div class="top"><span>KJ SCIENTIFIC</span><span id="mode">SHS • DEG</span></div>
+<input id="expr" placeholder="Enter expression..." onkeydown="if(event.key==='Enter')calculate()">
+<div id="answer">0</div><div id="status">Ready</div>
 </div>
 
-<nav class="tabs">
-<button class="tab active" data-tab="calc" onclick="showTab('calc')">Calculator</button>
-<button class="tab" data-tab="equations" onclick="showTab('equations')">Equations</button>
-<button class="tab" data-tab="table" onclick="showTab('table')">Table</button>
-<button class="tab" data-tab="calculus" onclick="showTab('calculus')">Calculus</button>
-<button class="tab" data-tab="matrix" onclick="showTab('matrix')">Matrices</button>
-<button class="tab" data-tab="stats" onclick="showTab('stats')">Statistics</button>
-<button class="tab" data-tab="convert" onclick="showTab('convert')">Conversions</button>
-<button class="tab" data-tab="history" onclick="showTab('history')">History</button>
-</nav>
-
-<section id="calc" class="section active">
-<div class="grid">
-<button class="key fn" data-insert="sin(">sin</button>
-<button class="key fn" data-insert="cos(">cos</button>
-<button class="key fn" data-insert="tan(">tan</button>
-<button class="key fn" data-insert="log(">log</button>
-<button class="key fn" data-insert="ln(">ln</button>
-<button class="key fn" data-insert="asin(">sin⁻¹</button>
-<button class="key fn" data-insert="acos(">cos⁻¹</button>
-<button class="key fn" data-insert="atan(">tan⁻¹</button>
-<button class="key fn" data-insert="sqrt(">√</button>
-<button class="key fn" data-insert="cbrt(">∛</button>
-<button class="key fn" data-insert="(">(</button>
-<button class="key fn" data-insert=")">)</button>
-<button class="key fn" data-insert="pi">π</button>
-<button class="key fn" data-insert="e">e</button>
-<button class="key fn" data-insert="^">xʸ</button>
-<button class="key danger" onclick="clearCalc()">AC</button>
-<button class="key fn" onclick="backspace()">DEL</button>
-<button class="key op" data-insert="%">%</button>
-<button class="key op" data-insert="!">x!</button>
-<button class="key op" data-insert="/">÷</button>
-<button class="key" data-insert="7">7</button>
-<button class="key" data-insert="8">8</button>
-<button class="key" data-insert="9">9</button>
-<button class="key op" data-insert="*">×</button>
-<button class="key op" data-insert="Ans">Ans</button>
-<button class="key" data-insert="4">4</button>
-<button class="key" data-insert="5">5</button>
-<button class="key" data-insert="6">6</button>
-<button class="key op" data-insert="-">−</button>
-<button class="key op" data-insert="^2">x²</button>
-<button class="key" data-insert="1">1</button>
-<button class="key" data-insert="2">2</button>
-<button class="key" data-insert="3">3</button>
-<button class="key op" data-insert="+">+</button>
-<button class="key op" data-insert="^3">x³</button>
-<button class="key" data-insert="0">0</button>
-<button class="key" data-insert=".">.</button>
-<button class="key fn" data-insert="*10^">×10ˣ</button>
-<button class="key equal wide" onclick="calculate()">= Calculate</button>
+<div class="tabs">
+<button class="tab active" onclick="tab('calc',this)">Calculator</button>
+<button class="tab" onclick="tab('eq',this)">Equations</button>
+<button class="tab" onclick="tab('table',this)">Tables</button>
+<button class="tab" onclick="tab('calculus',this)">Calculus</button>
+<button class="tab" onclick="tab('matrix',this)">Matrices</button>
+<button class="tab" onclick="tab('stats',this)">Statistics</button>
+<button class="tab" onclick="tab('convert',this)">Convert</button>
+<button class="tab" onclick="tab('history',this)">History</button>
 </div>
-<p class="subnote">Examples: 2*(3+4), sqrt(25), sin(30), log(100), 5!. Use DEG/RAD to change angle mode.</p>
-</section>
 
-<section id="equations" class="section">
-<h2>Equation solver</h2>
-<div class="field">Equation type<select id="eqType"><option value="quad">Quadratic: ax² + bx + c = 0</option><option value="linear">Linear: ax + b = 0</option><option value="simul">Simultaneous equations</option></select></div>
-<div id="eqInputs" class="toolsgrid"></div>
-<button class="action" onclick="solveEquation()">Solve equation</button>
-<div id="eqResult" class="resultbox">Enter coefficients to solve.</div>
-</section>
-
-<section id="table" class="section">
-<h2>Function table</h2>
-<div class="field">Function in x<input id="tableFn" value="x^2-2*x+1"></div>
-<div class="toolsgrid">
-<label class="field">Start x<input id="tableStart" type="number" value="-3"></label>
-<label class="field">End x<input id="tableEnd" type="number" value="3"></label>
-<label class="field">Step<input id="tableStep" type="number" value="1"></label>
+<section id="calc" class="panel active">
+<div class="keys">
+<button class="key fn" onclick="ins('sin(')">sin</button>
+<button class="key fn" onclick="ins('cos(')">cos</button>
+<button class="key fn" onclick="ins('tan(')">tan</button>
+<button class="key fn" onclick="ins('log10(')">log</button>
+<button class="key fn" onclick="ins('asin(')">sin⁻¹</button>
+<button class="key fn" onclick="ins('sqrt(')">√</button>
+<button class="key fn" onclick="ins('pi')">π</button>
+<button class="key fn" onclick="ins('^')">xʸ</button>
+<button class="key clear" onclick="clearCalc()">AC</button>
+<button class="key" onclick="ins('(')">(</button>
+<button class="key" onclick="ins(')')">)</button>
+<button class="key op" onclick="ins('/')">÷</button>
+<button class="key" onclick="ins('7')">7</button>
+<button class="key" onclick="ins('8')">8</button>
+<button class="key" onclick="ins('9')">9</button>
+<button class="key op" onclick="ins('*')">×</button>
+<button class="key" onclick="ins('4')">4</button>
+<button class="key" onclick="ins('5')">5</button>
+<button class="key" onclick="ins('6')">6</button>
+<button class="key op" onclick="ins('-')">−</button>
+<button class="key" onclick="ins('1')">1</button>
+<button class="key" onclick="ins('2')">2</button>
+<button class="key" onclick="ins('3')">3</button>
+<button class="key op" onclick="ins('+')">+</button>
+<button class="key" onclick="ins('0')">0</button>
+<button class="key" onclick="ins('.')">.</button>
+<button class="key fn" onclick="ins('!')">x!</button>
+<button class="key equal" onclick="calculate()">=</button>
+<button class="key fn" onclick="ins('^2')">x²</button>
+<button class="key fn" onclick="ins('ln(')">ln</button>
+<button class="key fn" onclick="ins('%')">%</button>
+<button class="key op" onclick="backspace()">DEL</button>
 </div>
-<button class="action" onclick="makeTable()">Generate table</button>
-<div id="tableResult" class="resultbox">Your table will appear here.</div>
+<p class="muted">Supports brackets, fractions, powers, roots, logarithms and trigonometry. Use * for multiplication.</p>
 </section>
 
-<section id="calculus" class="section">
-<h2>Calculus tools</h2>
-<div class="field">Expression using x<input id="calcFn" value="x^3+2*x^2"></div>
-<div class="toolsgrid">
-<label class="field">At x =<input id="calcX" type="number" value="2"></label>
-<label class="field">Lower limit<input id="intA" type="number" value="0"></label>
-<label class="field">Upper limit<input id="intB" type="number" value="2"></label>
-</div>
-<button class="action" onclick="differentiate()">Find symbolic derivative</button>
-<button class="action" onclick="numericalDerivative()">Evaluate derivative at x</button>
-<button class="action" onclick="integrate()">Numerical definite integral</button>
-<div id="calcResult" class="resultbox">Derivative and integral results appear here.</div>
+<section id="eq" class="panel">
+<h3>Equation Solver</h3>
+<label class="field">Equation type
+<select id="eqtype" onchange="eqFields()"><option value="quad">Quadratic ax² + bx + c = 0</option><option value="linear">Linear ax + b = 0</option><option value="sim">Simultaneous equations</option></select></label>
+<div id="eqfields"></div>
+<button class="action" onclick="solveEq()">Solve</button><div class="result" id="eqout">Results appear here.</div>
 </section>
 
-<section id="matrix" class="section">
-<h2>Matrix calculator (2 × 2)</h2>
-<p class="subnote">Enter rows separated by semicolons. Example: 1,2;3,4</p>
-<div class="field">Matrix A<input id="matA" value="1,2;3,4"></div>
-<div class="field">Matrix B<input id="matB" value="5,6;7,8"></div>
-<div class="toolsgrid">
-<button class="action" onclick="matrixOp('add')">A + B</button>
-<button class="action" onclick="matrixOp('sub')">A − B</button>
-<button class="action" onclick="matrixOp('mul')">A × B</button>
-<button class="action" onclick="matrixOp('det')">det(A)</button>
-<button class="action" onclick="matrixOp('inv')">Inverse A</button>
-<button class="action" onclick="matrixOp('trans')">Transpose A</button>
-</div>
-<div id="matrixResult" class="resultbox">Matrix result appears here.</div>
+<section id="table" class="panel">
+<h3>Function Table</h3>
+<label class="field">f(x)<input id="tf" value="x^2-2*x+1"></label>
+<div class="row"><label class="field">Start<input id="ts" type="number" value="-3"></label><label class="field">End<input id="te" type="number" value="3"></label></div>
+<label class="field">Step<input id="td" type="number" value="1"></label>
+<button class="action" onclick="makeTable()">Generate Table</button><div class="result" id="tout"></div>
 </section>
 
-<section id="stats" class="section">
-<h2>Statistics</h2>
-<div class="field">Numbers separated by commas<input id="statsData" value="4,7,7,9,10,12"></div>
-<button class="action" onclick="statistics()">Calculate statistics</button>
-<div id="statsResult" class="resultbox">Mean, median, mode and standard deviation.</div>
+<section id="calculus" class="panel">
+<h3>Calculus</h3>
+<label class="field">Expression in x<input id="cf" value="x^3+2*x^2"></label>
+<label class="field">Value of x<input id="cx" type="number" value="2"></label>
+<button class="action" onclick="derivative()">Symbolic Derivative</button>
+<button class="action" onclick="numder()">Numerical Derivative</button>
+<div class="row"><label class="field">Lower limit<input id="ca" type="number" value="0"></label><label class="field">Upper limit<input id="cb" type="number" value="2"></label></div>
+<button class="action" onclick="integrate()">Definite Integral</button><div class="result" id="cout"></div>
 </section>
 
-<section id="convert" class="section">
-<h2>Unit conversion</h2>
-<div class="field">Conversion type<select id="convType">
-<option value="length">Metres ↔ feet</option><option value="mass">Kilograms ↔ pounds</option><option value="temp">Celsius ↔ Fahrenheit</option><option value="speed">Km/h ↔ mph</option><option value="angle">Degrees ↔ radians</option><option value="data">MB ↔ GB</option>
-</select></div>
-<div class="field">Value<input id="convValue" type="number" value="1"></div>
-<div class="field">Direction<select id="convDir"><option value="forward">First unit to second</option><option value="reverse">Second unit to first</option></select></div>
-<button class="action" onclick="convertUnit()">Convert</button>
-<div id="convResult" class="resultbox">Conversion result appears here.</div>
+<section id="matrix" class="panel">
+<h3>2 × 2 Matrices</h3>
+<label class="field">Matrix A (format: 1,2;3,4)<input id="ma" value="1,2;3,4"></label>
+<label class="field">Matrix B<input id="mb" value="5,6;7,8"></label>
+<div class="row"><button class="action" onclick="matrix('add')">A + B</button><button class="action" onclick="matrix('mul')">A × B</button><button class="action" onclick="matrix('det')">det(A)</button><button class="action" onclick="matrix('inv')">Inverse A</button></div>
+<div class="result" id="mout"></div>
 </section>
 
-<section id="history" class="section">
-<div style="display:flex;justify-content:space-between;align-items:center"><h2>Calculation history</h2><button class="smallbtn" onclick="clearHistory()">Clear</button></div>
-<div id="historyList">No calculations yet.</div>
+<section id="stats" class="panel">
+<h3>Statistics</h3>
+<label class="field">Numbers separated by commas<input id="sd" value="4,7,7,9,10,12"></label>
+<button class="action" onclick="stats()">Calculate</button><div class="result" id="sout"></div>
 </section>
-<div class="footer">KJ Calculator 3.0 • Made for learning</div>
+
+<section id="convert" class="panel">
+<h3>Unit Converter</h3>
+<label class="field">Conversion<select id="ct"><option value="lf">Metres → feet</option><option value="fl">Feet → metres</option><option value="kg">Kilograms → pounds</option><option value="lb">Pounds → kilograms</option><option value="cf">Celsius → Fahrenheit</option><option value="fc">Fahrenheit → Celsius</option><option value="km">Km/h → mph</option><option value="mk">mph → Km/h</option><option value="dr">Degrees → radians</option><option value="rd">Radians → degrees</option></select></label>
+<label class="field">Value<input id="cv" type="number" value="1"></label>
+<button class="action" onclick="convert()">Convert</button><div class="result" id="vout"></div>
+</section>
+
+<section id="history" class="panel"><h3>History</h3><button class="action" onclick="hist=[];showHist()">Clear History</button><div id="hout"></div></section>
+<footer>KJ Calculator 3.0 • Dark Blue Edition</footer>
 </div>
 
 <script>
-let angleMode='DEG',lastAnswer=0,historyItems=[];
+let angleMode='DEG',ans=0,hist=[];
 const $=id=>document.getElementById(id);
-
-function showTab(id){
- document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active',s.id===id));
- document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));
- if(id==='equations')renderEqInputs();
-}
-function toggleAngle(){
- angleMode=angleMode==='DEG'?'RAD':'DEG';
- $('angleBtn').textContent=angleMode;
- $('modeLabel').textContent=angleMode+' • SCIENTIFIC';
-}
-function insertText(t){
- const el=$('expr'),a=el.selectionStart,b=el.selectionEnd;
- el.setRangeText(t,a,b,'end');el.focus();
-}
-document.querySelectorAll('[data-insert]').forEach(b=>b.addEventListener('click',()=>insertText(b.dataset.insert)));
-$('expr').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();calculate()}});
-function clearCalc(){$('expr').value='';$('answer').textContent='0';$('status').textContent='Ready';$('expr').focus()}
-function backspace(){
- const el=$('expr'),a=el.selectionStart,b=el.selectionEnd;
- if(a!==b)el.setRangeText('',a,b,'end');else if(a>0)el.setRangeText('',a-1,a,'end');
- el.focus();
-}
-function evaluate(expr,scope={}){
- if(typeof math==='undefined')throw Error('Math engine loading. Check internet and reload.');
- let s=expr.trim();
- if(!s)throw Error('Enter an expression first.');
- s=s.replace(/×/g,'*').replace(/÷/g,'/').replace(/π/g,'pi').replace(/√\(/g,'sqrt(').replace(/\bAns\b/g,String(lastAnswer));
- if(angleMode==='DEG'){
-  s=s.replace(/\b(sin|cos|tan)\(([^()]*)\)/g,(_,fn,arg)=>fn+'(('+arg+')*pi/180)');
-  s=s.replace(/\b(asin|acos|atan)\(([^()]*)\)/g,(_,fn,arg)=>'('+fn+'('+arg+')*180/pi)');
- }
- return math.evaluate(s,scope);
-}
-function format(v){
- if(typeof v==='number'){if(!Number.isFinite(v))return String(v);if(Math.abs(v)<1e-12)return '0';return Number(v.toPrecision(12)).toString()}
- if(v&&typeof v.toString==='function')return v.toString();
- return String(v);
-}
-function calculate(){
- try{
-  let raw=$('expr').value,v=evaluate(raw);
-  lastAnswer=typeof v==='number'?v:Number(v);
-  $('answer').textContent=format(v);$('status').textContent='Calculated • '+angleMode;
-  addHistory(raw,format(v));
- }catch(e){$('answer').textContent='Error';$('status').textContent=e.message}
-}
-function addHistory(expr,result){historyItems.unshift({expr,result});historyItems=historyItems.slice(0,60);renderHistory()}
-function renderHistory(){
- $('historyList').innerHTML=historyItems.length?historyItems.map((h,i)=>'<div class="historyrow"><span>'+escapeHtml(h.expr)+'</span><b>'+escapeHtml(h.result)+'</b><button class="smallbtn" onclick="useHistory('+i+')">Use</button></div>').join(''):'No calculations yet.';
-}
-function useHistory(i){$('expr').value=historyItems[i].expr;showTab('calc');calculate()}
-function clearHistory(){historyItems=[];renderHistory()}
-function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-
-function renderEqInputs(){
- let type=$('eqType').value;
- let fields=type==='quad'?[['a','1'],['b','-3'],['c','2']]:type==='linear'?[['a','2'],['b','-6']]:[['a1','1'],['b1','1'],['c1','5'],['a2','2'],['b2','-1'],['c2','1']];
- $('eqInputs').innerHTML=fields.map(([n,v])=>'<label class="field">'+n+'<input id="eq_'+n+'" type="number" value="'+v+'" step="any"></label>').join('');
-}
-$('eqType').addEventListener('change',renderEqInputs);renderEqInputs();
-function val(id){let x=Number($(id).value);if(!Number.isFinite(x))throw Error('Enter valid numbers.');return x}
-
-function solveEquation(){
- try{
-  let t=$('eqType').value,r='';
-  if(t==='linear'){
-   let a=val('eq_a'),b=val('eq_b');
-   r=a===0?(b===0?'Infinite solutions':'No solution'):'x = '+format(-b/a);
-  }else if(t==='quad'){
-   let a=val('eq_a'),b=val('eq_b'),c=val('eq_c');
-   if(a===0)r=b===0?(c===0?'Infinite solutions':'No solution'):'Linear equation: x = '+format(-c/b);
-   else{
-    let d=b*b-4*a*c;
-    if(d>0)r='x₁ = '+format((-b+Math.sqrt(d))/(2*a))+'\nx₂ = '+format((-b-Math.sqrt(d))/(2*a));
-    else if(d===0)r='Repeated root: x = '+format(-b/(2*a));
-    else r='x₁ = '+format(-b/(2*a))+' + '+format(Math.sqrt(-d)/(2*a))+'i\nx₂ = '+format(-b/(2*a))+' - '+format(Math.sqrt(-d)/(2*a))+'i';
-   }
-  }else{
-   let a=val('eq_a1'),b=val('eq_b1'),c=val('eq_c1'),d=val('eq_a2'),e=val('eq_b2'),f=val('eq_c2'),det=a*e-b*d;
-   r=Math.abs(det)<1e-12?'No unique solution':'x = '+format((c*e-b*f)/det)+'\ny = '+format((a*f-c*d)/det);
-  }
-  $('eqResult').textContent=r;
- }catch(e){$('eqResult').textContent=e.message}
-}
-
-function makeTable(){
- try{
-  let f=$('tableFn').value,start=val('tableStart'),end=val('tableEnd'),step=val('tableStep');
-  if(step===0||(end-start)*step<0)throw Error('Step must move from start toward end.');
-  let rows=[],count=0;
-  for(let x=start;(step>0?x<=end+1e-10:x>=end-1e-10)&&count<200;x+=step,count++)rows.push('x = '+format(x)+'    f(x) = '+format(evaluate(f,{x})));
-  $('tableResult').textContent=rows.join('\n');
- }catch(e){$('tableResult').textContent=e.message}
-}
-function differentiate(){
- try{let d=math.derivative(math.parse($('calcFn').value),'x');$('calcResult').textContent='Derivative: '+d.toString()+'\nAt x = '+val('calcX')+': '+format(d.evaluate({x:val('calcX')}))}
- catch(e){$('calcResult').textContent=e.message}
-}
-function numericalDerivative(){
- try{let x=val('calcX'),h=1e-5,f=$('calcFn').value;let y=(evaluate(f,{x:x+h})-evaluate(f,{x:x-h}))/(2*h);$('calcResult').textContent='Numerical derivative at x = '+x+'\nf′(x) ≈ '+format(y)}
- catch(e){$('calcResult').textContent=e.message}
-}
-function integrate(){
- try{
-  let a=val('intA'),b=val('intB'),f=$('calcFn').value,n=1000;
-  if(a===b){$('calcResult').textContent='Integral = 0';return}
-  let h=(b-a)/n,sum=evaluate(f,{x:a})+evaluate(f,{x:b});
-  for(let i=1;i<n;i++)sum+=(i%2?4:2)*evaluate(f,{x:a+i*h});
-  $('calcResult').textContent='Simpson approximation\nIntegral ≈ '+format(sum*h/3);
- }catch(e){$('calcResult').textContent=e.message}
-}
-function parseMatrix(id){
- let rows=$(id).value.trim().split(';').map(r=>r.split(',').map(Number));
- if(rows.length!==2||rows.some(r=>r.length!==2||r.some(n=>!Number.isFinite(n))))throw Error('Use format 1,2;3,4');
- return rows;
-}
-function matrixOp(op){
- try{
-  let A=parseMatrix('matA'),B=parseMatrix('matB'),r;
-  if(op==='add'||op==='sub')r=A.map((row,i)=>row.map((v,j)=>op==='add'?v+B[i][j]:v-B[i][j]));
-  if(op==='mul')r=A.map((row,i)=>row.map((v,j)=>v*B[0][j]+row[1]*B[1][j]));
-  if(op==='det')r=A[0][0]*A[1][1]-A[0][1]*A[1][0];
-  if(op==='trans')r=[[A[0][0],A[1][0]],[A[0][1],A[1][1]]];
-  if(op==='inv'){
-   let d=A[0][0]*A[1][1]-A[0][1]*A[1][0];
-   if(Math.abs(d)<1e-12)throw Error('Determinant is zero; no inverse.');
-   r=[[A[1][1]/d,-A[0][1]/d],[-A[1][0]/d,A[0][0]/d]];
-  }
-  $('matrixResult').textContent=Array.isArray(r)?r.map(row=>row.map(format).join('   ')).join('\n'):'det(A) = '+format(r);
- }catch(e){$('matrixResult').textContent=e.message}
-}
-function statistics(){
- try{
-  let a=$('statsData').value.split(',').map(Number);
-  if(!a.length||a.some(x=>!Number.isFinite(x)))throw Error('Enter numbers separated by commas.');
-  let s=[...a].sort((x,y)=>x-y),mean=a.reduce((x,y)=>x+y,0)/a.length;
-  let median=s.length%2?s[(s.length-1)/2]:(s[s.length/2-1]+s[s.length/2])/2;
-  let counts={};a.forEach(x=>counts[x]=(counts[x]||0)+1);
-  let max=Math.max(...Object.values(counts)),modes=max===1?'No repeated mode':Object.keys(counts).filter(k=>counts[k]===max).join(', ');
-  let variance=a.reduce((z,x)=>z+(x-mean)**2,0)/a.length;
-  $('statsResult').textContent='Count: '+a.length+'\nMean: '+format(mean)+'\nMedian: '+format(median)+'\nMode: '+modes+'\nPopulation variance: '+format(variance)+'\nStandard deviation: '+format(Math.sqrt(variance))+'\nMinimum: '+Math.min(...a)+'\nMaximum: '+Math.max(...a);
- }catch(e){$('statsResult').textContent=e.message}
-}
-function convertUnit(){
- try{
-  let x=val('convValue'),type=$('convType').value,rev=$('convDir').value==='reverse',r;
-  if(type==='length')r=rev?x/3.280839895:x*3.280839895;
-  else if(type==='mass')r=rev?x/2.204622622:x*2.204622622;
-  else if(type==='temp')r=rev?(x-32)*5/9:x*9/5+32;
-  else if(type==='speed')r=rev?x/0.621371192:x*0.621371192;
-  else if(type==='angle')r=rev?x*180/Math.PI:x*Math.PI/180;
-  else r=rev?x*1024:x/1024;
-  $('convResult').textContent='Result: '+format(r);
- }catch(e){$('convResult').textContent=e.message}
-}
+function tab(id,b){document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));$(id).classList.add('active');document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');if(id==='eq')eqFields()}
+function ins(s){let e=$('expr'),a=e.selectionStart,b=e.selectionEnd;e.setRangeText(s,a,b,'end');e.focus()}
+function backspace(){let e=$('expr'),a=e.selectionStart,b=e.selectionEnd;if(a===b&&a>0)a--;e.setRangeText('',a,b,'end');e.focus()}
+function clearCalc(){$('expr').value='';$('answer').textContent='0';$('status').textContent='Ready'}
+function ev(s,scope={}){if(typeof math==='undefined')throw Error('Math engine failed to load. Check internet and refresh.');s=s.replace(/π/g,'pi').replace(/\bAns\b/g,String(ans));if(angleMode==='DEG'){s=s.replace(/\b(sin|cos|tan)\(([^()]*)\)/g,(_,f,x)=>f+'(('+x+')*pi/180)');s=s.replace(/\b(asin|acos|atan)\(([^()]*)\)/g,(_,f,x)=>'('+f+'('+x+')*180/pi)')}return math.evaluate(s,scope)}
+function fmt(x){if(typeof x==='number')return Number.isFinite(x)?String(Number(x.toPrecision(12))):String(x);return String(x)}
+function calculate(){try{let s=$('expr').value,r=ev(s);ans=Number(r);$('answer').textContent=fmt(r);$('status').textContent='Calculated';hist.unshift(s+' = '+fmt(r));showHist()}catch(e){$('answer').textContent='Error';$('status').textContent=e.message}}
+function showHist(){$('hout').innerHTML=hist.map(x=>'<div class="historyitem">'+esc(x)+'</div>').join('')||'No calculations yet.'}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function eqFields(){let t=$('eqtype').value;let a=t==='quad'?['a','b','c']:t==='linear'?['a','b']:['a1','b1','c1','a2','b2','c2'];$('eqfields').innerHTML=a.map((x,i)=>'<label class="field">'+x+'<input id="q'+x+'" type="number" value="'+(t==='quad'?[1,-3,2][i]:t==='linear'?[2,-6][i]:[1,1,5,2,-1,1][i])+'"></label>').join('')}
+function q(n){return Number($('q'+n).value)}
+function solveEq(){try{let t=$('eqtype').value,r;if(t==='linear'){let a=q('a'),b=q('b');r=a?'x = '+fmt(-b/a):b?'No solution':'Infinite solutions'}else if(t==='quad'){let a=q('a'),b=q('b'),c=q('c');if(!a)r='x = '+fmt(-c/b);else{let d=b*b-4*a*c;r=d>=0?'x₁ = '+fmt((-b+Math.sqrt(d))/(2*a))+'\nx₂ = '+fmt((-b-Math.sqrt(d))/(2*a)):'Complex roots: '+fmt(-b/(2*a))+' ± '+fmt(Math.sqrt(-d)/(2*a))+'i'}}else{let a=q('a1'),b=q('b1'),c=q('c1'),d=q('a2'),e=q('b2'),f=q('c2'),z=a*e-b*d;r=z?'x = '+fmt((c*e-b*f)/z)+'\ny = '+fmt((a*f-c*d)/z):'No unique solution'}$('eqout').textContent=r}catch(e){$('eqout').textContent=e.message}}
+function makeTable(){try{let a=+$('ts').value,b=+$('te').value,d=+$('td').value;if(!d||(b-a)*d<0)throw Error('Invalid step');let r=[];for(let x=a,i=0;d>0?x<=b:x>=b;x+=d){if(i++>100)break;r.push('x = '+fmt(x)+'   f(x) = '+fmt(ev($('tf').value,{x})))}$('tout').textContent='x        f(x)\n'+r.join('\n')}catch(e){$('tout').textContent=e.message}}
+function derivative(){try{let d=math.derivative($('cf').value,'x');$('cout').textContent='f′(x) = '+d.toString()+'\nf′('+ $('cx').value+') = '+fmt(d.evaluate({x:+$('cx').value}))}catch(e){$('cout').textContent=e.message}}
+function numder(){try{let x=+$('cx').value,h=.00001,f=$('cf').value;$('cout').textContent='Numerical derivative ≈ '+fmt((ev(f,{x:x+h})-ev(f,{x:x-h}))/(2*h))}catch(e){$('cout').textContent=e.message}}
+function integrate(){try{let a=+$('ca').value,b=+$('cb').value,f=$('cf').value,n=1000,h=(b-a)/n,s=ev(f,{x:a})+ev(f,{x:b});for(let i=1;i<n;i++)s+=(i%2?4:2)*ev(f,{x:a+i*h});$('cout').textContent='Integral ≈ '+fmt(s*h/3)}catch(e){$('cout').textContent=e.message}}
+function mat(id){let a=$(id).value.split(';').map(r=>r.split(',').map(Number));if(a.length!==2||a.some(r=>r.length!==2||r.some(Number.isNaN)))throw Error('Use 1,2;3,4');return a}
+function matrix(op){try{let a=mat('ma'),b=mat('mb'),r;if(op==='add')r=a.map((x,i)=>x.map((v,j)=>v+b[i][j]));if(op==='mul')r=a.map(x=>b[0].map((_,j)=>x[0]*b[0][j]+x[1]*b[1][j]));if(op==='det')r=a[0][0]*a[1][1]-a[0][1]*a[1][0];if(op==='inv'){let d=a[0][0]*a[1][1]-a[0][1]*a[1][0];if(!d)throw Error('No inverse');r=[[a[1][1]/d,-a[0][1]/d],[-a[1][0]/d,a[0][0]/d]]}$('mout').textContent=Array.isArray(r)?r.map(x=>x.join('  ')).join('\n'):fmt(r)}catch(e){$('mout').textContent=e.message}}
+function stats(){try{let a=$('sd').value.split(',').map(Number).sort((x,y)=>x-y);if(a.some(Number.isNaN))throw Error('Enter comma-separated numbers');let m=a.reduce((x,y)=>x+y,0)/a.length,med=a.length%2?a[(a.length-1)/2]:(a[a.length/2-1]+a[a.length/2])/2,v=a.reduce((s,x)=>s+(x-m)**2,0)/a.length,c={};a.forEach(x=>c[x]=(c[x]||0)+1);let mx=Math.max(...Object.values(c));$('sout').textContent='Count: '+a.length+'\nMean: '+fmt(m)+'\nMedian: '+fmt(med)+'\nMode: '+Object.keys(c).filter(x=>c[x]===mx).join(', ')+'\nPopulation SD: '+fmt(Math.sqrt(v))}catch(e){$('sout').textContent=e.message}}
+function convert(){let x=+$('cv').value,t=$('ct').value,r=({lf:()=>x*3.28084,fl:()=>x/3.28084,kg:()=>x*2.20462,lb:()=>x/2.20462,cf:()=>x*9/5+32,fc:()=>(x-32)*5/9,km:()=>x*.621371,mk:()=>x/.621371,dr:()=>x*Math.PI/180,rd:()=>x*180/Math.PI}[t])();$('vout').textContent=fmt(r)}
+eqFields();
 </script>
 </body>
-</html>
+ </html>
+ 
