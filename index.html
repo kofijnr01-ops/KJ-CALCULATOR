@@ -180,112 +180,125 @@ eqFields();
 </script>
 </body>
  </html>
- 
-/* KJ COMPACT MOBILE MODE */
-* {
-  box-sizing: border-box;
+
+<!-- KJ Dynamic Island -->
+<div class="kj-island" id="kjIsland" onclick="toggleKJIsland()">
+  <div class="kj-island-mini">
+    <span class="kj-island-dot"></span>
+    <span>KJ SCIENTIFIC</span>
+    <span class="kj-island-version">4.0</span>
+  </div>
+
+  <div class="kj-island-expanded" id="kjIslandExpanded">
+    <div class="kj-island-status">CALCULATION READY</div>
+    <div class="kj-island-result" id="kjIslandResult">Your answer appears here</div>
+    <button onclick="copyKJIslandResult(event)">Copy answer</button>
+  </div>
+</div>
+
+<style>
+.kj-island {
+  width: 145px;
+  margin: 12px auto;
+  padding: 12px 18px;
+  border-radius: 50px;
+  background: #000;
+  border: 1px solid #182c48;
+  color: #66d9ff;
+  font-family: Arial, sans-serif;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all .35s ease;
+  box-shadow: 0 0 15px #008cff15;
+  position: relative;
+  z-index: 10;
 }
 
-html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  min-height: 100%;
-}
-
-.app {
-  width: 100%;
-  max-width: 650px;
-  padding: 6px;
-  margin: auto;
-}
-
-header {
-  margin-bottom: 7px;
-}
-
-h1 {
-  font-size: 19px;
-}
-
-.display {
-  min-height: 0;
-  padding: 10px 14px;
-  margin-bottom: 7px;
-  border-radius: 18px;
-}
-
-#expr {
-  padding: 7px 0;
-  font-size: 16px;
-}
-
-#answer {
-  min-height: 34px;
-  font-size: 29px;
-}
-
-.tabs {
+.kj-island-mini {
   display: flex;
-  flex-wrap: wrap;
-  overflow: visible;
-  gap: 4px;
-  margin: 5px 0;
-}
-
-.tab {
-  flex: 1 1 auto;
-  padding: 7px 5px;
+  align-items: center;
+  justify-content: space-between;
   font-size: 11px;
+  font-weight: 700;
+  gap: 8px;
 }
 
-.panel {
-  padding: 7px;
-  margin-bottom: 5px;
+.kj-island-dot {
+  width: 7px;
+  height: 7px;
+  background: #28c9ff;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #28c9ff;
 }
 
-.keys {
-  gap: 5px;
+.kj-island-version {
+  color: #fff;
 }
 
-.key {
-  height: clamp(32px, 5.2vh, 45px);
-  min-height: 0;
-  border-radius: 11px;
-  font-size: 17px;
+.kj-island-expanded {
+  display: none;
+  padding-top: 15px;
+  text-align: center;
 }
 
-.subnote, .muted {
-  font-size: 10px;
-  margin: 5px 0;
+.kj-island.open {
+  width: min(320px, 88vw);
+  border-radius: 26px;
+  padding: 18px;
+  background: #081326;
+  border-color: #247bff;
 }
 
-.field {
-  margin: 5px 0;
+.kj-island.open .kj-island-expanded {
+  display: block;
+  animation: kjFade .25s ease;
 }
 
-.action {
-  padding: 8px;
-  margin: 3px 0;
+.kj-island-status {
+  color: #65d9ff;
+  font-size: 11px;
+  margin-bottom: 8px;
 }
 
-footer {
-  padding: 4px;
+.kj-island-result {
+  font-size: 20px;
+  color: white;
+  overflow-wrap: anywhere;
+  margin-bottom: 12px;
 }
 
-@media (max-height: 750px) {
-  .key {
-    height: 32px;
-    font-size: 15px;
-  }
-
-  .display {
-    padding: 7px 12px;
-  }
-
-  #answer {
-    font-size: 25px;
-    min-height: 29px;
-  }
+.kj-island-expanded button {
+  border: 0;
+  border-radius: 12px;
+  padding: 10px 18px;
+  background: #176cff;
+  color: white;
+  font-weight: bold;
 }
 
+@keyframes kjFade {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+
+<script>
+function toggleKJIsland() {
+  document.getElementById("kjIsland")
+    .classList.toggle("open");
+}
+
+function updateKJIsland(answer) {
+  document.getElementById("kjIslandResult")
+    .textContent = answer;
+}
+
+function copyKJIslandResult(event) {
+  event.stopPropagation();
+
+  const answer = document.getElementById("kjIslandResult")
+    .textContent;
+
+  navigator.clipboard.writeText(answer);
+}
+</script>
