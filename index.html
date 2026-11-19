@@ -1,304 +1,986 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#050c18">
-<title>KJ Calculator 3.0</title>
-<script src="https://cdn.jsdelivr.net/npm/mathjs@12.4.2/lib/browser/math.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#08090f">
+<title>KJ Calculator</title>
+
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#050c18;color:#f2f7ff;font-family:Arial,sans-serif}
-.app{max-width:650px;margin:auto;padding:16px}
-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
-h1{font-size:23px;margin:0}small,.muted{color:#8fa8c4}
-.badge{color:#40cfff}
-.display{background:#0b1b36;border:1px solid #2865b5;border-radius:24px;padding:18px;margin-bottom:14px;min-height:155px}
-.top{display:flex;justify-content:space-between;color:#9cb6d7;font-size:12px}
-input,select,textarea{background:#061326;color:white;border:1px solid #254568;border-radius:10px;padding:12px;width:100%;font-size:16px}
-#expr{background:transparent;border:0;padding:22px 0 10px;font-size:20px}
-#answer{font-size:38px;text-align:right;overflow-wrap:anywhere;min-height:48px}
-#status{text-align:right;color:#39d4ff;font-size:12px}
-.tabs{display:flex;gap:7px;overflow:auto;margin:12px 0}
-button{cursor:pointer}
-.tab,.minor{border:1px solid #234367;background:#102440;color:#dcecff;border-radius:10px;padding:10px}
-.tab.active{background:#176cff}
-.panel{display:none;background:#0a182b;border:1px solid #1c395a;border-radius:17px;padding:12px;margin-bottom:12px}
-.panel.active{display:block}
-.keys{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
-.key{height:58px;border:0;border-radius:15px;background:#10264a;color:white;font-size:20px;font-weight:bold}
-.fn{color:#62d7ff}.op{color:#73aaff}.clear{background:#8d1e54}.equal{background:#216dff}
-.wide{grid-column:span 2}
-h3{color:#9fe5ff;font-size:16px}
-.field{display:block;margin:10px 0;color:#9fb8d5;font-size:13px}
-.field input,.field select{margin-top:6px}
-.action{background:#176cff;color:white;border:0;border-radius:10px;padding:12px;width:100%;margin:5px 0;font-weight:bold}
-.result{white-space:pre-wrap;overflow-wrap:anywhere;background:#061326;border-radius:10px;padding:12px;margin-top:10px}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.historyitem{padding:10px;border-bottom:1px solid #24405d;overflow-wrap:anywhere}
-footer{text-align:center;color:#637d9d;font-size:11px;padding:15px}
+:root {
+  --bg:#08090f;
+  --panel:#141620;
+  --panel2:#1d202c;
+  --text:#f7f7ff;
+  --muted:#85899d;
+  --accent:#a78bfa;
+  --accent2:#7c5cff;
+  --border:rgba(255,255,255,.08);
+  --good:#50e3a4;
+  --danger:#ff667d;
+}
+
+* {
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  -webkit-tap-highlight-color:transparent;
+}
+
+body {
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",
+               "Segoe UI",Roboto,sans-serif;
+  min-height:100vh;
+  padding:0 0 35px;
+  overflow-x:hidden;
+  transition:.3s;
+}
+
+body.light {
+  --bg:#f3f4fa;
+  --panel:#ffffff;
+  --panel2:#e9eaf3;
+  --text:#161724;
+  --muted:#77798b;
+  --border:rgba(0,0,0,.08);
+}
+
+body.green {
+  --accent:#47e6a4;
+  --accent2:#14b879;
+}
+
+body.blue {
+  --accent:#66b7ff;
+  --accent2:#3289ff;
+}
+
+body.pink {
+  --accent:#ff91c8;
+  --accent2:#e94c9b;
+}
+
+body.orange {
+  --accent:#ffbd66;
+  --accent2:#ff8d35;
+}
+
+body.purple {
+  --accent:#a78bfa;
+  --accent2:#7c5cff;
+}
+
+/* Background glow */
+
+body:before {
+  content:"";
+  position:fixed;
+  width:280px;
+  height:280px;
+  border-radius:50%;
+  background:var(--accent);
+  opacity:.08;
+  filter:blur(100px);
+  top:-90px;
+  right:-80px;
+  pointer-events:none;
+}
+
+/* iOS-style top display */
+
+.statusbar {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:13px 25px 5px;
+  font-size:13px;
+  font-weight:700;
+  height:42px;
+}
+
+.status-icons {
+  display:flex;
+  gap:7px;
+  align-items:center;
+}
+
+.island-wrap {
+  display:flex;
+  justify-content:center;
+  position:relative;
+  z-index:20;
+  height:60px;
+}
+
+.island {
+  background:#000;
+  color:white;
+  width:132px;
+  height:38px;
+  border-radius:30px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:8px 14px;
+  transition:all .35s cubic-bezier(.2,.8,.2,1);
+  box-shadow:0 5px 25px #0006;
+  cursor:pointer;
+  overflow:hidden;
+}
+
+.island.expanded {
+  width:min(340px,90vw);
+  height:100px;
+  border-radius:27px;
+  align-items:flex-start;
+  padding:16px;
+}
+
+.island-dot {
+  width:8px;
+  height:8px;
+  background:var(--accent);
+  border-radius:50%;
+  box-shadow:0 0 12px var(--accent);
+}
+
+.island-title {
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:1px;
+}
+
+.island-content {
+  display:none;
+  width:100%;
+}
+
+.island.expanded .island-content {
+  display:block;
+}
+
+.island.expanded .island-mini {
+  display:none;
+}
+
+.island-head {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:12px;
+}
+
+.island-message {
+  color:#aaa;
+  font-size:11px;
+  margin-top:7px;
+}
+
+.island-actions {
+  display:flex;
+  gap:8px;
+  margin-top:9px;
+}
+
+.island-actions button {
+  background:#222;
+  color:white;
+  border:0;
+  border-radius:12px;
+  padding:7px 12px;
+  font-size:11px;
+}
+
+/* Main layout */
+
+.container {
+  max-width:520px;
+  margin:auto;
+  padding:8px 17px;
+}
+
+.header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin:8px 0 18px;
+}
+
+.logo {
+  font-size:22px;
+  font-weight:900;
+  letter-spacing:-1px;
+}
+
+.logo span {
+  color:var(--accent);
+}
+
+.version {
+  font-size:10px;
+  color:var(--muted);
+  margin-top:3px;
+}
+
+.header-actions {
+  display:flex;
+  gap:8px;
+}
+
+.icon-btn {
+  border:1px solid var(--border);
+  background:var(--panel);
+  color:var(--text);
+  width:40px;
+  height:40px;
+  border-radius:14px;
+  font-size:17px;
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+}
+
+/* Display */
+
+.display {
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:28px;
+  padding:20px;
+  min-height:165px;
+  margin-bottom:14px;
+  position:relative;
+  overflow:hidden;
+}
+
+.display:after {
+  content:"";
+  position:absolute;
+  width:160px;
+  height:160px;
+  background:var(--accent);
+  opacity:.05;
+  filter:blur(70px);
+  right:-30px;
+  top:-20px;
+}
+
+.display-top {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  color:var(--muted);
+  font-size:11px;
+  margin-bottom:20px;
+}
+
+.mode-pill {
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:5px 10px;
+  color:var(--accent);
+  background:var(--panel2);
+  cursor:pointer;
+}
+
+.expression {
+  font-size:20px;
+  color:var(--muted);
+  min-height:30px;
+  text-align:right;
+  word-break:break-all;
+}
+
+.result {
+  font-size:clamp(32px,9vw,48px);
+  font-weight:700;
+  text-align:right;
+  letter-spacing:-2px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.result.small {
+  font-size:27px;
+}
+
+.display-bottom {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:14px;
+  font-size:11px;
+  color:var(--muted);
+}
+
+.copy-btn {
+  background:transparent;
+  border:0;
+  color:var(--accent);
+  cursor:pointer;
+}
+
+/* Tabs */
+
+.tabs {
+  display:flex;
+  gap:7px;
+  overflow-x:auto;
+  scrollbar-width:none;
+  margin:0 0 14px;
+  padding-bottom:2px;
+}
+
+.tabs::-webkit-scrollbar {
+  display:none;
+}
+
+.tab {
+  flex-shrink:0;
+  padding:10px 15px;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:14px;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.tab.active {
+  color:white;
+  background:var(--accent2);
+  border-color:transparent;
+}
+
+/* Keypad */
+
+.keypad {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+}
+
+.key {
+  border:0;
+  border-radius:21px;
+  background:var(--panel2);
+  color:var(--text);
+  min-height:64px;
+  font-size:22px;
+  font-weight:600;
+  cursor:pointer;
+  transition:transform .1s,filter .15s;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
+}
+
+.key:active {
+  transform:scale(.94);
+  filter:brightness(1.3);
+}
+
+.key.function {
+  color:var(--accent);
+  font-size:16px;
+  background:var(--panel);
+}
+
+.key.operator {
+  background:var(--panel);
+  color:var(--accent);
+  font-size:25px;
+}
+
+.key.danger {
+  color:var(--danger);
+}
+
+.key.equal {
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:white;
+}
+
+.key.zero {
+  grid-column:span 2;
+}
+
+.key sup {
+  font-size:10px;
+}
+
+/* Panels */
+
+.panel {
+  display:none;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:25px;
+  padding:18px;
+  margin-top:12px;
+}
+
+.panel.active {
+  display:block;
+  animation:fade .25s ease;
+}
+
+@keyframes fade {
+  from {opacity:0;transform:translateY(6px)}
+  to {opacity:1;transform:translateY(0)}
+}
+
+.panel h3 {
+  font-size:17px;
+  margin-bottom:5px;
+}
+
+.panel p {
+  font-size:12px;
+  color:var(--muted);
+  margin-bottom:14px;
+}
+
+.field {
+  margin-bottom:12px;
+}
+
+.field label {
+  display:block;
+  font-size:11px;
+  color:var(--muted);
+  margin-bottom:6px;
+}
+
+.field input,.field select,.field textarea {
+  width:100%;
+  border:1px solid var(--border);
+  border-radius:13px;
+  background:var(--panel2);
+  color:var(--text);
+  padding:13px;
+  font-size:15px;
+  outline:none;
+}
+
+.field textarea {
+  min-height:85px;
+  resize:vertical;
+}
+
+.action-btn {
+  width:100%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border:0;
+  border-radius:15px;
+  color:white;
+  padding:14px;
+  font-weight:800;
+  cursor:pointer;
+  margin-top:5px;
+}
+
+.output {
+  background:var(--panel2);
+  border-radius:14px;
+  padding:14px;
+  margin-top:12px;
+  font-size:14px;
+  word-break:break-word;
+}
+
+.output strong {
+  color:var(--accent);
+}
+
+.grid2 {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.small-btn {
+  border:1px solid var(--border);
+  background:var(--panel2);
+  color:var(--text);
+  padding:12px;
+  border-radius:14px;
+  cursor:pointer;
+}
+
+/* Graph */
+
+.graph-wrap {
+  background:var(--panel2);
+  border-radius:16px;
+  padding:5px;
+  overflow:hidden;
+}
+
+canvas {
+  width:100%;
+  height:260px;
+  display:block;
+}
+
+/* History */
+
+.history-item {
+  padding:12px 0;
+  border-bottom:1px solid var(--border);
+}
+
+.history-item:last-child {
+  border:0;
+}
+
+.history-expression {
+  color:var(--muted);
+  font-size:12px;
+  word-break:break-all;
+}
+
+.history-result {
+  font-size:18px;
+  font-weight:700;
+  margin-top:4px;
+}
+
+.history-tools {
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:10px;
+}
+
+/* Formula library */
+
+.formula {
+  padding:12px;
+  background:var(--panel2);
+  border-radius:14px;
+  margin-bottom:8px;
+}
+
+.formula h4 {
+  font-size:13px;
+  margin-bottom:5px;
+}
+
+.formula div {
+  color:var(--accent);
+  font-family:monospace;
+  font-size:14px;
+}
+
+/* Settings */
+
+.theme-grid {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+
+.theme-choice {
+  padding:15px 10px;
+  border:1px solid var(--border);
+  border-radius:15px;
+  background:var(--panel2);
+  color:var(--text);
+  text-align:center;
+  font-size:12px;
+  cursor:pointer;
+}
+
+.theme-dot {
+  width:23px;
+  height:23px;
+  border-radius:50%;
+  display:block;
+  margin:0 auto 7px;
+}
+
+/* Bottom navigation */
+
+.footer {
+  text-align:center;
+  padding:24px 10px 10px;
+  color:var(--muted);
+  font-size:10px;
+  letter-spacing:1px;
+}
+
+.toast {
+  position:fixed;
+  bottom:25px;
+  left:50%;
+  transform:translate(-50%,20px);
+  background:#222431;
+  color:white;
+  padding:12px 18px;
+  border-radius:30px;
+  font-size:12px;
+  opacity:0;
+  transition:.3s;
+  pointer-events:none;
+  z-index:100;
+  white-space:nowrap;
+}
+
+.toast.show {
+  opacity:1;
+  transform:translate(-50%,0);
+}
+
+@media(max-width:380px) {
+  .key {min-height:56px;font-size:19px}
+  .keypad {gap:7px}
+  .container {padding:8px 12px}
+}
+
 </style>
 </head>
-<body>
-<div class="app">
-<header>
-<div><h1>KJ <span class="badge">v3.0</span></h1><small>SCIENTIFIC CALCULATOR</small></div>
-<button class="minor" onclick="angleMode=angleMode==='DEG'?'RAD':'DEG';this.textContent=angleMode;document.getElementById('status').textContent='Angle mode: '+angleMode">DEG</button>
+
+<body class="purple">
+
+<!-- iPhone-style status bar -->
+<div class="statusbar">
+  <span id="clock">9:41</span>
+  <div class="status-icons">
+    <span>●●●</span>
+    <span>Wi-Fi</span>
+    <span>▰</span>
+  </div>
+</div>
+
+<!-- Dynamic Island simulation -->
+<div class="island-wrap">
+  <div class="island" id="island" onclick="toggleIsland()">
+    <div class="island-mini">
+      <span class="island-dot"></span>
+      <span class="island-title">KJ CALCULATOR</span>
+    </div>
+
+    <div class="island-content">
+      <div class="island-head">
+        <strong>⚡ KJ Calculator</strong>
+        <span id="islandTime">Ready</span>
+      </div>
+      <div class="island-message" id="islandMessage">
+        Your smart calculator is ready.
+      </div>
+      <div class="island-actions">
+        <button onclick="event.stopPropagation();toast('KJ Calculator ready!')">Status</button>
+        <button onclick="event.stopPropagation();toggleIsland()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+<header class="header">
+  <div>
+    <div class="logo">KJ <span>CALCULATOR</span></div>
+    <div class="version">ULTIMATE EDITION · 2026</div>
+  </div>
+
+  <div class="header-actions">
+    <button class="icon-btn" onclick="toggleAngle()" title="Angle mode">°</button>
+    <button class="icon-btn" onclick="switchPanel('settings')" title="Settings">⚙</button>
+  </div>
 </header>
 
-<div class="display">
-<div class="top"><span>KJ SCIENTIFIC</span><span id="mode">SHS • DEG</span></div>
-<input id="expr" placeholder="Enter expression..." onkeydown="if(event.key==='Enter')calculate()">
-<div id="answer">0</div><div id="status">Ready</div>
-</div>
+<!-- Calculator display -->
+<section class="display">
+  <div class="display-top">
+    <span>SCIENTIFIC CALCULATOR</span>
+    <button class="mode-pill" id="anglePill" onclick="toggleAngle()">DEG</button>
+  </div>
 
+  <div class="expression" id="expression"></div>
+  <div class="result" id="result">0</div>
+
+  <div class="display-bottom">
+    <span id="displayStatus">Ready</span>
+    <button class="copy-btn" onclick="copyResult()">COPY RESULT ▣</button>
+  </div>
+</section>
+
+<!-- Main tabs -->
 <div class="tabs">
-<button class="tab active" onclick="tab('calc',this)">Calculator</button>
-<button class="tab" onclick="tab('eq',this)">Equations</button>
-<button class="tab" onclick="tab('table',this)">Tables</button>
-<button class="tab" onclick="tab('calculus',this)">Calculus</button>
-<button class="tab" onclick="tab('matrix',this)">Matrices</button>
-<button class="tab" onclick="tab('stats',this)">Statistics</button>
-<button class="tab" onclick="tab('convert',this)">Convert</button>
-<button class="tab" onclick="tab('history',this)">History</button>
+  <button class="tab active" onclick="switchPanel('calculator')">Calculator</button>
+  <button class="tab" onclick="switchPanel('graph')">Graph</button>
+  <button class="tab" onclick="switchPanel('equations')">Equations</button>
+  <button class="tab" onclick="switchPanel('converter')">Convert</button>
+  <button class="tab" onclick="switchPanel('percentage')">Percent</button>
+  <button class="tab" onclick="switchPanel('history')">History</button>
+  <button class="tab" onclick="switchPanel('formulas')">Formulas</button>
+  <button class="tab" onclick="switchPanel('settings')">Settings</button>
 </div>
 
-<section id="calc" class="panel active">
-<div class="keys">
-<button class="key fn" onclick="ins('sin(')">sin</button>
-<button class="key fn" onclick="ins('cos(')">cos</button>
-<button class="key fn" onclick="ins('tan(')">tan</button>
-<button class="key fn" onclick="ins('log10(')">log</button>
-<button class="key fn" onclick="ins('asin(')">sin⁻¹</button>
-<button class="key fn" onclick="ins('sqrt(')">√</button>
-<button class="key fn" onclick="ins('pi')">π</button>
-<button class="key fn" onclick="ins('^')">xʸ</button>
-<button class="key clear" onclick="clearCalc()">AC</button>
-<button class="key" onclick="ins('(')">(</button>
-<button class="key" onclick="ins(')')">)</button>
-<button class="key op" onclick="ins('/')">÷</button>
-<button class="key" onclick="ins('7')">7</button>
-<button class="key" onclick="ins('8')">8</button>
-<button class="key" onclick="ins('9')">9</button>
-<button class="key op" onclick="ins('*')">×</button>
-<button class="key" onclick="ins('4')">4</button>
-<button class="key" onclick="ins('5')">5</button>
-<button class="key" onclick="ins('6')">6</button>
-<button class="key op" onclick="ins('-')">−</button>
-<button class="key" onclick="ins('1')">1</button>
-<button class="key" onclick="ins('2')">2</button>
-<button class="key" onclick="ins('3')">3</button>
-<button class="key op" onclick="ins('+')">+</button>
-<button class="key" onclick="ins('0')">0</button>
-<button class="key" onclick="ins('.')">.</button>
-<button class="key fn" onclick="ins('!')">x!</button>
-<button class="key equal" onclick="calculate()">=</button>
-<button class="key fn" onclick="ins('^2')">x²</button>
-<button class="key fn" onclick="ins('ln(')">ln</button>
-<button class="key fn" onclick="ins('%')">%</button>
-<button class="key op" onclick="backspace()">DEL</button>
-</div>
-<p class="muted">Supports brackets, fractions, powers, roots, logarithms and trigonometry. Use * for multiplication.</p>
+<!-- Calculator -->
+<section class="panel active" id="calculator">
+
+  <div class="keypad">
+
+    <button class="key function" onclick="insert('sin(')">sin</button>
+    <button class="key function" onclick="insert('cos(')">cos</button>
+    <button class="key function" onclick="insert('tan(')">tan</button>
+    <button class="key function" onclick="insert('sqrt(')">√</button>
+
+    <button class="key function" onclick="insert('log(')">log</button>
+    <button class="key function" onclick="insert('ln(')">ln</button>
+    <button class="key function" onclick="insert('π')">π</button>
+    <button class="key function" onclick="insert('^')">xʸ</button>
+
+    <button class="key danger" onclick="clearAll()">AC</button>
+    <button class="key function" onclick="backspace()">⌫</button>
+    <button class="key function" onclick="insert('(')">(</button>
+    <button class="key function" onclick="insert(')')">)</button>
+
+    <button class="key" onclick="insert('7')">7</button>
+    <button class="key" onclick="insert('8')">8</button>
+    <button class="key" onclick="insert('9')">9</button>
+    <button class="key operator" onclick="insert('÷')">÷</button>
+
+    <button class="key" onclick="insert('4')">4</button>
+    <button class="key" onclick="insert('5')">5</button>
+    <button class="key" onclick="insert('6')">6</button>
+    <button class="key operator" onclick="insert('×')">×</button>
+
+    <button class="key" onclick="insert('1')">1</button>
+    <button class="key" onclick="insert('2')">2</button>
+    <button class="key" onclick="insert('3')">3</button>
+    <button class="key operator" onclick="insert('-')">−</button>
+
+    <button class="key zero" onclick="insert('0')">0</button>
+    <button class="key" onclick="insert('.')">.</button>
+    <button class="key operator" onclick="insert('+')">+</button>
+
+    <button class="key function" onclick="insert('π*')">π×</button>
+    <button class="key function" onclick="insert('e')">e</button>
+    <button class="key function" onclick="insert('!')">n!</button>
+    <button class="key equal" onclick="calculate()">=</button>
+
+  </div>
 </section>
 
-<section id="eq" class="panel">
-<h3>Equation Solver</h3>
-<label class="field">Equation type
-<select id="eqtype" onchange="eqFields()"><option value="quad">Quadratic ax² + bx + c = 0</option><option value="linear">Linear ax + b = 0</option><option value="sim">Simultaneous equations</option></select></label>
-<div id="eqfields"></div>
-<button class="action" onclick="solveEq()">Solve</button><div class="result" id="eqout">Results appear here.</div>
-</section>
+<!-- Graph -->
+<section class="panel" id="graph">
+  <h3>Function Graph</h3>
+  <p>Plot mathematical functions. Example: sin(x), x^2, 2*x+3</p>
 
-<section id="table" class="panel">
-<h3>Function Table</h3>
-<label class="field">f(x)<input id="tf" value="x^2-2*x+1"></label>
-<div class="row"><label class="field">Start<input id="ts" type="number" value="-3"></label><label class="field">End<input id="te" type="number" value="3"></label></div>
-<label class="field">Step<input id="td" type="number" value="1"></label>
-<button class="action" onclick="makeTable()">Generate Table</button><div class="result" id="tout"></div>
-</section>
-
-<section id="calculus" class="panel">
-<h3>Calculus</h3>
-<label class="field">Expression in x<input id="cf" value="x^3+2*x^2"></label>
-<label class="field">Value of x<input id="cx" type="number" value="2"></label>
-<button class="action" onclick="derivative()">Symbolic Derivative</button>
-<button class="action" onclick="numder()">Numerical Derivative</button>
-<div class="row"><label class="field">Lower limit<input id="ca" type="number" value="0"></label><label class="field">Upper limit<input id="cb" type="number" value="2"></label></div>
-<button class="action" onclick="integrate()">Definite Integral</button><div class="result" id="cout"></div>
-</section>
-
-<section id="matrix" class="panel">
-<h3>2 × 2 Matrices</h3>
-<label class="field">Matrix A (format: 1,2;3,4)<input id="ma" value="1,2;3,4"></label>
-<label class="field">Matrix B<input id="mb" value="5,6;7,8"></label>
-<div class="row"><button class="action" onclick="matrix('add')">A + B</button><button class="action" onclick="matrix('mul')">A × B</button><button class="action" onclick="matrix('det')">det(A)</button><button class="action" onclick="matrix('inv')">Inverse A</button></div>
-<div class="result" id="mout"></div>
-</section>
-
-<section id="stats" class="panel">
-<h3>Statistics</h3>
-<label class="field">Numbers separated by commas<input id="sd" value="4,7,7,9,10,12"></label>
-<button class="action" onclick="stats()">Calculate</button><div class="result" id="sout"></div>
-</section>
-
-<section id="convert" class="panel">
-<h3>Unit Converter</h3>
-<label class="field">Conversion<select id="ct"><option value="lf">Metres → feet</option><option value="fl">Feet → metres</option><option value="kg">Kilograms → pounds</option><option value="lb">Pounds → kilograms</option><option value="cf">Celsius → Fahrenheit</option><option value="fc">Fahrenheit → Celsius</option><option value="km">Km/h → mph</option><option value="mk">mph → Km/h</option><option value="dr">Degrees → radians</option><option value="rd">Radians → degrees</option></select></label>
-<label class="field">Value<input id="cv" type="number" value="1"></label>
-<button class="action" onclick="convert()">Convert</button><div class="result" id="vout"></div>
-</section>
-
-<section id="history" class="panel"><h3>History</h3><button class="action" onclick="hist=[];showHist()">Clear History</button><div id="hout"></div></section>
-<footer>KJ Calculator 3.0 • Dark Blue Edition</footer>
-</div>
-
-<script>
-let angleMode='DEG',ans=0,hist=[];
-const $=id=>document.getElementById(id);
-function tab(id,b){document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));$(id).classList.add('active');document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');if(id==='eq')eqFields()}
-function ins(s){let e=$('expr'),a=e.selectionStart,b=e.selectionEnd;e.setRangeText(s,a,b,'end');e.focus()}
-function backspace(){let e=$('expr'),a=e.selectionStart,b=e.selectionEnd;if(a===b&&a>0)a--;e.setRangeText('',a,b,'end');e.focus()}
-function clearCalc(){$('expr').value='';$('answer').textContent='0';$('status').textContent='Ready'}
-function ev(s,scope={}){if(typeof math==='undefined')throw Error('Math engine failed to load. Check internet and refresh.');s=s.replace(/π/g,'pi').replace(/\bAns\b/g,String(ans));if(angleMode==='DEG'){s=s.replace(/\b(sin|cos|tan)\(([^()]*)\)/g,(_,f,x)=>f+'(('+x+')*pi/180)');s=s.replace(/\b(asin|acos|atan)\(([^()]*)\)/g,(_,f,x)=>'('+f+'('+x+')*180/pi)')}return math.evaluate(s,scope)}
-function fmt(x){if(typeof x==='number')return Number.isFinite(x)?String(Number(x.toPrecision(12))):String(x);return String(x)}
-function calculate(){try{let s=$('expr').value,r=ev(s);ans=Number(r);$('answer').textContent=fmt(r);$('status').textContent='Calculated';hist.unshift(s+' = '+fmt(r));showHist()}catch(e){$('answer').textContent='Error';$('status').textContent=e.message}}
-function showHist(){$('hout').innerHTML=hist.map(x=>'<div class="historyitem">'+esc(x)+'</div>').join('')||'No calculations yet.'}
-function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
-function eqFields(){let t=$('eqtype').value;let a=t==='quad'?['a','b','c']:t==='linear'?['a','b']:['a1','b1','c1','a2','b2','c2'];$('eqfields').innerHTML=a.map((x,i)=>'<label class="field">'+x+'<input id="q'+x+'" type="number" value="'+(t==='quad'?[1,-3,2][i]:t==='linear'?[2,-6][i]:[1,1,5,2,-1,1][i])+'"></label>').join('')}
-function q(n){return Number($('q'+n).value)}
-function solveEq(){try{let t=$('eqtype').value,r;if(t==='linear'){let a=q('a'),b=q('b');r=a?'x = '+fmt(-b/a):b?'No solution':'Infinite solutions'}else if(t==='quad'){let a=q('a'),b=q('b'),c=q('c');if(!a)r='x = '+fmt(-c/b);else{let d=b*b-4*a*c;r=d>=0?'x₁ = '+fmt((-b+Math.sqrt(d))/(2*a))+'\nx₂ = '+fmt((-b-Math.sqrt(d))/(2*a)):'Complex roots: '+fmt(-b/(2*a))+' ± '+fmt(Math.sqrt(-d)/(2*a))+'i'}}else{let a=q('a1'),b=q('b1'),c=q('c1'),d=q('a2'),e=q('b2'),f=q('c2'),z=a*e-b*d;r=z?'x = '+fmt((c*e-b*f)/z)+'\ny = '+fmt((a*f-c*d)/z):'No unique solution'}$('eqout').textContent=r}catch(e){$('eqout').textContent=e.message}}
-function makeTable(){try{let a=+$('ts').value,b=+$('te').value,d=+$('td').value;if(!d||(b-a)*d<0)throw Error('Invalid step');let r=[];for(let x=a,i=0;d>0?x<=b:x>=b;x+=d){if(i++>100)break;r.push('x = '+fmt(x)+'   f(x) = '+fmt(ev($('tf').value,{x})))}$('tout').textContent='x        f(x)\n'+r.join('\n')}catch(e){$('tout').textContent=e.message}}
-function derivative(){try{let d=math.derivative($('cf').value,'x');$('cout').textContent='f′(x) = '+d.toString()+'\nf′('+ $('cx').value+') = '+fmt(d.evaluate({x:+$('cx').value}))}catch(e){$('cout').textContent=e.message}}
-function numder(){try{let x=+$('cx').value,h=.00001,f=$('cf').value;$('cout').textContent='Numerical derivative ≈ '+fmt((ev(f,{x:x+h})-ev(f,{x:x-h}))/(2*h))}catch(e){$('cout').textContent=e.message}}
-function integrate(){try{let a=+$('ca').value,b=+$('cb').value,f=$('cf').value,n=1000,h=(b-a)/n,s=ev(f,{x:a})+ev(f,{x:b});for(let i=1;i<n;i++)s+=(i%2?4:2)*ev(f,{x:a+i*h});$('cout').textContent='Integral ≈ '+fmt(s*h/3)}catch(e){$('cout').textContent=e.message}}
-function mat(id){let a=$(id).value.split(';').map(r=>r.split(',').map(Number));if(a.length!==2||a.some(r=>r.length!==2||r.some(Number.isNaN)))throw Error('Use 1,2;3,4');return a}
-function matrix(op){try{let a=mat('ma'),b=mat('mb'),r;if(op==='add')r=a.map((x,i)=>x.map((v,j)=>v+b[i][j]));if(op==='mul')r=a.map(x=>b[0].map((_,j)=>x[0]*b[0][j]+x[1]*b[1][j]));if(op==='det')r=a[0][0]*a[1][1]-a[0][1]*a[1][0];if(op==='inv'){let d=a[0][0]*a[1][1]-a[0][1]*a[1][0];if(!d)throw Error('No inverse');r=[[a[1][1]/d,-a[0][1]/d],[-a[1][0]/d,a[0][0]/d]]}$('mout').textContent=Array.isArray(r)?r.map(x=>x.join('  ')).join('\n'):fmt(r)}catch(e){$('mout').textContent=e.message}}
-function stats(){try{let a=$('sd').value.split(',').map(Number).sort((x,y)=>x-y);if(a.some(Number.isNaN))throw Error('Enter comma-separated numbers');let m=a.reduce((x,y)=>x+y,0)/a.length,med=a.length%2?a[(a.length-1)/2]:(a[a.length/2-1]+a[a.length/2])/2,v=a.reduce((s,x)=>s+(x-m)**2,0)/a.length,c={};a.forEach(x=>c[x]=(c[x]||0)+1);let mx=Math.max(...Object.values(c));$('sout').textContent='Count: '+a.length+'\nMean: '+fmt(m)+'\nMedian: '+fmt(med)+'\nMode: '+Object.keys(c).filter(x=>c[x]===mx).join(', ')+'\nPopulation SD: '+fmt(Math.sqrt(v))}catch(e){$('sout').textContent=e.message}}
-function convert(){let x=+$('cv').value,t=$('ct').value,r=({lf:()=>x*3.28084,fl:()=>x/3.28084,kg:()=>x*2.20462,lb:()=>x/2.20462,cf:()=>x*9/5+32,fc:()=>(x-32)*5/9,km:()=>x*.621371,mk:()=>x/.621371,dr:()=>x*Math.PI/180,rd:()=>x*180/Math.PI}[t])();$('vout').textContent=fmt(r)}
-eqFields();
-</script>
-</body>
- </html>
-
-<!-- KJ Dynamic Island -->
-<div class="kj-island" id="kjIsland" onclick="toggleKJIsland()">
-  <div class="kj-island-mini">
-    <span class="kj-island-dot"></span>
-    <span>KJ SCIENTIFIC</span>
-    <span class="kj-island-version">4.0</span>
+  <div class="field">
+    <label>FUNCTION f(x)</label>
+    <input id="graphFunction" value="sin(x)" placeholder="e.g. x^2">
   </div>
 
-  <div class="kj-island-expanded" id="kjIslandExpanded">
-    <div class="kj-island-status">CALCULATION READY</div>
-    <div class="kj-island-result" id="kjIslandResult">Your answer appears here</div>
-    <button onclick="copyKJIslandResult(event)">Copy answer</button>
+  <div class="grid2">
+    <div class="field">
+      <label>X MIN</label>
+      <input id="xmin" type="number" value="-10">
+    </div>
+    <div class="field">
+      <label>X MAX</label>
+      <input id="xmax" type="number" value="10">
+    </div>
   </div>
-</div>
 
-<style>
-.kj-island {
-  width: 145px;
-  margin: 12px auto;
-  padding: 12px 18px;
-  border-radius: 50px;
-  background: #000;
-  border: 1px solid #182c48;
-  color: #66d9ff;
-  font-family: Arial, sans-serif;
-  cursor: pointer;
-  overflow: hidden;
-  transition: all .35s ease;
-  box-shadow: 0 0 15px #008cff15;
-  position: relative;
-  z-index: 10;
-}
+  <button class="action-btn" onclick="plotGraph()">PLOT GRAPH</button>
 
-.kj-island-mini {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 11px;
-  font-weight: 700;
-  gap: 8px;
-}
+  <div class="graph-wrap" style="margin-top:12px">
+    <canvas id="graphCanvas"></canvas>
+  </div>
 
-.kj-island-dot {
-  width: 7px;
-  height: 7px;
-  background: #28c9ff;
-  border-radius: 50%;
-  box-shadow: 0 0 8px #28c9ff;
-}
+  <div class="output" id="graphOutput">Enter a function and plot it.</div>
+</section>
 
-.kj-island-version {
-  color: #fff;
-}
+<!-- Equations -->
+<section class="panel" id="equations">
+  <h3>Equation Solver</h3>
+  <p>Solves two simultaneous linear equations.</p>
 
-.kj-island-expanded {
-  display: none;
-  padding-top: 15px;
-  text-align: center;
-}
+  <div class="output" style="margin-bottom:12px">
+    <strong>Example:</strong><br>
+    2x + 3y = 12<br>
+    x − y = 1
+  </div>
 
-.kj-island.open {
-  width: min(320px, 88vw);
-  border-radius: 26px;
-  padding: 18px;
-  background: #081326;
-  border-color: #247bff;
-}
+  <div class="grid2">
+    <div class="field"><label>Equation 1 · A</label>
+      <input id="a1" type="number" value="2">
+    </div>
+    <div class="field"><label>Equation 1 · B</label>
+      <input id="b1" type="number" value="3">
+    </div>
+    <div class="field"><label>Equation 1 · C</label>
+      <input id="c1" type="number" value="12">
+    </div>
+  </div>
 
-.kj-island.open .kj-island-expanded {
-  display: block;
-  animation: kjFade .25s ease;
-}
+  <div class="output" style="margin-bottom:12px">
+    <strong>Equation 1:</strong> Ax + By = C
+  </div>
 
-.kj-island-status {
-  color: #65d9ff;
-  font-size: 11px;
-  margin-bottom: 8px;
-}
+  <div class="grid2">
+    <div class="field"><label>Equation 2 · A</label>
+      <input id="a2" type="number" value="1">
+    </div>
+    <div class="field"><label>Equation 2 · B</label>
+      <input id="b2" type="number" value="-1">
+    </div>
+    <div class="field"><label>Equation 2 · C</label>
+      <input id="c2" type="number" value="1">
+    </div>
+  </div>
 
-.kj-island-result {
-  font-size: 20px;
-  color: white;
-  overflow-wrap: anywhere;
-  margin-bottom: 12px;
-}
+  <div class="output" style="margin-bottom:12px">
+    <strong>Equation 2:</strong> Ax + By = C
+  </div>
 
-.kj-island-expanded button {
-  border: 0;
-  border-radius: 12px;
-  padding: 10px 18px;
-  background: #176cff;
-  color: white;
-  font-weight: bold;
-}
+  <button class="action-btn" onclick="solveEquations()">SOLVE x AND y</button>
+  <div class="output" id="equationOutput">Solution will appear here.</div>
+</section>
 
-@keyframes kjFade {
-  from { opacity: 0; transform: translateY(-5px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-</style>
+<!-- Converter -->
+<section class="panel" id="converter">
+  <h3>Unit Converter</h3>
+  <p>Convert measurements quickly.</p>
 
-<script>
-function toggleKJIsland() {
-  document.getElementById("kjIsland")
-    .classList.toggle("open");
-}
+  <div class="field">
+    <label>CONVERSION TYPE</label>
+    <select id="convertType" onchange="updateConvertUnits()">
+      <option value="length">Length</option>
+      <option value="mass">Mass</option>
+      <option value="temperature">Temperature</option>
+      <option value="time">Time</option>
+      <option value="volume">Volume</option>
+      <option value="speed">Speed</option>
+    </select>
+  </div>
 
-function updateKJIsland(answer) {
-  document.getElementById("kjIslandResult")
-    .textContent = answer;
-}
+  <div class="field">
+    <label>VALUE</label>
+    <input id="convertValue" type="number" value="1">
+  </div>
 
-function copyKJIslandResult(event) {
-  event.stopPropagation();
+  <div class="grid2">
+    <div class="field">
+      <label>FROM</label>
+      <select id="convertFrom"></select>
+    </div>
+    <div class="field">
+      <label>TO</label>
+      <select id="convertTo"></select>
+    </div>
+  </div>
 
-  const answer = document.getElementById("kjIslandResult")
-    .textContent;
+  <button class="action-btn" onclick="convertUnits()">CONVERT</button>
+  <div class="output" id="convertOutput">Your conversion will appear here.</div>
+</section>
 
-  navigator.clipboard.writeText(answer);
-}
-</script>
+<!-- Percentage -->
+<section class="panel" id="percentage">
+  <h3>Percentage Tools</h3>
+  <p>Calculate percentages and changes.</p>
+
+  <div class="field">
+    <label>WHAT PERCENT OF A IS B?</label>
+    <input id="percentB" type="number" placeholder="B">
+  </div>
+  <div class="field">
+    <label>TOTAL VALUE A</label>
+    <input id="percentA" type="number" placeholder="A">
+  </div>
+
+  <button class="action-btn" onclick="percentOf()">CALCULATE PERCENT</button>
+  <div class="output" id="percentOutput"></div>
+
+  <hr style="border-color:var(--border);margin:18px 0">
+
+  <div class="field">
+    <label>FIND X% OF A NUMBER</label>
+    <input id="percentX" type="number" placeholder="Percentage">
+  </div>
+  <div class="field">
+    <label>NUMBER</label>
+    <input id="percentNum" type="number" placeholder="Number">
+  </div>
+
+  <button class="action-btn" onclick="findPercent()">FIND VALUE</button>
+  <div class="output" id="percentOutput2"></div>
+
+  <hr style="border-color:var(--border);margin:18px 0">
+
+  <div class="field">
+    <label>PERCENTAGE CHANGE · OLD VALUE</label>
+    <input id="oldVal" type="number">
+  </div>
+  <div class="field">
+    <label>NEW VALUE</label>
+    <input id="newVal" type="number">
+  </div>
+
+  <button class="action-btn" onclick="percentChange()">CALCULATE CHANGE</button>
+  <div class="output" id="percentOutput3"></div>
+</section>
+
+<!-- History -->
+<section class="panel" id="history">
+  <h3>Calculation History</h3>
+  <p>Your recent calculations are saved on this device.</p>
+
+  <div class="history-tools">
+    <span style="font-size:12px;color:var(--muted)">Recent calculations</span>
+    <button class="small-btn" onclick="clearHistory()">Clear</button>
+  </div>
+
+  <div id="historyList"></div>
+</section>
+
+<!-- Formula Library -->
+<section class="panel" id="formulas">
+  <h3>Formula Library</h3>
+  <p>Quick-reference mathematical formulas.</p>
+
+  <div class="formula">
+    <h4>Quadratic Equation</h4>
+    <div>x = (-b ± √(b²−4ac)) / 2a</div>
+  </div>
+
+  <div class="formula">
+    <h4>Pythagoras</h4>
+    <div>a² + b² = c²</div>
+  </div>
+
+  <div class="formula">
+    <h4>Area of Circle</h4>
+    <div>A = πr²</div>
+  </div>
+
+  <div class="formula">
+    <h4>Circumference</h4>
+    <div>C = 2πr</div>
+  </div>
+
+  <div class="formula">
+    <h4>Simple Interest</h4>
+    <div>I = P × R × T / 100</div>
+  </div>
+
+  <div class="formula">
+    <h4>Compound Interest</h4>
+    <div>A = P(1 + r/n)ⁿᵗ</div>
+  </div>
+
+  <div class="formula">
+    <h4>Speed</h4>
+    <div>Speed = Distance / Time</div>
+  </div>
+
+  <div class="formula">
+    <h4>Density</h4>
+    <div>Density = Mass / V
